@@ -21,6 +21,7 @@ class Driver:
         self.last_name = last_name
         self.team_name = team_name
         self.name = f"{self.last_name}, {self.first_name}"
+        self.entry_rep = f"{self.first_name} {self.last_name}, {self.team_name}"
         self.started_season = started_season == 'yes'
         self.points = 0
         self.dis_points = 0
