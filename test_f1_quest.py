@@ -402,5 +402,5 @@ def test_answer_key():
     assert(all_20_finished == 'FALSE')
 
     down_to_the_wire = ak.down_to_the_wire()
-    assert(down_to_the_wire is None)
+    assert(down_to_the_wire == 'TBD')
 
