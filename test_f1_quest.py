@@ -1,6 +1,7 @@
 from datetime import datetime
 from f1_quest.answer_key import AnswerKey
 from f1_quest.drivers import Driver, Drivers
+from f1_quest.entries import Entries
 from f1_quest.races import Races
 from f1_quest.tables import Table
 from f1_quest.teams import Teams
@@ -404,3 +405,10 @@ def test_answer_key():
     down_to_the_wire = ak.down_to_the_wire()
     assert(down_to_the_wire == 'TBD')
 
+
+def test_entries():
+    entries = Entries(data_dir='test_data')
+    assert(len(entries.entries) == 9)
+    assert('Jesse' in entries.entries)
+    jesse = entries.entries['Jesse']
+    assert(jesse.bingo_russell_response == 'TRUE')
