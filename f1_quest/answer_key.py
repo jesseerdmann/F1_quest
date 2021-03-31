@@ -60,10 +60,7 @@ class AnswerKey():
             strings.append("{:30s} {:5d}".format(team, value))
         strings.append('')
         strings.append('Q3: Which team will win the DHL Fastest Pit Stop?')
-        scoring, tie_breaker = self.fastest_pit_stop()
-        strings.append("{:30s} {:5s}".format("Answer", "Value"))
-        for team, value in scoring.items():
-            strings.append("{:30s} {:5d}".format(team, value))
+        strings.append('Everyone gets 25... good job!')
         strings.append('')
         strings.append('Q4: Who will win the most official "Driver of the Day" awards?')
         scoring, tie_breaker = self.driver_of_the_day()
@@ -277,19 +274,6 @@ class AnswerKey():
         score_map = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 
             9: 2, 10: 1}
         return self.map_table_to_score(avg_points_increase_table, score_map)
-
-
-    def fastest_pit_stop(self):
-        """
-        Answer the question "Which team will win the DHL Fastest Pit Stop?"
-
-        Returns:
-        A dictionary mapping team names to point value if chosen
-        """
-        fastest_pit_stop_table = self.teams.get_fps_table()
-        score_map = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 
-            9: 2, 10: 1}
-        return self.map_table_to_score(fastest_pit_stop_table, score_map)
 
 
     def driver_of_the_day(self):

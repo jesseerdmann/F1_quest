@@ -5,9 +5,8 @@ from f1_quest.tables import Table
 from f1_quest.util import get_type_val
 
 class TeamRaceResult():
-    def __init__(self, race, fps):
+    def __init__(self, race):
         self.race = race
-        self.fps = fps
 
 
 class Team():
@@ -17,7 +16,6 @@ class Team():
         self.points_2020 = points_2020
         self.races_2020 = 17
         self.name = name
-        self.fps = 100
 
 
     def __str__(self):
@@ -36,10 +34,8 @@ class Team():
         self.drivers[driver.name] = driver
 
 
-    def add_race(self, race, fps):
-        self.race_results[race] = TeamRaceResult(race, fps)
-        if fps < self.fps:
-            self.fps = fps
+    def add_race(self, race):
+        self.race_results[race] = TeamRaceResult(race)
 
 
     def get_points(self):
@@ -138,19 +134,6 @@ class Teams():
         for team_name, team in self.team_dict.items():
             table.add_entry(team.get_points(), team)
 
-        return table
-
-
-    def get_fps_table(self):
-        """
-        Build the Fastest Pit Stop table
-
-        Returns:
-        A table of teams and their fastest pit stop
-        """
-        table = Table('Fastest Pit Stop', 'Team', 'Time', float, descending=False)
-        for team_name, team in self.team_dict.items():
-            table.add_entry(team.fps, team)
         return table
 
 

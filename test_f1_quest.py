@@ -96,11 +96,6 @@ def test_first_race():
     assert(pos_4.score == 12)
     assert(pos_4.entry.name == "AlphaTauri")
 
-    fps_standings = teams.get_fps_table()
-    pos_1 = fps_standings.get_entries_by_pos(1, single_entry_only=True)
-    assert(pos_1.score == 1.923497995)
-    assert(pos_1.entry.name == "Haas F1 Team")
-
     avg_points_standings = teams.get_average_point_change_table()
     pos_1 = avg_points_standings.get_entries_by_pos(1, single_entry_only=True)
     assert(pos_1.score == 9.235294117647058)
@@ -154,11 +149,6 @@ def test_seventh_race():
     pos_4 = team_standings.get_entries_by_pos(4, single_entry_only=True)
     assert(pos_4.score == 73)
     assert(pos_4.entry.name == "Ferrari")
-
-    fps_standings = teams.get_fps_table()
-    pos_1 = fps_standings.get_entries_by_pos(1, single_entry_only=True)
-    assert(pos_1.score == 1.914958138)
-    assert(pos_1.entry.name == "Alpine")
 
     avg_points_standings = teams.get_average_point_change_table()
     pos_1 = avg_points_standings.get_entries_by_pos(1, single_entry_only=True)
@@ -218,11 +208,6 @@ def test_final_race():
     assert(pos_4.score == 230)
     assert(pos_4.entry.name == "McLaren")
 
-    fps_standings = teams.get_fps_table()
-    pos_1 = fps_standings.get_entries_by_pos(1, single_entry_only=True)
-    assert(pos_1.score == 1.905670267)
-    assert(pos_1.entry.name == "Mercedes")
-
     avg_points_standings = teams.get_average_point_change_table()
     pos_1 = avg_points_standings.get_entries_by_pos(1, single_entry_only=True)
     assert(pos_1.score == 7.843989769820972)
@@ -281,11 +266,6 @@ def test_answer_key():
     avg_points_increase, tie_breaker = ak.avg_points_increase()
     assert(avg_points_increase['AlphaTauri'] == 12)
     assert(avg_points_increase['Mercedes'] == 18)
-    assert(tie_breaker is None)
-
-    fastest_pit_stop, tie_breaker = ak.fastest_pit_stop()
-    assert(fastest_pit_stop['AlphaTauri'] == 10)
-    assert(fastest_pit_stop['Williams'] == 18)
     assert(tie_breaker is None)
     
     driver_of_the_day, tie_breaker = ak.driver_of_the_day()
