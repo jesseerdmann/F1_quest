@@ -132,7 +132,7 @@ class Teams():
         # Sum points from drivers
         table = Table('Team Points', 'Team', 'Points', int)
         for team_name, team in self.team_dict.items():
-            table.add_entry(team.get_points(), team)
+            table.add_subject(team.get_points(), team)
 
         return table
 
@@ -148,7 +148,7 @@ class Teams():
         for team in self.team_dict.values():
             avg_2020 = team.points_2020 / team.races_2020
             avg = team.get_points() / len(team.race_results.keys())
-            table.add_entry(avg - avg_2020, team)
+            table.add_subject(avg - avg_2020, team)
         return table
 
     def get_teammate_qualy_table(self):
@@ -165,5 +165,5 @@ class Teams():
                 for driver2 in team.drivers.values():
                     if driver != driver2:
                         teammates.append(driver2)
-                table.add_entry(driver.qualy_win_pct(teammates), driver)
+                table.add_subject(driver.qualy_win_pct(teammates), driver)
         return table

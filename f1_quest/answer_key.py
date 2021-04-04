@@ -3,6 +3,7 @@ import os
 
 from datetime import datetime
 from f1_quest.drivers import Driver, Drivers
+from f1_quest.entries import Entries
 from f1_quest.races import Races
 from f1_quest.tables import Table
 from f1_quest.teams import Teams
@@ -13,6 +14,7 @@ class AnswerKey():
         file_name='scoring_single_answer.csv'):
         self.teams = Teams(data_dir=data_dir)
         self.drivers = Drivers(data_dir=data_dir)
+        self.entries = Entries  (data_dir=data_dir)
         self.races = Races(data_dir=data_dir)
         self.races.read_results(data_dir=data_dir, drivers=self.drivers, 
             teams=self.teams, datetime=datetime)
@@ -232,17 +234,17 @@ class AnswerKey():
         and check the set before adding it to the key
         '''
         for pos, pts in score_map.items():
-            entries = table.get_entries_by_pos(pos)
-            for entry in entries:
+            rows = table.get_subjects_by_pos(pos)
+            for row in rows:
                 '''
                 If a tie_breaker_pos is set, return the score of the tie
                 breaking position from the table
                 '''
                 if tie_breaker_pos is not None and pos == tie_breaker_pos \
                     and tie_breaker is None:
-                    tie_breaker = entry.score
-                if entry.entry.name not in answer_key:
-                    answer_key[entry.entry.name] = pts
+                    tie_breaker = row.score
+                if row.subject.name not in answer_key:
+                    answer_key[row.subject.name] = pts
 
         return (answer_key, tie_breaker)
 
@@ -259,6 +261,8 @@ class AnswerKey():
         team_points = self.teams.get_points_table()
         score_map = { 4: 25, 3: 18, 5: 18, 2: 15, 6: 15, 1: 12, 7: 12, 8: 10,
             9: 8, 10: 6 }
+        team_points.add_entries(self.entries, 'team_fourth_response', 'team_fourth_tiebreaker')
+        print(team_points)
         return self.map_table_to_score(team_points, score_map, tie_breaker_pos=4)
 
 

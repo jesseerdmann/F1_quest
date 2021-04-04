@@ -50,6 +50,10 @@ class Entry():
         self.bingo_russell_response = row[46]
 
 
+    def __str__(self):
+        return self.entry_name
+
+
 class Entries():
     def __init__(self, data_dir=os.getenv('F1_DATA', 'data'), file_name="entries.csv"):
         self.entries = {}
@@ -64,6 +68,9 @@ class Entries():
                     header_row = False
                     continue
                 self.entries[row[1]] = Entry(row)
+
+    def list_entries(self):
+        return self.entries.values()
 
 
     
