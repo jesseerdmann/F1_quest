@@ -9,6 +9,9 @@ from f1_quest.tables import Table
 from f1_quest.teams import Teams
 
 
+F1_POINTS = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1}
+
+
 class AnswerKey():
     def __init__(self, data_dir='data', datetime=datetime.now(), 
         file_name='scoring_single_answer.csv'):
@@ -242,11 +245,66 @@ class AnswerKey():
                 '''
                 if tie_breaker_pos is not None and pos == tie_breaker_pos \
                     and tie_breaker is None:
-                    tie_breaker = row.score
-                if row.subject.name not in answer_key:
-                    answer_key[row.subject.name] = pts
+                    tie_breaker = row.score                    
+                if str(row.subject) not in answer_key:
+                    answer_key[str(row.subject)] = pts
+                    if tie_breaker_pos is None:
+                        row.set_value(pts)
 
         return (answer_key, tie_breaker)
+
+    
+    def tie_breaker_scoring(self, table_name, score_map, source_table, 
+        tie_breaker, tie_breaker_var):
+        """
+        Take a table of entries, score map and tie breaker variable name and 
+         return a table that breaks ties where it can to score the entries in 
+         the score_table
+
+        Keyword arguments:
+        table_name -- The name to display at the top of the table
+        score_map -- A dictionary mapping the table position to point value
+        source_table -- The table with entries attached to their row
+        tie_breaker -- The value to compare the entries guess against
+        tie_breaker_var -- The name of the variable in the Entry to use as the 
+         tie breaker
+
+        Returns:
+        A Table with the entries as subjects and scored values as the score
+        """
+        entry_table = Table(table_name, "Entry", "Points", int, 
+            score_only=True)
+
+        # Group entries by score in the score map
+        score_dict = {}
+        entry_placed_dict = {}
+        for pos, pts in score_map.items():
+            rows = source_table.get_subjects_by_pos(pos)
+            for row in rows:
+                for entry in row.matching_entries:
+                    if entry.entry_name in entry_placed_dict:
+                        continue
+                    entry_placed_dict[entry.entry_name] = True
+                    entry_tb_score = abs(int(entry.__dict__[tie_breaker_var]) - tie_breaker)
+                    if pts not in score_dict:
+                        score_dict[pts] = {}
+                    if entry_tb_score not in score_dict[pts]:
+                        score_dict[pts][entry_tb_score] = [entry]
+                    else:
+                        score_dict[pts][entry_tb_score].append(entry)
+
+        # Score grouped entries by tie breaker value
+        entry_pos = 1
+        abs_pos = 1
+        for score in reversed(sorted(score_dict.keys())): 
+            for tb_score in sorted(score_dict[score].keys()):
+                for entry in score_dict[score][tb_score]:
+                    entry.score += F1_POINTS[entry_pos]
+                    entry_table.add_subject(F1_POINTS[entry_pos], entry)
+                    abs_pos += 1
+                entry_pos = abs_pos
+        return entry_table
+
 
     def team_fourth(self):
         '''
@@ -261,9 +319,20 @@ class AnswerKey():
         team_points = self.teams.get_points_table()
         score_map = { 4: 25, 3: 18, 5: 18, 2: 15, 6: 15, 1: 12, 7: 12, 8: 10,
             9: 8, 10: 6 }
-        team_points.add_entries(self.entries, 'team_fourth_response', 'team_fourth_tiebreaker')
+        team_points.add_entries(self.entries, 'team_fourth_response', 
+                                'team_fourth_tiebreaker')
+        answer_key, tie_breaker = self.map_table_to_score(team_points, 
+                                                          score_map, 
+                                                          tie_breaker_pos=4)
         print(team_points)
-        return self.map_table_to_score(team_points, score_map, tie_breaker_pos=4)
+
+        entry_table = self.tie_breaker_scoring("Fourth Place Scoring", 
+                                               score_map, team_points,
+                                               tie_breaker, 
+                                               'team_fourth_tiebreaker')
+        print(entry_table)
+
+        return (answer_key, tie_breaker)
 
 
     def avg_points_increase(self):
@@ -277,7 +346,10 @@ class AnswerKey():
         avg_points_increase_table = self.teams.get_average_point_change_table()
         score_map = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 
             9: 2, 10: 1}
-        return self.map_table_to_score(avg_points_increase_table, score_map)
+        avg_points_increase_table.add_entries(self.entries, 'team_points_avg_response')
+        answer_key, tie_breaker = self.map_table_to_score(avg_points_increase_table, score_map)
+        print(avg_points_increase_table)
+        return (answer_key, tie_breaker)
 
 
     def driver_of_the_day(self):
@@ -292,7 +364,10 @@ class AnswerKey():
         score_map = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 
             9: 2, 10: 1, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 
             18: 0, 19: 0, 20: 0}
-        return self.map_table_to_score(driver_of_the_day_table, score_map)
+        driver_of_the_day_table.add_entries(self.entries, 'driver_of_the_day_response')
+        answer_key, tie_breaker = self.map_table_to_score(driver_of_the_day_table, score_map)
+        print(driver_of_the_day_table)
+        return(answer_key, tie_breaker)
 
 
     def driver_tenth(self):
@@ -307,9 +382,18 @@ class AnswerKey():
         driver_points_table = self.drivers.get_points_table()
         score_map = {10: 25, 9: 18, 11: 18, 8: 15, 12: 15, 7: 12, 13: 12, 
             6: 10, 14: 10, 5: 8, 15: 8, 4: 6, 16: 6, 3: 4, 17: 4, 2: 2, 18: 2, 
-            1: 1, 19: 1, 20: 0} 
-        return self.map_table_to_score(driver_points_table, score_map, 
+            1: 1, 19: 1, 20: 0}
+        driver_points_table.add_entries(self.entries, 'driver_tenth_response', 'driver_tenth_tiebreaker')
+        answer_key, tie_breaker = self.map_table_to_score(driver_points_table, score_map, 
             tie_breaker_pos=10)
+        print(driver_points_table)
+
+        entry_table = self.tie_breaker_scoring("Tenth Place Scoring", 
+                                               score_map, driver_points_table,
+                                               tie_breaker, 
+                                               'driver_tenth_tiebreaker')
+        print(entry_table)
+        return (answer_key, tie_breaker)
 
 
     def teammate_qualy(self):
@@ -324,7 +408,10 @@ class AnswerKey():
         score_map = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 
             9: 2, 10: 1, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 
             18: 0, 19: 0, 20: 0}
-        return self.map_table_to_score(teammate_qualy_table, score_map)
+        teammate_qualy_table.add_entries(self.entries, 'driver_qualy_dominance')
+        answer_key, tie_breaker =  self.map_table_to_score(teammate_qualy_table, score_map)
+        print(teammate_qualy_table)
+        return (answer_key, tie_breaker)
 
 
     def podium_winners(self):
@@ -335,6 +422,7 @@ class AnswerKey():
         Returns:
         A list of driver names that have appeared on the podium
         """
+        # TODO: map entries
         return [driver.name for driver in self.drivers.list_all_drivers() if driver.podiums > 0]
 
 
@@ -349,7 +437,10 @@ class AnswerKey():
         score_map = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 
             9: 2, 10: 1, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 
             18: 0, 19: 0, 20: 0}
-        return self.map_table_to_score(dis_points_table, score_map)
+        dis_points_table.add_entries(self.entries, 'driver_penalty_points')
+        answer_key, tie_breaker = self.map_table_to_score(dis_points_table, score_map)
+        print(dis_points_table)
+        return (answer_key, tie_breaker)
         
 
     def avg_laps(self):
@@ -364,7 +455,10 @@ class AnswerKey():
         score_map = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 
             9: 2, 10: 1, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 
             18: 0, 19: 0, 20: 0}
-        return self.map_table_to_score(average_laps_table, score_map)
+        average_laps_table.add_entries(self.entries, 'drvier_lowest_laps_avg')
+        answer_key, tie_breaker = self.map_table_to_score(average_laps_table, score_map)
+        print(average_laps_table)
+        return (answer_key, tie_breaker)
 
 
     def six_after_six(self):
@@ -375,6 +469,7 @@ class AnswerKey():
         Returns:
         The table representing the points standings after the first six races
         """
+        # TODO: Map entries
         completed_races = self.races.list_races_before(self.datetime)
         if len(completed_races) >= 6:
             return completed_races[5].post_race_driver_points
@@ -391,6 +486,7 @@ class AnswerKey():
         A set with the race at which the current leader became the leader and
          the race at which the second place driver became second place
         """
+        # TODO: Map entries
         completed_races = self.races.list_races_before(self.datetime)
         places_dict = {
             1: {
@@ -404,12 +500,12 @@ class AnswerKey():
         }
         for race in completed_races:
             for pos, pos_dict in places_dict.items():
-                drivers = race.post_race_driver_points.get_entries_by_pos(pos)
+                drivers = race.post_race_driver_points.get_subjects_by_pos(pos)
                 if len(drivers) > 1:
                     pos_dict['driver'] = None
                     pos_dict['race'] = None
-                elif drivers[0].entry.name != pos_dict['driver']:
-                    pos_dict['driver'] = drivers[0].entry.name
+                elif drivers[0].subject.name != pos_dict['driver']:
+                    pos_dict['driver'] = drivers[0].subject.name
                     pos_dict['race'] = race
 
         """
@@ -438,6 +534,7 @@ class AnswerKey():
         Returns:
         A dictionary mapping a race to the number of retirements it had
         """
+        # TODO: Map Entries
         race_dict = {}
         for race in self.races.race_list:
             race_dict[str(race)] = race.retirements * -5
@@ -455,6 +552,7 @@ class AnswerKey():
         Returns:
         A dictionary mapping a race to the drivers points for that race
         """
+        # TODO: Map entries
         race_dict = {}
         driver = self.drivers.get_driver_by_short_name(driver_short_name)
         if len(driver) > 1:
@@ -512,6 +610,7 @@ class AnswerKey():
         A dictionary mapping drivers to points from the bottom seven teams of 
          2020
         """
+        # TODO: Map Entries
         teams = ["Aston Martin", "Alpine", "Ferrari", "AlphaTauri", 
             "Alfa Romeo Racing", "Haas F1 Team", "Williams"]
         driver_points_dict = {}
@@ -531,6 +630,7 @@ class AnswerKey():
         A dictionary mapping races to safety cars and a list of races that 
          tied for the most safety cars
         """
+        # TODO: Map Entries
         safety_car_dict = {}
         total_safety_cars = 0
         for race in self.races.race_list:
@@ -556,6 +656,7 @@ class AnswerKey():
         An integer representing the lowest number of cars on the lead lap of
          a race
         """
+        # TODO: Map entries
         fewest_on_lead_lap = 21
         for race in self.races.list_races_before(self.datetime):
             drivers_on_lead_lap = 0
@@ -579,6 +680,7 @@ class AnswerKey():
         A set of two integers, the number of drivers that pitted for softs at 
          the end and the total number of laps on soft for the winner in Russia
         """
+        # TODO: Map Entries
         return (
             self.single_answer_dict['Pitted for Softs in last five laps at Russia'],
             self.single_answer_dict['Total laps on softs for winner at Russia']    
@@ -595,6 +697,7 @@ class AnswerKey():
         A set with the name of the first driver out of Saudi Arabia and the 
          position the driver occupies before the race
         """
+        # TODO: Map Entries
         first_retirement = self.single_answer_dict['First retirement at Saudi Arabia']
         # Race has not occurred yet
         if first_retirement is None or len(first_retirement) == 0:
@@ -615,6 +718,7 @@ class AnswerKey():
         Returns:
         An integer representing the number of unique winners over the season
         """
+        # TODO: Map Entries
         winners = set()
         for driver in self.drivers.driver_list:
             if driver.wins > 0:
@@ -629,6 +733,7 @@ class AnswerKey():
         Returns:
         An integer representing the number of unique pole sitters over the year
         """
+        # TODO: Map Entries
         pole_sitters = set()
         for driver in self.drivers.driver_list:
             if driver.poles > 0:
@@ -643,6 +748,7 @@ class AnswerKey():
         Returns:
         An integer representing the number of unique fastest lap winners
         """
+        # TODO: Map Entries
         fastest_lap_winners = set()
         for driver in self.drivers.driver_list:
             if driver.fastest_laps > 0:
@@ -657,6 +763,7 @@ class AnswerKey():
         Returns:
         The number of races a wet compound was used
         """
+        # TODO: Map Entries
         return self.single_answer_dict['How many races have wet compound used']
 
 
@@ -669,6 +776,7 @@ class AnswerKey():
         The number of drivers confirmed to change teams or leave F1 during the 
          season
         """
+        # TODO: Map Entries
         return self.single_answer_dict['How many drivers confirmed to leave']
 
 
@@ -680,6 +788,7 @@ class AnswerKey():
         Returns:
         The number of track invasions and 
         """
+        # TODO: Map Entries
         return self.single_answer_dict['How many races with animal invasions']
 
 
@@ -691,6 +800,7 @@ class AnswerKey():
         Returns:
         Total number of drivers for the season
         """
+        # TODO: Map Entries
         return len(self.drivers.driver_list)
 
 
@@ -701,6 +811,7 @@ class AnswerKey():
         Returns:
         A TRUE or FALSE (Strings due to string repr from questionaire)
         """
+        # TODO: Map Entries
         return self.single_answer_dict['Does Theo Pourchaire have a 2022 seat']
 
 
@@ -711,6 +822,7 @@ class AnswerKey():
         Returns:
         A TRUE or FALSE (Strings due to string repr from questionaire)
         """
+        # TODO: Map Entries
         lando = self.drivers.get_driver_by_short_name('Norris, Lando')
         if len(lando) == 0 or len(lando) > 1:
             raise Exception('Too many or to few Landos found')
@@ -726,10 +838,11 @@ class AnswerKey():
         Returns:
         A TRUE or FALSE (Strings due to string repr from questionaire)
         """
+        # TODO: Map Entries
         table = self.teams.get_points_table()
-        tenth = table.get_entries_by_pos(10)
-        for entry in tenth:
-            if entry.entry.name == 'Williams':
+        tenth = table.get_subjects_by_pos(10)
+        for row in tenth:
+            if row.subject.name == 'Williams':
                 return 'FALSE'
         return 'TRUE'
 
@@ -741,6 +854,7 @@ class AnswerKey():
         Returns:
         A TRUE or FALSE (Strings due to string repr from questionaire)
         """
+        # TODO: Map Entries
         return self.single_answer_dict['Has Red Bull changed drivers']
 
 
@@ -751,6 +865,7 @@ class AnswerKey():
         Returns:
         A TRUE or FALSE (Strings due to string repr from questionaire)
         """
+        # TODO: Map Entries
         for race in self.races.list_races_before(self.datetime):
             if race.retirements == 0:
                 return "TRUE"
@@ -766,6 +881,7 @@ class AnswerKey():
         A TRUE, FALSE, or TBD if answer unknown as of yet (Strings due to 
          string repr from questionaire)
         """
+        # TODO: Map Entries
         next_to_last = self.races.list_races()[-1]
         if next_to_last is None or next_to_last.post_race_driver_points is None:
             return 'TBD'
@@ -785,6 +901,7 @@ class AnswerKey():
         Returns:
         A TRUE or FALSE (Strings due to string repr from questionaire)
         """
+        # TODO: Map Entries
         russell = self.drivers.get_driver_by_short_name("Russell, George")
         russell_points = russell[0].points
         if russell_points == 0:

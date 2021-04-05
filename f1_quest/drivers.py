@@ -35,7 +35,7 @@ class Driver:
 
 
     def __str__(self):
-        return self.name
+        return self.entry_rep
 
 
     def __lt__(self, other):

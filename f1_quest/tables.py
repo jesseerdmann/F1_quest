@@ -1,7 +1,8 @@
 class TableRow():
-    def __init__(self, score, subject):
+    def __init__(self, score, subject, value=0):
         self.score = score
         self.subject = subject
+        self.value = value
         self.matching_entries = []
 
     
@@ -19,15 +20,20 @@ class TableRow():
 
 
     def __str__(self):
-        return f"{self.score} {str(self.subject)}"
+        string_val = f"{self.score} {str(self.subject)} {self.value} {len(self.matching_entries)} entries"
+        return string_val
 
 
     def add_entry(self, entry):
         self.matching_entries.append(entry)
 
+    def set_value(self, value):
+        self.value = value
+
 
 class Table():
-    def __init__(self, name, subject_label, score_label, score_type, descending=True):
+    def __init__(self, name, subject_label, score_label, score_type, 
+        score_only=False, descending=True):
         """
         Initialize the table.
 
@@ -36,6 +42,7 @@ class Table():
         subject_label -- the subject type for display, e.g. "Driver"
         score_label -- the score name for display, e.g. "Points" or "Avg. Laps"
         score_type -- the Python type of the score, e.g. int or float
+        score_only -- if True, do not print values or entries
         descending -- a bool to determine score order, ascending or descening
         """
         self.name = name
@@ -46,6 +53,7 @@ class Table():
         self.score_label = score_label
         self.score_type = score_type
         self.tie_breaker_var = None
+        self.score_only = score_only
         self.descending = descending
         self.max_row_length = len(subject_label)
         self.max_score_length = len(score_label)
@@ -58,17 +66,24 @@ class Table():
         
         header_format_string = "{:3s} {:" + str(self.max_row_length) + \
             "s} {:" + str(self.max_score_length) + "s}"
-        string_list.append(header_format_string.format('Pos', 
-            self.subject_label, self.score_label) + " Entries")
-        format_string = '{:3d} {:' + str(self.max_row_length) + \
-            's} {:' + str(self.max_score_length) + 'd}'
-        tie_format_string = '{:3s} {:' + str(self.max_row_length) + \
-            's} {:' + str(self.max_score_length) + 'd}'
+        header_string = header_format_string.format('Pos', 
+            self.subject_label, self.score_label)
+        if not self.score_only:
+            if self.tie_breaker_var is None:
+                header_string += " Value"
+            header_string += " Entries"
+        string_list.append(header_string)
+        score_type_str = 'd'
         if self.score_type == float:
-            format_string = '{:3d} {:' + str(self.max_row_length) + \
-                's} {:' + str(self.max_score_length) + 'f}'
-            tie_format_string = '{:3s} {:' + str(self.max_row_length) + \
-                's} {:' + str(self.max_score_length) + 'f}'
+            score_type_str = 'f'
+        value_string = ''
+        if self.tie_breaker_var is None and not self.score_only:
+            value_string = ' {:5d}'
+        base_format_string = '{:' + str(self.max_row_length) + 's} {:' + \
+            str(self.max_score_length) + score_type_str + '}' + value_string
+        
+        format_string = '{:3d} ' + base_format_string
+        tie_format_string = '{:3s} ' + base_format_string
 
         for row in self.get_ordered_subjects():
             entries_str = ' '
@@ -76,15 +91,24 @@ class Table():
             for entry in row.matching_entries:
                 if not first_row:
                     entries_str += ', '
-                if self.tie_breaker_var is not None:
-                    entries_str += f"{str(entry)} (TB: {entry.__dict__[self.tie_breaker_var]})"
-                else:
-                    entries_str += f"{str(entry)}"
+                if not self.score_only:
+                    if self.tie_breaker_var is not None:
+                        entries_str += f"{str(entry)} (TB: {entry.__dict__[self.tie_breaker_var]})"
+                    else:
+                        entries_str += f"{str(entry)}"
                 first_row = False
             if prev_score is not None and row.score == prev_score:
-                string_list.append(tie_format_string.format('', str(row.subject), row.score) + entries_str)
+                if self.tie_breaker_var is None:
+                    row_string = tie_format_string.format('', str(row.subject), row.score, row.value) + entries_str
+                else:
+                    row_string = tie_format_string.format('', str(row.subject), row.score) + entries_str
             else:
-                string_list.append(format_string.format(pos, str(row.subject), row.score) + entries_str)
+                if self.tie_breaker_var is None:
+                    row_string = format_string.format(pos, str(row.subject), row.score, row.value) + entries_str
+                else:
+                    row_string = format_string.format(pos, str(row.subject), row.score) + entries_str
+            
+            string_list.append(row_string)
             pos += 1
             prev_score = row.score
 
