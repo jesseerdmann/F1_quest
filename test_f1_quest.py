@@ -8,18 +8,18 @@ from f1_quest.teams import Teams
 
 
 def test_tables():
-    table = Table('Test Table', 'Entry', 'Score', int, False)
-    table.add_entry(1, 'One')
-    table.add_entry(2, 'Two')
-    table.add_entry(3, 'Three')
-    ordered_list = table.get_ordered_entries()
+    table = Table('Test Table', 'Entry', 'Score', int, descending=False)
+    table.add_subject(1, 'One')
+    table.add_subject(2, 'Two')
+    table.add_subject(3, 'Three')
+    ordered_list = table.get_ordered_subjects()
     assert(ordered_list[0].score == 1)
 
-    three = table.get_position_of_entry('Three')
+    three = table.get_position_of_subject('Three')
     assert(three == 3)
 
-    two = table.get_entries_by_pos(2)
-    assert(two[0].entry == 'Two')
+    two = table.get_subjects_by_pos(2)
+    assert(two[0].subject == 'Two')
 
 
 def test_teams():
@@ -92,47 +92,47 @@ def test_first_race():
     assert(bahrain.safety_cars == 3)
 
     team_standings = teams.get_points_table()
-    pos_4 = team_standings.get_entries_by_pos(4, single_entry_only=True)
+    pos_4 = team_standings.get_subjects_by_pos(4, single_subject_only=True)
     assert(pos_4.score == 12)
-    assert(pos_4.entry.name == "AlphaTauri")
+    assert(pos_4.subject.name == "AlphaTauri")
 
     avg_points_standings = teams.get_average_point_change_table()
-    pos_1 = avg_points_standings.get_entries_by_pos(1, single_entry_only=True)
+    pos_1 = avg_points_standings.get_subjects_by_pos(1, single_subject_only=True)
     assert(pos_1.score == 9.235294117647058)
-    assert(pos_1.entry.name == "Red Bull Racing")
+    assert(pos_1.subject.name == "Red Bull Racing")
 
     driver_standings = drivers.get_points_table()
-    pos_10 = driver_standings.get_entries_by_pos(10, single_entry_only=True)
+    pos_10 = driver_standings.get_subjects_by_pos(10, single_subject_only=True)
     assert(pos_10.score == 1)
-    assert(pos_10.entry.name == "Giovinazzi, Antonio")
+    assert(pos_10.subject.name == "Giovinazzi, Antonio")
     
     lewis = drivers.get_driver_by_short_name("Hamilton, Lewis")[0]
-    lewis_pos = driver_standings.get_position_of_entry(lewis)
+    lewis_pos = driver_standings.get_position_of_subject(lewis)
     assert(lewis_pos == 1)
 
     driver_dis_standings = drivers.get_dis_points_table()
-    pos_1 = driver_dis_standings.get_entries_by_pos(1)
+    pos_1 = driver_dis_standings.get_subjects_by_pos(1)
     assert(pos_1[0].score == 0)
     assert(len(pos_1) == 20)
 
     driver_avg_laps = drivers.get_avg_laps_table()
-    pos_1 = driver_avg_laps.get_entries_by_pos(1)
+    pos_1 = driver_avg_laps.get_subjects_by_pos(1)
     assert(pos_1[0].score == 50.0)
     assert(len(pos_1) == 5)
 
     driver_podiums = drivers.get_podiums_table()
-    pos_1 = driver_podiums.get_entries_by_pos(1)
+    pos_1 = driver_podiums.get_subjects_by_pos(1)
     assert(pos_1[0].score == 1)
     assert(len(pos_1) == 3)
 
     driver_wins = drivers.get_winners_table()
-    pos_1 = driver_wins.get_entries_by_pos(1)
+    pos_1 = driver_wins.get_subjects_by_pos(1)
     assert(pos_1[0].score == 1)
-    assert(pos_1[0].entry.last_name == 'Hamilton')
+    assert(pos_1[0].subject.last_name == 'Hamilton')
     assert(len(pos_1) == 1)
 
     driver_qualy_win_pct = teams.get_teammate_qualy_table()
-    pos_1 = driver_qualy_win_pct.get_entries_by_pos(1)
+    pos_1 = driver_qualy_win_pct.get_subjects_by_pos(1)
     assert(pos_1[0].score == 1.0)
     assert(len(pos_1) == 10)
 
@@ -146,53 +146,53 @@ def test_seventh_race():
         datetime=after_seven_races_date)
 
     team_standings = teams.get_points_table()
-    pos_4 = team_standings.get_entries_by_pos(4, single_entry_only=True)
+    pos_4 = team_standings.get_subjects_by_pos(4, single_subject_only=True)
     assert(pos_4.score == 73)
-    assert(pos_4.entry.name == "Ferrari")
+    assert(pos_4.subject.name == "Ferrari")
 
     avg_points_standings = teams.get_average_point_change_table()
-    pos_1 = avg_points_standings.get_entries_by_pos(1, single_entry_only=True)
+    pos_1 = avg_points_standings.get_subjects_by_pos(1, single_subject_only=True)
     assert(pos_1.score == 7.521008403361343)
-    assert(pos_1.entry.name == "Red Bull Racing")
+    assert(pos_1.subject.name == "Red Bull Racing")
     
     driver_standings = drivers.get_points_table()
-    assert(driver_standings.get_entries_by_pos(10, 
-        single_entry_only=True).score == 25)
-    assert(driver_standings.get_entries_by_pos(10, 
-        single_entry_only=True).entry.name == "Stroll, Lance")
+    assert(driver_standings.get_subjects_by_pos(10, 
+        single_subject_only=True).score == 25)
+    assert(driver_standings.get_subjects_by_pos(10, 
+        single_subject_only=True).subject.name == "Stroll, Lance")
     
     lewis = drivers.get_driver_by_short_name("Hamilton, Lewis")[0]
-    lewis_pos = driver_standings.get_position_of_entry(lewis)
+    lewis_pos = driver_standings.get_position_of_subject(lewis)
     assert(lewis_pos == 1)
 
     driver_dis_standings = drivers.get_dis_points_table()
-    pos_1 = driver_dis_standings.get_entries_by_pos(1)
+    pos_1 = driver_dis_standings.get_subjects_by_pos(1)
     assert(pos_1[0].score == 2)
     assert(len(pos_1) == 2)
 
     driver_avg_laps = drivers.get_avg_laps_table()
-    pos_1 = driver_avg_laps.get_entries_by_pos(1)
+    pos_1 = driver_avg_laps.get_subjects_by_pos(1)
     assert(pos_1[0].score == 63.714285714285715)
     assert(len(pos_1) == 1)
-    assert(pos_1[0].entry.name == 'Raikkonen, Kimi')
+    assert(pos_1[0].subject.name == 'Raikkonen, Kimi')
 
     driver_podiums = drivers.get_podiums_table()
-    pos_1 = driver_podiums.get_entries_by_pos(1)
+    pos_1 = driver_podiums.get_subjects_by_pos(1)
     assert(pos_1[0].score == 7)
     assert(len(pos_1) == 1)
-    assert(pos_1[0].entry.name == 'Hamilton, Lewis')
+    assert(pos_1[0].subject.name == 'Hamilton, Lewis')
 
     driver_wins = drivers.get_winners_table()
-    pos_1 = driver_wins.get_entries_by_pos(1)
+    pos_1 = driver_wins.get_subjects_by_pos(1)
     assert(pos_1[0].score == 4)
-    assert(pos_1[0].entry.last_name == 'Hamilton')
+    assert(pos_1[0].subject.last_name == 'Hamilton')
     assert(len(pos_1) == 1)
 
     driver_qualy_win_pct = teams.get_teammate_qualy_table()
-    pos_1 = driver_qualy_win_pct.get_entries_by_pos(1)
+    pos_1 = driver_qualy_win_pct.get_subjects_by_pos(1)
     assert(pos_1[0].score == 1.0)
     assert(len(pos_1) == 1)
-    assert(pos_1[0].entry.name == 'Russell, George')
+    assert(pos_1[0].subject.name == 'Russell, George')
 
     
 def test_final_race():
@@ -204,54 +204,54 @@ def test_final_race():
         datetime=after_all_races_date)
 
     team_standings = teams.get_points_table()
-    pos_4 = team_standings.get_entries_by_pos(4, single_entry_only=True)
+    pos_4 = team_standings.get_subjects_by_pos(4, single_subject_only=True)
     assert(pos_4.score == 230)
-    assert(pos_4.entry.name == "McLaren")
+    assert(pos_4.subject.name == "McLaren")
 
     avg_points_standings = teams.get_average_point_change_table()
-    pos_1 = avg_points_standings.get_entries_by_pos(1, single_entry_only=True)
+    pos_1 = avg_points_standings.get_subjects_by_pos(1, single_subject_only=True)
     assert(pos_1.score == 7.843989769820972)
-    assert(pos_1.entry.name == "Red Bull Racing")
+    assert(pos_1.subject.name == "Red Bull Racing")
 
     driver_standings = drivers.get_points_table()
-    assert(driver_standings.get_entries_by_pos(10, 
-        single_entry_only=True).score == 89)
-    assert(driver_standings.get_entries_by_pos(10, 
-        single_entry_only=True).entry.name == "Norris, Lando")
+    assert(driver_standings.get_subjects_by_pos(10, 
+        single_subject_only=True).score == 89)
+    assert(driver_standings.get_subjects_by_pos(10, 
+        single_subject_only=True).subject.name == "Norris, Lando")
     
     lewis = drivers.get_driver_by_short_name("Hamilton, Lewis")[0]
-    lewis_pos = driver_standings.get_position_of_entry(lewis)
+    lewis_pos = driver_standings.get_position_of_subject(lewis)
     assert(lewis_pos == 1)
 
     driver_dis_standings = drivers.get_dis_points_table()
-    pos_1 = driver_dis_standings.get_entries_by_pos(1)
+    pos_1 = driver_dis_standings.get_subjects_by_pos(1)
     assert(pos_1[0].score == 6)
     assert(len(pos_1) == 1)
-    assert(pos_1[0].entry.name == "Mazepin, Nikita")
+    assert(pos_1[0].subject.name == "Mazepin, Nikita")
 
     driver_avg_laps = drivers.get_avg_laps_table()
-    pos_1 = driver_avg_laps.get_entries_by_pos(1)
+    pos_1 = driver_avg_laps.get_subjects_by_pos(1)
     assert(pos_1[0].score == 66.73913043478261)
     assert(len(pos_1) == 1)
-    assert(pos_1[0].entry.name == 'Raikkonen, Kimi')
+    assert(pos_1[0].subject.name == 'Raikkonen, Kimi')
 
     driver_podiums = drivers.get_podiums_table()
-    pos_1 = driver_podiums.get_entries_by_pos(1)
+    pos_1 = driver_podiums.get_subjects_by_pos(1)
     assert(pos_1[0].score == 21)
     assert(len(pos_1) == 1)
-    assert(pos_1[0].entry.name == 'Hamilton, Lewis')
+    assert(pos_1[0].subject.name == 'Hamilton, Lewis')
 
     driver_wins = drivers.get_winners_table()
-    pos_1 = driver_wins.get_entries_by_pos(1)
+    pos_1 = driver_wins.get_subjects_by_pos(1)
     assert(pos_1[0].score == 12)
-    assert(pos_1[0].entry.last_name == 'Hamilton')
+    assert(pos_1[0].subject.last_name == 'Hamilton')
     assert(len(pos_1) == 1)
 
     driver_qualy_win_pct = teams.get_teammate_qualy_table()
-    pos_1 = driver_qualy_win_pct.get_entries_by_pos(1)
+    pos_1 = driver_qualy_win_pct.get_subjects_by_pos(1)
     assert(pos_1[0].score == 0.9565217391304348)
     assert(len(pos_1) == 1)
-    assert(pos_1[0].entry.name == 'Russell, George')
+    assert(pos_1[0].subject.name == 'Russell, George')
 
 def test_answer_key():
     after_one_race_date = datetime.strptime("04/01/2021", "%m/%d/%Y")
@@ -269,21 +269,21 @@ def test_answer_key():
     assert(tie_breaker is None)
     
     driver_of_the_day, tie_breaker = ak.driver_of_the_day()
-    assert(driver_of_the_day['LeClerc, Charles'] == 25)
-    assert(driver_of_the_day['Gasly, Pierre'] == 18)
-    assert(driver_of_the_day['Alonso, Fernando'] == 18)
+    assert(driver_of_the_day['Charles LeClerc, Ferrari'] == 25)
+    assert(driver_of_the_day['Pierre Gasly, AlphaTauri'] == 18)
+    assert(driver_of_the_day['Fernando Alonso, Alpine'] == 18)
     assert(tie_breaker is None)
     
     driver_tenth, tie_breaker = ak.driver_tenth()
-    assert(driver_tenth['LeClerc, Charles'] == 12)
-    assert(driver_tenth['Russell, George'] == 18)
-    assert(driver_tenth['Alonso, Fernando'] == 18)
+    assert(driver_tenth['Charles LeClerc, Ferrari'] == 12)
+    assert(driver_tenth['George Russell, Williams'] == 18)
+    assert(driver_tenth['Fernando Alonso, Alpine'] == 18)
     assert(tie_breaker == 1)
 
     teammate_qualy, tie_breaker = ak.teammate_qualy()
-    assert(teammate_qualy['Alonso, Fernando'] == 25)
-    assert(teammate_qualy['LeClerc, Charles'] == 25)
-    assert(teammate_qualy['Russell, George'] == 25)
+    assert(teammate_qualy['Fernando Alonso, Alpine'] == 25)
+    assert(teammate_qualy['Charles LeClerc, Ferrari'] == 25)
+    assert(teammate_qualy['George Russell, Williams'] == 25)
     assert(tie_breaker is None)
 
     podium_winners = ak.podium_winners()
@@ -291,21 +291,21 @@ def test_answer_key():
     assert('Russell, George' not in podium_winners)
     
     dis_points, tie_breaker = ak.dis_points()
-    assert(dis_points['LeClerc, Charles'] == 25)
-    assert(dis_points['Gasly, Pierre'] == 25)
-    assert(dis_points['Alonso, Fernando'] == 25)
+    assert(dis_points['Charles LeClerc, Ferrari'] == 25)
+    assert(dis_points['Pierre Gasly, AlphaTauri'] == 25)
+    assert(dis_points['Fernando Alonso, Alpine'] == 25)
     assert(tie_breaker is None)
     
     avg_laps, tie_breaker = ak.avg_laps()
-    assert(avg_laps['LeClerc, Charles'] == 0)
-    assert(avg_laps['Gasly, Pierre'] == 0)
-    assert(avg_laps['Alonso, Fernando'] == 25)
+    assert(avg_laps['Charles LeClerc, Ferrari'] == 0)
+    assert(avg_laps['Pierre Gasly, AlphaTauri'] == 0)
+    assert(avg_laps['Fernando Alonso, Alpine'] == 25)
     assert(tie_breaker is None)
 
     six_after_six = ak.six_after_six()
-    pos_3 = six_after_six.get_entries_by_pos(3, single_entry_only=True)
+    pos_3 = six_after_six.get_subjects_by_pos(3, single_subject_only=True)
     assert(pos_3.score == 16)
-    assert(pos_3.entry.name == "Bottas, Veltteri")
+    assert(pos_3.subject.name == "Bottas, Veltteri")
 
     unbroken_first, unbroken_second = ak.uninterrupted_leader()
     assert(unbroken_first['06/06/2021 07:00 AM: Azerbaijan @ Baku City Circuit'] == 8)
@@ -328,9 +328,9 @@ def test_answer_key():
     assert('10/24/2021 02:00 PM: United States @ Circuit of The Americas' not in mazepin_points)
 
     bottom_seven = ak.bottom_seven()
-    assert(bottom_seven['Gasly, Pierre'] == 12)
-    assert(bottom_seven['Latifi, Nicholas'] == 0)
-    assert('Hamilton, Lewis' not in bottom_seven)
+    assert(bottom_seven['Pierre Gasly, AlphaTauri'] == 12)
+    assert(bottom_seven['Nicholas Latifi, Williams'] == 0)
+    assert('Lewis Hamilton, Mercedes' not in bottom_seven)
 
     safety_cars, tie_breaker = ak.safety_cars()
     assert(tie_breaker['03/28/2021 10:00 AM: Bahrain @ Bahrain International Circuit'] == 3)
