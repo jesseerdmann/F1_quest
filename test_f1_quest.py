@@ -38,8 +38,7 @@ def test_drivers():
     assert(alonso[0].first_name == 'Fernando')
 
     lewis = drivers.get_driver_by_short_name("Hamilton, Lewis")
-    assert(len(lewis) == 1)
-    assert(lewis[0].first_name == 'Lewis')
+    assert(lewis.first_name == 'Lewis')
 
     williams = drivers.get_driver_by_name(team_name="Williams")
     assert(len(williams) >= 2)
@@ -106,7 +105,7 @@ def test_first_race():
     assert(pos_10.score == 1)
     assert(pos_10.subject.name == "Giovinazzi, Antonio")
     
-    lewis = drivers.get_driver_by_short_name("Hamilton, Lewis")[0]
+    lewis = drivers.get_driver_by_short_name("Hamilton, Lewis")
     lewis_pos = driver_standings.get_position_of_subject(lewis)
     assert(lewis_pos == 1)
 
@@ -161,7 +160,7 @@ def test_seventh_race():
     assert(driver_standings.get_subjects_by_pos(10, 
         single_subject_only=True).subject.name == "Stroll, Lance")
     
-    lewis = drivers.get_driver_by_short_name("Hamilton, Lewis")[0]
+    lewis = drivers.get_driver_by_short_name("Hamilton, Lewis")
     lewis_pos = driver_standings.get_position_of_subject(lewis)
     assert(lewis_pos == 1)
 
@@ -219,7 +218,7 @@ def test_final_race():
     assert(driver_standings.get_subjects_by_pos(10, 
         single_subject_only=True).subject.name == "Norris, Lando")
     
-    lewis = drivers.get_driver_by_short_name("Hamilton, Lewis")[0]
+    lewis = drivers.get_driver_by_short_name("Hamilton, Lewis")
     lewis_pos = driver_standings.get_position_of_subject(lewis)
     assert(lewis_pos == 1)
 
@@ -287,8 +286,8 @@ def test_answer_key():
     assert(tie_breaker is None)
 
     podium_winners = ak.podium_winners()
-    assert('Bottas, Veltteri' in podium_winners)
-    assert('Russell, George' not in podium_winners)
+    assert('Veltteri Bottas, Mercedes' in podium_winners)
+    assert('George Russell, Williams' not in podium_winners)
     
     dis_points, tie_breaker = ak.dis_points()
     assert(dis_points['Charles LeClerc, Ferrari'] == 25)

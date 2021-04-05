@@ -218,8 +218,14 @@ class Table():
         
         for entry in self.entries.list_entries():
             for subject in self.subjects:
-                if entry.__dict__[self.entry_var] == str(subject.subject):
+                entry_response = entry.__dict__[self.entry_var]
+                if type(entry_response) == str and entry_response == str(subject.subject):
                     subject.add_entry(entry)
                     break
+                elif type(entry_response) == list:
+                    for response_item in entry_response:
+                        if response_item == str(subject.subject):
+                            subject.add_entry(entry)
+                            break
 
             

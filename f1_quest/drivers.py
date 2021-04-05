@@ -185,11 +185,26 @@ class Drivers:
         Returns:
         A list of all driver objects with a matching short name
         """
-        drivers = []
         for driver in self.driver_list:
             if driver.name == short_name:
-                drivers.append(driver)
-        return drivers
+                return driver
+        return None
+
+    
+    def get_driver_by_entry_rep(self, entry_rep):
+        """
+        Find drivers matching the provided entry rep
+
+        Keyword arguments:
+        entry_rep -- the rep to be searched for
+
+        Returns:
+        The driver objects with a matching entry rep
+        """
+        for driver in self.driver_list:
+            if driver.entry_rep == entry_rep:
+                return driver
+        return None
 
     
     def get_points_table(self):

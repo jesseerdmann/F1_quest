@@ -423,7 +423,47 @@ class AnswerKey():
         A list of driver names that have appeared on the podium
         """
         # TODO: map entries
-        return [driver.name for driver in self.drivers.list_all_drivers() if driver.podiums > 0]
+        podium_winners = [driver.entry_rep for driver in self.drivers.list_all_drivers() if driver.podiums > 0]
+        podium_winners_table = Table('Podium Winners', 'Driver', 'Podium Finishes', int)
+        for driver in self.drivers.list_all_drivers():
+            podium_winners_table.add_subject(driver.podiums, driver)
+        score_map = {}
+        for i in range(1, len(podium_winners)+1):
+            score_map[i] = 5
+        for i in range(len(podium_winners)+1, len(self.drivers.list_all_drivers())+1):
+            score_map[i] = -3
+        podium_winners_table.add_entries(self.entries, 'driver_podium_response')
+        answer_key, tie_breaker = self.map_table_to_score(podium_winners_table, score_map)
+        print(podium_winners_table)
+
+        score_table = Table('Scoring', 'Entry', 'Points', int, score_only=True)
+        for entry in self.entries.list_entries():
+            entry_points = 0
+            drivers_counted = 0
+            for driver in entry.driver_podium_response:
+                # Add five for each correct pick
+                if driver in podium_winners:
+                    entry_points += 5
+                # Subtract 3 for each incorrect pick
+                else:
+                    entry_points -= 3
+                drivers_counted += 1
+            for driver in podium_winners:
+                # Subtract 3 for each missed podium winner
+                if driver not in entry.driver_podium_response:
+                    driver_obj = self.drivers.get_driver_by_entry_rep(driver)
+                    if driver_obj.started_season:
+                        entry_points -= 3
+                        drivers_counted += 1
+            
+            # All remaining drivers that were not in the pick or the list of 
+            # actual podium finishers was correctly guessed to not get a 
+            # podium
+            entry_points += (20 - drivers_counted)
+            score_table.add_subject(entry_points, entry)
+        print(score_table)
+            
+        return podium_winners
 
 
     def dis_points(self):
@@ -555,11 +595,8 @@ class AnswerKey():
         # TODO: Map entries
         race_dict = {}
         driver = self.drivers.get_driver_by_short_name(driver_short_name)
-        if len(driver) > 1:
-            raise Exception(f"Too many driver matches found for {driver_short_name}")
-        elif len(driver) == 0:
+        if driver is None:
             raise Exception(f"No driver matches found for {driver_short_name}")
-        driver = driver[0]
         for race, result in driver.races.items():
             race_dict[race] = result.points * mult
         return race_dict
@@ -707,7 +744,7 @@ class AnswerKey():
         # Race has not occurred yet
         if previous_race is None or previous_race.post_race_driver_points is None:
             return (None, None)
-        wdc_pos = previous_race.post_race_driver_points.get_position_of_entry(driver[0])
+        wdc_pos = previous_race.post_race_driver_points.get_position_of_entry(driver)
         return (first_retirement, wdc_pos)
 
 
@@ -824,9 +861,9 @@ class AnswerKey():
         """
         # TODO: Map Entries
         lando = self.drivers.get_driver_by_short_name('Norris, Lando')
-        if len(lando) == 0 or len(lando) > 1:
-            raise Exception('Too many or to few Landos found')
-        if lando[0].podiums > 0:
+        if lando is None:
+            raise Exception('Lando not found')
+        if lando.podiums > 0:
             return 'TRUE'
         return 'FALSE'
 
@@ -903,11 +940,10 @@ class AnswerKey():
         """
         # TODO: Map Entries
         russell = self.drivers.get_driver_by_short_name("Russell, George")
-        russell_points = russell[0].points
-        if russell_points == 0:
+        if russell.points == 0:
             return 'FALSE'
         for driver in self.drivers.driver_list:
-            if driver.team_name != 'Williams' and russell_points > \
+            if driver.team_name != 'Williams' and russell.points > \
                 driver.points:
                 return 'TRUE'
         return 'FALSE'
