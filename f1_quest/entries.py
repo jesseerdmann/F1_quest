@@ -15,18 +15,30 @@ class Entry():
         self.driver_tenth_response = row[7]
         self.driver_tenth_tiebreaker = row[8]
         self.driver_qualy_dominance = row[9]
-        self.driver_podium_response = row[10]
+
+        # Reconstitute drivers after splitting on the comma
+        driver_split = row[10].split(', ')
+        self.driver_podium_response = []
+        for i in range(0, len(driver_split), 2):
+            self.driver_podium_response.append(', '.join([driver_split[i], driver_split[i+1]]))
+        
         self.driver_penalty_points = row[11]
         self.drvier_lowest_laps_avg = row[12]
         self.driver_six_after_six = [row[13], row[14], row[15], row[16], 
             row[17], row[18]]
         self.driver_unbroken_lead_response = row[19]
         self.driver_unbroken_lead_tiebreaker = row[20]
-        self.driver_race_retirements_response = row[21]
-        self.driver_gasly_ponts_response = row[22]
-        self.driver_stroll_points_response = row[23]
-        self.driver_mazepin_poines_response = row[24]
-        self.driver_pick_two_response = row[25]
+        self.driver_race_retirements_response = row[21].split(', ')
+        self.driver_gasly_points_response = row[22].split(', ')
+        self.driver_stroll_points_response = row[23].split(', ')
+        self.driver_mazepin_poines_response = row[24].split(', ')
+
+        # Reconstitute drivers after splitting on the comma
+        driver_split = row[25].split(', ')
+        self.driver_pick_two_response = []
+        for i in range(0, len(driver_split), 2):
+            self.driver_pick_two_response.append(', '.join([driver_split[i], driver_split[i+1]]))
+
         self.race_safety_cars_response = row[26]
         self.race_safety_cars_tiebreaker = row[27]
         self.race_fewest_on_lead_lap_response = row[28]

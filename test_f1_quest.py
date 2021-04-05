@@ -392,3 +392,12 @@ def test_entries():
     assert('Jesse' in entries.entries)
     jesse = entries.entries['Jesse']
     assert(jesse.bingo_russell_response == 'TRUE')
+    assert('Max Verstappen, Red Bull Racing' in jesse.driver_podium_response)
+    assert('Lando Norris, McLaren' in jesse.driver_podium_response)
+    assert('Fernando Alonso, Alpine' in jesse.driver_podium_response)
+    assert('07/04/2021 08:00 AM: Austria @ Red Bull Ring' in jesse.driver_race_retirements_response)
+    assert('08/01/2021 08:00 AM: Hungary @ Hungaroring' in jesse.driver_race_retirements_response)
+    assert('09/26/2021 07:00 AM: Russia @ Sochi Autodrom' in jesse.driver_race_retirements_response)
+    assert('08/29/2021 09:00 AM: Belgium @ Circuit de Spa-Francorchamps' in jesse.driver_gasly_points_response)
+    assert('Fernando Alonso, Alpine' in jesse.driver_pick_two_response)
+    assert('Charles LeClerc, Ferrari' in jesse.driver_pick_two_response)
