@@ -12,6 +12,28 @@ from f1_quest.teams import Teams
 F1_POINTS = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1}
 
 
+class QuestionSummary():
+    def __init__(self, question, desc=None, answer=None, score=None):
+        self.question = question
+        self.desc = desc
+        self.answer = answer
+        self.score = score
+
+    
+    def __str__(self):
+        strings = [self.question]
+        if self.desc is not None:
+            strings.append(self.desc)
+        if self.answer is not None:
+            strings.append('')
+            strings.append(str(self.answer))
+        if self.score is not None:
+            strings.append('')
+            strings.append(str(self.score))
+        return '\n'.join(strings)
+
+
+
 class AnswerKey():
     def __init__(self, data_dir='data', datetime=datetime.now(), 
         file_name='scoring_single_answer.csv'):
@@ -22,6 +44,7 @@ class AnswerKey():
         self.races.read_results(data_dir=data_dir, drivers=self.drivers, 
             teams=self.teams, datetime=datetime)
         self.datetime = datetime
+        self.questions = []
 
         # Read scoring_single_answer.csv
         self.single_answer_dict = {}
@@ -42,6 +65,62 @@ class AnswerKey():
                 else:
                     self.single_answer_dict[row[0]] = row[1]
 
+        answer, score = self.team_fourth()
+        self.questions.append(QuestionSummary(
+            'Q1: Which team will finish fourth in the championship?',
+            desc='Tie Breaker: How many points will the 4th place team get?',
+            answer=answer, score=score))
+
+        answer, score = self.avg_points_increase()
+        self.questions.append(QuestionSummary(
+            'Q2: Which team will have the highest points per race increase over 2020?',
+            answer=answer, score=score))
+
+        self.questions.append(QuestionSummary(
+            'Q3: Which team will win the DHL Fastest Pit Stop?',
+            desc='No data available and everyone voted for Red Bull, so good work everyone!'))
+
+        answer, score = self.driver_of_the_day()
+        self.questions.append(QuestionSummary(
+            'Q4: Who will win the most official "Driver of the Day" awards?',
+            answer=answer, score=score))
+
+        answer, score = self.driver_tenth()
+        self.questions.append(QuestionSummary(
+            'Q5: Which driver will finish 10th in the Championship?',
+            desc='Tie Breaker: How many points did that driver get?',
+            answer=answer, score=score))
+
+        answer, score = self.teammate_qualy()
+        self.questions.append(QuestionSummary(
+            'Q6: Which driver will be most dominant over their teammate in qualifying?',
+            answer=answer, score=score))
+
+        answer, score = self.podium_winners()
+        self.questions.append(QuestionSummary(
+            'Q7: Check every driver that will have a podium finish during the season.',
+            desc='+5 for every correct, -3 for every incorrect guess, -3 for every missed podium',
+            answer=answer, score=score))
+        
+        answer, score = self.dis_points()
+        self.questions.append(QuestionSummary(
+            'Q8: Which driver will have the most penalty points?',
+            answer=answer, score=score))
+
+        answer, score = self.avg_laps()
+        self.questions.append(QuestionSummary(
+            'Q9: Which driver will have the lowest average race laps per race started?',
+            answer=answer, score=score))
+
+        answer, score = self.six_after_six()
+        self.questions.append(QuestionSummary(
+            'Q10: Who will be the top six drivers after the first six races?',
+            desc='\n'.join(['Right Diver, right place (+5)',
+                'Right Driver, one place out (+3)', 
+                'Right driver, two places out (+2)',
+                'Right driver, 3 or more places out (+1)']),
+            answer=answer, score=score))
+
 
     def __str__(self):
         """
@@ -49,68 +128,9 @@ class AnswerKey():
          answers as a string to be printed for aiding manual scoring of entries
         """
         strings = ['F1 Questionaire Answer Key', '']
-        strings.append('Q1: Which team will finish fourth in the championship?')
-        scoring, tie_breaker = self.team_fourth()
-        strings.append("{:30s} {:5s}".format("Answer", "Value"))
-        for team, value in scoring.items():
-            strings.append("{:30s} {:5d}".format(team, value))
-        strings.append('')
-        strings.append('Tie Breaker: How many points will the fourth place team collect?')
-        strings.append(str(tie_breaker))
-        strings.append('')
-        strings.append('Q2: Which team will have the highest points per race increase over 2020?')
-        scoring, tie_breaker = self.avg_points_increase()
-        strings.append("{:30s} {:5s}".format("Answer", "Value"))
-        for team, value in scoring.items():
-            strings.append("{:30s} {:5d}".format(team, value))
-        strings.append('')
-        strings.append('Q3: Which team will win the DHL Fastest Pit Stop?')
-        strings.append('Everyone gets 25... good job!')
-        strings.append('')
-        strings.append('Q4: Who will win the most official "Driver of the Day" awards?')
-        scoring, tie_breaker = self.driver_of_the_day()
-        strings.append("{:30s} {:5s}".format("Answer", "Value"))
-        for driver, value in scoring.items():
-            strings.append("{:30s} {:5d}".format(driver, value))
-        strings.append('')
-        strings.append('Q5: Which driver will finish 10th in the Championship?')
-        scoring, tie_breaker = self.driver_tenth()
-        strings.append("{:30s} {:5s}".format("Answer", "Value"))
-        for driver, value in scoring.items():
-            strings.append("{:30s} {:5d}".format(driver, value))
-        strings.append('')
-        strings.append('Tie Breaker: How many points will that driver get?')
-        strings.append(str(tie_breaker))
-        strings.append('')
-        strings.append('Q6: Which driver will be most dominant over their teammate in qualifying?')
-        scoring, tie_breaker = self.teammate_qualy()
-        strings.append("{:30s} {:5s}".format("Answer", "Value"))
-        for driver, value in scoring.items():
-            strings.append("{:30s} {:5d}".format(driver, value))
-        strings.append('')
-        strings.append('Q7: Check every driver that will have a podium finish during the season.')
-        driver_podiums = self.podium_winners()
-        strings.append('Drivers that won at least one podium:')
-        for driver in driver_podiums:
-            strings.append(driver)
-        strings.append('')
-        strings.append('Q8: Which driver will have the most penalty points?')
-        scoring, tie_breaker = self.dis_points()
-        strings.append("{:30s} {:5s}".format("Answer", "Value"))
-        for driver, value in scoring.items():
-            strings.append("{:30s} {:5d}".format(driver, value))
-        strings.append('')
-        strings.append('Q9: Which driver will have the lowest average race laps per race started?')
-        scoring, tie_breaker = self.avg_laps()
-        strings.append("{:30s} {:5s}".format("Answer", "Value"))
-        for driver, value in scoring.items():
-            strings.append("{:30s} {:5d}".format(driver, value))
-        strings.append('')
-        strings.append('Q10: Who will be the top six drivers after the first six races?')
-        six_after_six_table = self.six_after_six()
-        strings.append("Points table after six races:")
-        strings.append(str(six_after_six_table))
-        strings.append('')
+        for question in self.questions:
+            strings.append(str(question))
+            strings.append('')
         strings.append('Q11: At which race will the champion move to the top of the standings and never drop out of the top spot?')
         scoring, tie_breaker = self.uninterrupted_leader()
         strings.append("{:65s} {:5s}".format("Answer", "Value"))
@@ -273,7 +293,7 @@ class AnswerKey():
         A Table with the entries as subjects and scored values as the score
         """
         entry_table = Table(table_name, "Entry", "Points", int, 
-            score_only=True)
+            show_values=False, show_entries=False)
 
         # Group entries by score in the score map
         score_dict = {}
@@ -324,15 +344,13 @@ class AnswerKey():
         answer_key, tie_breaker = self.map_table_to_score(team_points, 
                                                           score_map, 
                                                           tie_breaker_pos=4)
-        print(team_points)
 
-        entry_table = self.tie_breaker_scoring("Fourth Place Scoring", 
+        entry_table = self.tie_breaker_scoring("Final Scores", 
                                                score_map, team_points,
                                                tie_breaker, 
                                                'team_fourth_tiebreaker')
-        print(entry_table)
 
-        return (answer_key, tie_breaker)
+        return (team_points, entry_table)
 
 
     def avg_points_increase(self):
@@ -348,8 +366,7 @@ class AnswerKey():
             9: 2, 10: 1}
         avg_points_increase_table.add_entries(self.entries, 'team_points_avg_response')
         answer_key, tie_breaker = self.map_table_to_score(avg_points_increase_table, score_map)
-        print(avg_points_increase_table)
-        return (answer_key, tie_breaker)
+        return (avg_points_increase_table, None)
 
 
     def driver_of_the_day(self):
@@ -366,8 +383,7 @@ class AnswerKey():
             18: 0, 19: 0, 20: 0}
         driver_of_the_day_table.add_entries(self.entries, 'driver_of_the_day_response')
         answer_key, tie_breaker = self.map_table_to_score(driver_of_the_day_table, score_map)
-        print(driver_of_the_day_table)
-        return(answer_key, tie_breaker)
+        return(driver_of_the_day_table, None)
 
 
     def driver_tenth(self):
@@ -386,14 +402,12 @@ class AnswerKey():
         driver_points_table.add_entries(self.entries, 'driver_tenth_response', 'driver_tenth_tiebreaker')
         answer_key, tie_breaker = self.map_table_to_score(driver_points_table, score_map, 
             tie_breaker_pos=10)
-        print(driver_points_table)
 
-        entry_table = self.tie_breaker_scoring("Tenth Place Scoring", 
+        entry_table = self.tie_breaker_scoring("Final Scores", 
                                                score_map, driver_points_table,
                                                tie_breaker, 
                                                'driver_tenth_tiebreaker')
-        print(entry_table)
-        return (answer_key, tie_breaker)
+        return (driver_points_table, entry_table)
 
 
     def teammate_qualy(self):
@@ -410,8 +424,7 @@ class AnswerKey():
             18: 0, 19: 0, 20: 0}
         teammate_qualy_table.add_entries(self.entries, 'driver_qualy_dominance')
         answer_key, tie_breaker =  self.map_table_to_score(teammate_qualy_table, score_map)
-        print(teammate_qualy_table)
-        return (answer_key, tie_breaker)
+        return (teammate_qualy_table, None)
 
 
     def podium_winners(self):
@@ -422,7 +435,6 @@ class AnswerKey():
         Returns:
         A list of driver names that have appeared on the podium
         """
-        # TODO: map entries
         podium_winners = [driver.entry_rep for driver in self.drivers.list_all_drivers() if driver.podiums > 0]
         podium_winners_table = Table('Podium Winners', 'Driver', 'Podium Finishes', int)
         for driver in self.drivers.list_all_drivers():
@@ -434,9 +446,9 @@ class AnswerKey():
             score_map[i] = -3
         podium_winners_table.add_entries(self.entries, 'driver_podium_response')
         answer_key, tie_breaker = self.map_table_to_score(podium_winners_table, score_map)
-        print(podium_winners_table)
 
-        score_table = Table('Scoring', 'Entry', 'Points', int, score_only=True)
+        score_table = Table('Final Scores', 'Entry', 'Points', int, 
+            show_values=False, show_entries=False)
         for entry in self.entries.list_entries():
             entry_points = 0
             drivers_counted = 0
@@ -447,23 +459,16 @@ class AnswerKey():
                 # Subtract 3 for each incorrect pick
                 else:
                     entry_points -= 3
-                drivers_counted += 1
             for driver in podium_winners:
                 # Subtract 3 for each missed podium winner
                 if driver not in entry.driver_podium_response:
                     driver_obj = self.drivers.get_driver_by_entry_rep(driver)
                     if driver_obj.started_season:
                         entry_points -= 3
-                        drivers_counted += 1
             
-            # All remaining drivers that were not in the pick or the list of 
-            # actual podium finishers was correctly guessed to not get a 
-            # podium
-            entry_points += (20 - drivers_counted)
             score_table.add_subject(entry_points, entry)
-        print(score_table)
             
-        return podium_winners
+        return (podium_winners_table, score_table)
 
 
     def dis_points(self):
@@ -479,8 +484,7 @@ class AnswerKey():
             18: 0, 19: 0, 20: 0}
         dis_points_table.add_entries(self.entries, 'driver_penalty_points')
         answer_key, tie_breaker = self.map_table_to_score(dis_points_table, score_map)
-        print(dis_points_table)
-        return (answer_key, tie_breaker)
+        return (dis_points_table, None)
         
 
     def avg_laps(self):
@@ -497,8 +501,7 @@ class AnswerKey():
             18: 0, 19: 0, 20: 0}
         average_laps_table.add_entries(self.entries, 'drvier_lowest_laps_avg')
         answer_key, tie_breaker = self.map_table_to_score(average_laps_table, score_map)
-        print(average_laps_table)
-        return (answer_key, tie_breaker)
+        return (average_laps_table, None)
 
 
     def six_after_six(self):
@@ -509,11 +512,48 @@ class AnswerKey():
         Returns:
         The table representing the points standings after the first six races
         """
-        # TODO: Map entries
         completed_races = self.races.list_races_before(self.datetime)
+        points_table = completed_races[-1].post_race_driver_points
         if len(completed_races) >= 6:
-            return completed_races[5].post_race_driver_points
-        return completed_races[-1].post_race_driver_points
+            points_table = completed_races[5].post_race_driver_points
+        points_table.show_values = False
+        points_table.show_entries = False
+
+        # Lists of drivers by position
+        results = [points_table.get_subjects_by_pos(1),
+                   points_table.get_subjects_by_pos(2),
+                   points_table.get_subjects_by_pos(3),
+                   points_table.get_subjects_by_pos(4),
+                   points_table.get_subjects_by_pos(5),
+                   points_table.get_subjects_by_pos(6)]
+        # Score dictionaries by position
+        scores = [{1:5, 2:3, 3:2, 4:1, 5:1, 6:1},
+                  {1:3, 2:5, 3:3, 4:2, 5:1, 6:1},
+                  {1:2, 2:3, 3:5, 4:3, 5:2, 6:1},
+                  {1:1, 2:2, 3:3, 4:5, 5:3, 6:2},
+                  {1:1, 2:1, 3:2, 4:3, 5:5, 6:3},
+                  {1:1, 2:1, 3:1, 4:2, 5:3, 6:5}]
+        # Build the map that will allow lookup of score by predicted driver and position
+        drivers_placed = []
+        driver_values = {}
+        for driver_list, scores in zip(results, scores):
+            for driver in driver_list:
+                # In case of ties
+                if driver.subject.entry_rep in drivers_placed:
+                    continue
+                drivers_placed.append(driver.subject.entry_rep)
+                driver_values[driver.subject.entry_rep] = scores
+
+        score_table = Table("Final Scores", "Entry", "Points", int, 
+            show_values=False, entry_label="Picks")
+        for entry in self.entries.list_entries():
+            entry_score = 0
+            for pos in range(6):
+                if entry.driver_six_after_six[pos] in driver_values:
+                    entry_score += driver_values[entry.driver_six_after_six[pos]][pos+1]
+            entry_row = score_table.add_subject(entry_score, entry)
+            entry_row.matching_entries = entry.driver_six_after_six
+        return (points_table, score_table)
 
 
     def uninterrupted_leader(self):
