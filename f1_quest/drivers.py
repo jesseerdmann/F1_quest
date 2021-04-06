@@ -241,7 +241,7 @@ class Drivers:
         A table object with drivers and average laps
         """
         table = Table('Driver Average Laps', 'Driver', 'Average Laps', float, 
-            descending=False)
+            sort='ascending')
         for driver in self.driver_list:
             table.add_subject(driver.laps/len(driver.races), driver)
         return table

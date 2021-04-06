@@ -121,27 +121,23 @@ class AnswerKey():
                 'Right driver, 3 or more places out (+1)']),
             answer=answer, score=score))
 
+        answer, score = self.uninterrupted_leader()
+        self.questions.append(QuestionSummary(
+            'Q11: At which race will the champion move to the top of the standings and never drop out of the top spot?',
+            desc='At which race does the #2 driver take an unbroken position in the championship?',
+            answer=answer, score=score))
+
 
     def __str__(self):
         """
         This aggressively long method pulls together all of the questions and 
          answers as a string to be printed for aiding manual scoring of entries
         """
-        strings = ['F1 Questionaire Answer Key', '']
+        strings = ['F1 Questionaire Answer Key', '', 
+            'This is a snapshot of where things stand if the season were to end today. Expect changes each week!']
         for question in self.questions:
             strings.append(str(question))
             strings.append('')
-        strings.append('Q11: At which race will the champion move to the top of the standings and never drop out of the top spot?')
-        scoring, tie_breaker = self.uninterrupted_leader()
-        strings.append("{:65s} {:5s}".format("Answer", "Value"))
-        for race, value in scoring.items():
-            strings.append("{:65s} {:5d}".format(race, value))
-        strings.append('')
-        strings.append('Tie Breaker: Same question but for second place')
-        strings.append("{:65s} {:5s}".format("Answer", "Value"))
-        for race, value in tie_breaker.items():
-            strings.append("{:65s} {:5d}".format(race, value))
-        strings.append('')
         strings.append('Q12: Pick three races, each retirement from the chosen races will cost you -5 points.')
         retirements = self.retirements()
         strings.append("{:65s} {:5s}".format("Answer", "Value"))
@@ -566,7 +562,6 @@ class AnswerKey():
         A set with the race at which the current leader became the leader and
          the race at which the second place driver became second place
         """
-        # TODO: Map entries
         completed_races = self.races.list_races_before(self.datetime)
         places_dict = {
             1: {
@@ -592,18 +587,50 @@ class AnswerKey():
         Once the race is determined, build a dictionary of race to points
          such that one away gets 18 points, two away gets 15, etc 
         """
-        points_list = [18, 15, 12, 10, 8, 6, 4, 2, 1]
+        #points_list = [18, 15, 12, 10, 8, 6, 4, 2, 1]
         for pos, pos_dict in places_dict.items():
-            pos_dict['values'] = {str(pos_dict['race']): 25}
+            pos_dict['values'] = {str(pos_dict['race']): 0}
             before = self.races.list_races_before(pos_dict['race'].datetime)
             after = self.races.list_races_after(pos_dict['race'].datetime)
-            before_count = min(len(before), len(points_list))
-            after_count = min(len(after), len(points_list))
-            for race, points in zip(list(reversed(before))[0:before_count], points_list[0:before_count]):
+            before_count = len(before) #min(len(before), len(points_list))
+            after_count = len(after) #min(len(after), len(points_list))
+            for race, points in zip(list(reversed(before))[0:before_count+1], 
+                range(1, before_count+1)): #points_list[0:before_count]):
                 pos_dict['values'][str(race)] = points
-            for race, points in zip(after[0:after_count], points_list[0:after_count]):
+            for race, points in zip(after[0:after_count+1], 
+                range(1, after_count+1)): #points_list[0:after_count]):
                 pos_dict['values'][str(race)] = points
-        return (places_dict[1]['values'], places_dict[2]['values'])
+
+        table = Table('Uninterupted Leader', 'Race', 'Off by number', int, 
+            show_values=False, sort=None)
+        for race in self.races.list_races():
+            if str(race) in pos_dict['values']:
+                table.add_subject(pos_dict['values'][str(race)], race)
+            else:
+                table.add_subject(0, race)
+        table.add_entries(self.entries, 'driver_unbroken_lead_response', 
+            'driver_unbroken_lead_tiebreaker')
+
+        # Build a dictionary of entries by distance from leader and second
+        sorting_dict = {}
+        for entry in self.entries.list_entries():
+            off_by = pos_dict['values'][entry.driver_unbroken_lead_response]
+            tie_breaker = pos_dict['values'][entry.driver_unbroken_lead_tiebreaker]
+            if off_by not in sorting_dict:
+                sorting_dict[off_by] = {}
+            if tie_breaker not in sorting_dict[off_by]:
+                sorting_dict[off_by][tie_breaker] = [entry]
+
+        # Assign scores based on distance from answer for leader and second
+        scores_assigned = 1
+        scoring = Table('Final Scores', 'Entry', 'Points', int, 
+            show_values=False, show_entries='False')
+        for off_by in sorted(sorting_dict.keys()):
+            for tie_breaker in sorted(sorting_dict[off_by].keys()):
+                for entry in sorting_dict[off_by][tie_breaker]:
+                    scoring.add_subject(F1_POINTS[scores_assigned], entry)
+                scores_assigned += len(sorting_dict[off_by][tie_breaker])
+        return (table, scoring)
 
 
     def retirements(self):

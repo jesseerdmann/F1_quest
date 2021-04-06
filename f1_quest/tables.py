@@ -33,7 +33,7 @@ class TableRow():
 
 class Table():
     def __init__(self, name, subject_label, score_label, score_type, 
-        show_values=True, show_entries=True, entry_label="Entries", descending=True):
+        show_values=True, show_entries=True, entry_label="Entries", sort='descending'):
         """
         Initialize the table.
 
@@ -44,7 +44,7 @@ class Table():
         score_type -- the Python type of the score, e.g. int or float
         show_values -- if True, print values
         show_entries -- if True, print entries
-        descending -- a bool to determine score order, ascending or descening
+        sort -- sort scores in ascending or descending order, or None to not sort
         """
         self.name = name
         self.subjects = []
@@ -56,7 +56,7 @@ class Table():
         self.tie_breaker_var = None
         self.show_values = show_values
         self.show_entries = show_entries
-        self.descending = descending
+        self.sort = sort
         self.entry_label = entry_label
         self.max_row_length = len(subject_label)
         self.max_score_length = len(score_label)
@@ -143,9 +143,11 @@ class Table():
         Returns:
         A list of TableEntries
         """
-        order = sorted(self.subjects)
-        if self.descending:
-            order = reversed(order)
+        order = self.subjects
+        if self.sort is not None:
+            order = sorted(self.subjects)
+            if self.sort == 'descending':
+                order = reversed(order)
         return list(order)
 
 

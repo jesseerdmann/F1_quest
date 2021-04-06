@@ -8,7 +8,7 @@ from f1_quest.teams import Teams
 
 
 def test_tables():
-    table = Table('Test Table', 'Entry', 'Score', int, descending=False)
+    table = Table('Test Table', 'Entry', 'Score', int, sort='ascending')
     table.add_subject(1, 'One')
     table.add_subject(2, 'Two')
     table.add_subject(3, 'Three')
