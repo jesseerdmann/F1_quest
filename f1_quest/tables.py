@@ -79,6 +79,8 @@ class Table():
         score_type_str = 'd'
         if self.score_type == float:
             score_type_str = 'f'
+        elif self.score_type == str:
+            score_type_str = 's'
         value_string = ''
         if self.show_values and self.tie_breaker_var is None:
             value_string = ' {:5d}'

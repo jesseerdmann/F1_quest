@@ -127,6 +127,11 @@ class AnswerKey():
             desc='At which race does the #2 driver take an unbroken position in the championship?',
             answer=answer, score=score))
 
+        answer, score = self.retirements()
+        self.questions.append(QuestionSummary(
+            'Q12: Pick three races, each retirement from the chosen races will cost you -5 points.',
+            answer=answer, score=score))
+
 
     def __str__(self):
         """
@@ -138,12 +143,6 @@ class AnswerKey():
         for question in self.questions:
             strings.append(str(question))
             strings.append('')
-        strings.append('Q12: Pick three races, each retirement from the chosen races will cost you -5 points.')
-        retirements = self.retirements()
-        strings.append("{:65s} {:5s}".format("Answer", "Value"))
-        for race, value in retirements.items():
-            strings.append("{:65s} {:5d}".format(race, value))
-        strings.append('')
         strings.append('Q13: Pick two races, get the points scored by Pierre Gasly for those races.')
         gasly_points = self.gasly_points()
         strings.append("{:65s} {:5s}".format("Answer", "Value"))
@@ -584,8 +583,8 @@ class AnswerKey():
                     pos_dict['race'] = race
 
         """
-        Once the race is determined, build a dictionary of race to points
-         such that one away gets 18 points, two away gets 15, etc 
+        Once the race is determined, build a dictionary of race to distance 
+        from correct answer for each position
         """
         #points_list = [18, 15, 12, 10, 8, 6, 4, 2, 1]
         for pos, pos_dict in places_dict.items():
@@ -601,21 +600,23 @@ class AnswerKey():
                 range(1, after_count+1)): #points_list[0:after_count]):
                 pos_dict['values'][str(race)] = points
 
-        table = Table('Uninterupted Leader', 'Race', 'Off by number', int, 
+        table = Table('Uninterupted Leader', 'Race', 'Position Locked', str, 
             show_values=False, sort=None)
         for race in self.races.list_races():
-            if str(race) in pos_dict['values']:
-                table.add_subject(pos_dict['values'][str(race)], race)
-            else:
-                table.add_subject(0, race)
+            vals = []
+            if places_dict[1]['race'] == race:
+                vals.append('Leader')
+            if places_dict[2]['race'] == race:
+                vals.append('Second')
+            table.add_subject(', '.join(vals), race)
         table.add_entries(self.entries, 'driver_unbroken_lead_response', 
             'driver_unbroken_lead_tiebreaker')
 
         # Build a dictionary of entries by distance from leader and second
         sorting_dict = {}
         for entry in self.entries.list_entries():
-            off_by = pos_dict['values'][entry.driver_unbroken_lead_response]
-            tie_breaker = pos_dict['values'][entry.driver_unbroken_lead_tiebreaker]
+            off_by = places_dict[1]['values'][entry.driver_unbroken_lead_response]
+            tie_breaker = places_dict[2]['values'][entry.driver_unbroken_lead_tiebreaker]
             if off_by not in sorting_dict:
                 sorting_dict[off_by] = {}
             if tie_breaker not in sorting_dict[off_by]:
@@ -641,11 +642,24 @@ class AnswerKey():
         Returns:
         A dictionary mapping a race to the number of retirements it had
         """
-        # TODO: Map Entries
         race_dict = {}
         for race in self.races.race_list:
             race_dict[str(race)] = race.retirements * -5
-        return race_dict
+
+        table = Table('Retirements', 'Race', 'Retirements', int, sort=None)
+        for race in self.races.list_races():
+            race_row = table.add_subject(race.retirements, race)
+            race_row.value = race_dict[str(race)]
+        table.add_entries(self.entries, 'driver_race_retirements_response')
+
+        scores = Table('Final Score', 'Entry', 'Points', int, show_values=False, 
+            show_entries=False)
+        for entry in self.entries.list_entries():
+            entry_score = 0
+            for race in entry.driver_race_retirements_response:
+                entry_score += race_dict[race]
+            scores.add_subject(entry_score, entry)
+        return (table, scores)
 
 
     def driver_points_by_race(self, driver_short_name, mult=1):
