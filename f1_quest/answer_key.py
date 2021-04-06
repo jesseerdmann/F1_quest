@@ -132,6 +132,21 @@ class AnswerKey():
             'Q12: Pick three races, each retirement from the chosen races will cost you -5 points.',
             answer=answer, score=score))
 
+        answer, score = self.gasly_points()
+        self.questions.append(QuestionSummary(
+            'Q13: Pick two races, get the points scored by Pierre Gasly for those races.',
+            answer=answer, score=score))
+
+        answer, score = self.stroll_points()
+        self.questions.append(QuestionSummary(
+            'Q14: Pick two races, get the points scored by Lance Stroll for those races.',
+            answer=answer, score=score))
+
+        answer, score = self.mazepin_points()
+        self.questions.append(QuestionSummary(
+            'Q15: Pick two races, SUBTRACT Nikita Mazepin\'s points for those races',
+            answer=answer, score=score))
+
 
     def __str__(self):
         """
@@ -143,24 +158,6 @@ class AnswerKey():
         for question in self.questions:
             strings.append(str(question))
             strings.append('')
-        strings.append('Q13: Pick two races, get the points scored by Pierre Gasly for those races.')
-        gasly_points = self.gasly_points()
-        strings.append("{:65s} {:5s}".format("Answer", "Value"))
-        for race, value in gasly_points.items():
-            strings.append("{:65s} {:5d}".format(race, value))
-        strings.append('')
-        strings.append('Q14: Pick two races, get the points scored by Lance Stroll for those races.')
-        stroll_points = self.stroll_points()
-        strings.append("{:65s} {:5s}".format("Answer", "Value"))
-        for race, value in stroll_points.items():
-            strings.append("{:65s} {:5d}".format(race, value))
-        strings.append('')
-        strings.append('Q15: Pick two races, SUBTRACT Nikita Mazepin\'s points for those races')
-        mazepin_points = self.mazepin_points()
-        strings.append("{:65s} {:5s}".format("Answer", "Value"))
-        for race, value in mazepin_points.items():
-            strings.append("{:65s} {:5d}".format(race, value))
-        strings.append('')
         strings.append('Q16: Pick two drivers who are not currently teammates from the bottom seven teams in 2020.')
         bottom_seven = self.bottom_seven()
         strings.append("{:65s} {:5s}".format("Answer", "Value"))
@@ -662,12 +659,13 @@ class AnswerKey():
         return (table, scores)
 
 
-    def driver_points_by_race(self, driver_short_name, mult=1):
+    def driver_points_by_race(self, driver_short_name, entry_var, mult=1):
         """
         Build a dicitonary of races to points scored by the provided driver
 
         Keyword Arguments:
         driver_short_name -- The driver's name in 'last, first' form
+        entry_var -- The name of the variable in entry to use
         mult -- a multplier for the driver's points if applicable
 
         Returns:
@@ -678,9 +676,30 @@ class AnswerKey():
         driver = self.drivers.get_driver_by_short_name(driver_short_name)
         if driver is None:
             raise Exception(f"No driver matches found for {driver_short_name}")
+
         for race, result in driver.races.items():
             race_dict[race] = result.points * mult
-        return race_dict
+        
+        table = Table(f"{driver_short_name} Points", "Race", "Points", int, 
+            show_values=False, sort=None)
+        for race in self.races.list_races():
+            if str(race) in race_dict:
+                table.add_subject(race_dict[str(race)], race)
+            else:
+                table.add_subject(0, race)
+        table.add_entries(self.entries, entry_var)
+        print(race_dict)
+
+        scores = Table("Final Score", "Entry", "Points", int, 
+            show_values=False, show_entries=False)
+        for entry in self.entries.list_entries():
+            entry_score = 0
+            for race in entry.__dict__[entry_var]:
+                if str(race) in race_dict:
+                    entry_score += race_dict[str(race)]
+            scores.add_subject(entry_score, entry)
+        
+        return (table, scores)
 
 
     def gasly_points(self):
@@ -691,7 +710,7 @@ class AnswerKey():
         Returns:
         A dictionary mapping a race to Pierre Gasly's points for that race
         """
-        return self.driver_points_by_race("Gasly, Pierre")
+        return self.driver_points_by_race("Gasly, Pierre", "driver_gasly_points_response")
 
 
     def stroll_points(self):
@@ -702,7 +721,7 @@ class AnswerKey():
         Returns:
         A dictionary mapping a race to Lance Stroll's points for that race
         """
-        return self.driver_points_by_race("Stroll, Lance")
+        return self.driver_points_by_race("Stroll, Lance", "driver_stroll_points_response")
 
 
     def mazepin_points(self):
@@ -713,7 +732,7 @@ class AnswerKey():
         Returns:
         A dictionary mapping a race to Nikita Mazepin's points for that race
         """
-        return self.driver_points_by_race("Mazepin, Nikita", -1)
+        return self.driver_points_by_race("Mazepin, Nikita", "driver_mazepin_poines_response", -1)
 
 
     def bottom_seven(self):
