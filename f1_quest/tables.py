@@ -33,7 +33,8 @@ class TableRow():
 
 class Table():
     def __init__(self, name, subject_label, score_label, score_type, 
-        show_values=True, show_entries=True, entry_label="Entries", sort='descending'):
+        show_values=True, show_entries=True, entry_label="Entries", 
+        value_label="Value", sort='descending'):
         """
         Initialize the table.
 
@@ -58,6 +59,7 @@ class Table():
         self.show_entries = show_entries
         self.sort = sort
         self.entry_label = entry_label
+        self.value_label = value_label
         self.max_row_length = len(subject_label)
         self.max_score_length = len(score_label)
             
@@ -71,8 +73,8 @@ class Table():
             "s} {:" + str(self.max_score_length) + "s}"
         header_string = header_format_string.format('Pos', 
             self.subject_label, self.score_label)
-        if self.show_values and self.tie_breaker_var is None:
-            header_string += " Value"
+        if self.show_values: # and self.tie_breaker_var is None:
+            header_string += " " + self.value_label
         if self.show_entries:
             header_string += " " + self.entry_label
         string_list.append(header_string)
@@ -82,7 +84,7 @@ class Table():
         elif self.score_type == str:
             score_type_str = 's'
         value_string = ''
-        if self.show_values and self.tie_breaker_var is None:
+        if self.show_values: # and self.tie_breaker_var is None:
             value_string = ' {:5d}'
         base_format_string = '{:' + str(self.max_row_length) + 's} {:' + \
             str(self.max_score_length) + score_type_str + '}' + value_string
@@ -96,7 +98,7 @@ class Table():
             if prev_score is not None and row.score == prev_score:
                 pos_val = ''
                 row_format_string = tie_format_string
-            if self.show_values and self.tie_breaker_var is None:
+            if self.show_values: # and self.tie_breaker_var is None:
                 row_string = row_format_string.format(pos_val, str(row.subject), row.score, row.value)
             else:
                 row_string = row_format_string.format(pos_val, str(row.subject), row.score)
@@ -212,7 +214,8 @@ class Table():
             prev_subject = ordered_subject 
 
 
-    def add_entries(self, entries, entry_var, tie_breaker_var=None):
+    def add_entries(self, entries, entry_var, tie_breaker_var=None, 
+        update_entry_score=False):
         """
         Add an Entries object and match them to the appropriate subject
 
@@ -220,6 +223,7 @@ class Table():
         entries -- the Entries that will map to rows
         entry_var -- the variable in the Entry to match with 
         tie_breaker_var -- the varible in the Entry to break ties
+        update_entry_score -- add the row value to the score
         """
         self.entries = entries
         self.entry_var = entry_var
@@ -230,11 +234,15 @@ class Table():
                 entry_response = entry.__dict__[self.entry_var]
                 if type(entry_response) == str and entry_response == str(subject.subject):
                     subject.add_entry(entry)
+                    if update_entry_score:
+                        entry.add_points(subject.value)
                     break
                 elif type(entry_response) == list:
                     for response_item in entry_response:
                         if response_item == str(subject.subject):
                             subject.add_entry(entry)
+                            if update_entry_score:
+                                entry.add_points(subject.value)
                             break
 
             
