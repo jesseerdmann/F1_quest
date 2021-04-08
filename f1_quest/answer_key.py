@@ -219,7 +219,7 @@ class AnswerKey():
         This aggressively long method pulls together all of the questions and 
          answers as a string to be printed for aiding manual scoring of entries
         """
-        strings = ['F1 Questionaire Answer Key', '', 
+        strings = ['F1 Questionnaire Answer Key', '', 
             'This is a snapshot of where things stand if the season were to end today. Expect changes each week!', 
             '']
 
