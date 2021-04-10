@@ -70,63 +70,53 @@ class AnswerKey():
                 else:
                     self.single_answer_dict[row[0]] = row[1]
 
-        print("Q1")
         answer, score = self.team_fourth()
         self.questions.append(QuestionSummary(
             'Q1: Which team will finish fourth in the championship?',
             desc='Tie Breaker: How many points will the 4th place team get?',
             answer=answer, score=score))
         
-        print("Q2")
         answer, score = self.avg_points_increase()
         self.questions.append(QuestionSummary(
             'Q2: Which team will have the highest points per race increase over 2020?',
             answer=answer, score=score))
         
-        print("Q3")
         self.questions.append(QuestionSummary(
             'Q3: Which team will win the DHL Fastest Pit Stop?',
             desc='No data available and everyone voted for Red Bull, so good work everyone!'))
 
-        print("Q4")
         answer, score = self.driver_of_the_day()
         self.questions.append(QuestionSummary(
             'Q4: Who will win the most official "Driver of the Day" awards?',
             answer=answer, score=score))
 
-        print("Q5")
         answer, score = self.driver_tenth()
         self.questions.append(QuestionSummary(
             'Q5: Which driver will finish 10th in the Championship?',
             desc='Tie Breaker: How many points did that driver get?',
             answer=answer, score=score))
 
-        print("Q6")
         answer, score = self.teammate_qualy()
         self.questions.append(QuestionSummary(
             'Q6: Which driver will be most dominant over their teammate in qualifying?',
             answer=answer, score=score))
 
-        print("Q7")
         answer, score = self.podium_winners()
         self.questions.append(QuestionSummary(
             'Q7: Check every driver that will have a podium finish during the season.',
             desc='+5 for every correct, -3 for every incorrect guess, -3 for every missed podium',
             answer=answer, score=score))
         
-        print("Q8")
         answer, score = self.dis_points()
         self.questions.append(QuestionSummary(
             'Q8: Which driver will have the most penalty points?',
             answer=answer, score=score))
 
-        print("Q9")
         answer, score = self.avg_laps()
         self.questions.append(QuestionSummary(
             'Q9: Which driver will have the lowest average race laps per race started?',
             answer=answer, score=score))
 
-        print("Q10")
         answer, score = self.six_after_six()
         self.questions.append(QuestionSummary(
             'Q10: Who will be the top six drivers after the first six races?',
@@ -136,77 +126,65 @@ class AnswerKey():
                 'Right driver, 3 or more places out (+1)']),
             answer=answer, score=score))
 
-        print("Q11")
         answer, score = self.uninterrupted_leader()
         self.questions.append(QuestionSummary(
             'Q11: At which race will the champion move to the top of the standings and never drop out of the top spot?',
             desc='At which race does the #2 driver take an unbroken position in the championship?',
             answer=answer, score=score))
 
-        print("Q12")
         answer, score = self.retirements()
         self.questions.append(QuestionSummary(
             'Q12: Pick three races, each retirement from the chosen races will cost you -5 points.',
             answer=answer, score=score))
 
-        print("Q13")
         answer, score = self.gasly_points()
         self.questions.append(QuestionSummary(
             'Q13: Pick two races, get the points scored by Pierre Gasly for those races.',
             answer=answer, score=score))
 
-        print("Q14")
         answer, score = self.stroll_points()
         self.questions.append(QuestionSummary(
             'Q14: Pick two races, get the points scored by Lance Stroll for those races.',
             answer=answer, score=score))
 
-        print("Q15")
         answer, score = self.mazepin_points()
         self.questions.append(QuestionSummary(
             'Q15: Pick two races, SUBTRACT Nikita Mazepin\'s points for those races',
             answer=answer, score=score))
 
-        print("Q16")
         answer, score = self.bottom_seven()
         self.questions.append(QuestionSummary(
             'Q16: Pick two drivers who are not currently teammates from the bottom seven teams in 2020.',
             answer=answer, score=score))
 
-        print("Q17")
         answer, score = self.safety_cars()
         self.questions.append(QuestionSummary(
             'Q17: How many safety and virtual safety cars will be called in 2021?',
             desc='Tie breaker: Which race will have the most safety cars of all types?',
             answer=answer, score=score))
 
-        print("Q18")
         answer, score = self.fewest_on_lead_lap()
         self.questions.append(QuestionSummary(
             'Q18: What is the fewest number of drivers that will finish on the lead lap of any race?',
             answer=answer, score=score))
 
-        print("Q19")
         answer, score = self.russia_facts()
         self.questions.append(QuestionSummary(
             'Q19: How many drivers will take on soft tires in the last 5 laps in Russia',
             answer=answer, score=score))
 
-        print("Q20")
         answer, score = self.first_saudi_retirement()
         self.questions.append(QuestionSummary(
             'Q20: Which driver that starts the race in Saudi Arabia will be the first one out?',
             desc='Tie breaker: What WDC position will that driver start the race in?\n\nTBD after Saudi Arabian GP is run',
             answer=answer, score=score))
 
-        print("Q21")
         answer, score = self.by_the_numbers()
         self.questions.append(QuestionSummary(
             'Q21: By the numbers.', 
             desc="Sum the numbers in the following tables and be closest to the total",
             answer=answer, score=score))
 
-        print("Q22")
         answer, score = self.mini_bingo()
         self.questions.append(QuestionSummary(
             'Q22: Mini-Bingo',

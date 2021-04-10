@@ -67,10 +67,8 @@ class Entry():
 
 
     def add_points(self, points):
-        print(f"Adding {points} to {self.entry_name} starting score = {self.score}")
         self.score += points
-        print(f"Ending score {self.score}")
-
+        
 
 class Entries():
     def __init__(self, data_dir=os.getenv('F1_DATA', 'data'), file_name="entries.csv"):
