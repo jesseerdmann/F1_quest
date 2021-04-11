@@ -35,7 +35,7 @@ class Driver:
 
 
     def __str__(self):
-        return self.name
+        return self.entry_rep
 
 
     def __lt__(self, other):
@@ -185,11 +185,26 @@ class Drivers:
         Returns:
         A list of all driver objects with a matching short name
         """
-        drivers = []
         for driver in self.driver_list:
             if driver.name == short_name:
-                drivers.append(driver)
-        return drivers
+                return driver
+        return None
+
+    
+    def get_driver_by_entry_rep(self, entry_rep):
+        """
+        Find drivers matching the provided entry rep
+
+        Keyword arguments:
+        entry_rep -- the rep to be searched for
+
+        Returns:
+        The driver objects with a matching entry rep
+        """
+        for driver in self.driver_list:
+            if driver.entry_rep == entry_rep:
+                return driver
+        return None
 
     
     def get_points_table(self):
@@ -201,7 +216,7 @@ class Drivers:
         """
         table = Table('Driver Standings', 'Driver', 'Points', int)
         for driver in self.driver_list:
-            table.add_entry(driver.points, driver)
+            table.add_subject(driver.points, driver)
         return table
 
     
@@ -214,7 +229,7 @@ class Drivers:
         """
         table = Table('Driver Standings', 'Driver', 'Discipline Points', int)
         for driver in self.driver_list:
-            table.add_entry(driver.dis_points, driver)
+            table.add_subject(driver.dis_points, driver)
         return table
 
 
@@ -226,9 +241,9 @@ class Drivers:
         A table object with drivers and average laps
         """
         table = Table('Driver Average Laps', 'Driver', 'Average Laps', float, 
-            descending=False)
+            sort='ascending')
         for driver in self.driver_list:
-            table.add_entry(driver.laps/len(driver.races), driver)
+            table.add_subject(driver.laps/len(driver.races), driver)
         return table
 
 
@@ -241,7 +256,7 @@ class Drivers:
         """
         table = Table('Podiums', 'Driver', 'Podium Finishes', int)
         for driver in self.driver_list:
-            table.add_entry(driver.podiums, driver)
+            table.add_subject(driver.podiums, driver)
         return table
 
     
@@ -254,7 +269,7 @@ class Drivers:
         """
         table = Table('Winners', 'Driver', 'Wins', int)
         for driver in self.driver_list:
-            table.add_entry(driver.wins, driver)
+            table.add_subject(driver.wins, driver)
         return table
 
 
@@ -267,7 +282,7 @@ class Drivers:
         """
         table = Table('Pole Position', 'Driver', 'Starts on Pole', int)
         for driver in self.driver_list:
-            table.add_entry(driver.poles, driver)
+            table.add_subject(driver.poles, driver)
         return table
 
 
@@ -280,7 +295,7 @@ class Drivers:
         """
         table = Table('Driver of the Day', 'Driver', 'DotD Wins', int)
         for driver in self.driver_list:
-            table.add_entry(driver.driver_of_the_day, driver)
+            table.add_subject(driver.driver_of_the_day, driver)
         return table
 
 
@@ -293,5 +308,5 @@ class Drivers:
         """
         table = Table('Fastest Lap', 'Driver', 'Fastest Lap Wins', int)
         for driver in self.driver_list:
-            table.add_entry(driver.fastest_laps, driver)
+            table.add_subject(driver.fastest_laps, driver)
         return table

@@ -174,9 +174,7 @@ class Races:
                 race.add_results(retirements=retirements, 
                     safety_cars=safety_cars)
                 for team in teams.list_all_teams():
-                    team_fps = get_type_val(row, self.header_row, 
-                        ' '.join([team.name, 'FPS']), float)
-                    team.add_race(row[0], team_fps)
+                    team.add_race(row[0])
                 for driver in drivers.list_all_drivers():
                     driver_of_the_day = driver.name == get_type_val(row, 
                         self.header_row, 'Driver of the Day')
