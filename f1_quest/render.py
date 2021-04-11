@@ -10,4 +10,4 @@ def render_static_pages():
     index = env.get_template('index.html')
 
     with open('site/index.html', 'w') as out:
-        out.write(index.render(content={}))
+        out.write(index.render(overall_table=ak.get_overall_standings()))

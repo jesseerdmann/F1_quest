@@ -4,6 +4,7 @@ class TableRow():
         self.subject = subject
         self.value = value
         self.matching_entries = []
+        self.pos = None
 
     
     def __lt__(self, other):
@@ -20,7 +21,7 @@ class TableRow():
 
 
     def __str__(self):
-        string_val = f"{self.score} {str(self.subject)} {self.value} {len(self.matching_entries)} entries"
+        string_val = f"{self.pos} {self.score} {str(self.subject)} {self.value} {len(self.matching_entries)} entries"
         return string_val
 
 
@@ -66,8 +67,6 @@ class Table():
 
     def __str__(self):
         string_list = [self.name]
-        pos = 1
-        prev_score = None
         
         header_format_string = "{:3s} {:" + str(self.max_row_length) + \
             "s} {:" + str(self.max_score_length) + "s}"
@@ -90,18 +89,13 @@ class Table():
             str(self.max_score_length) + score_type_str + '}' + value_string
         
         format_string = '{:3d} ' + base_format_string
-        tie_format_string = '{:3s} ' + base_format_string
-
+        
         for row in self.get_ordered_subjects():
-            pos_val = pos
             row_format_string = format_string
-            if prev_score is not None and row.score == prev_score:
-                pos_val = ''
-                row_format_string = tie_format_string
             if self.show_values: # and self.tie_breaker_var is None:
-                row_string = row_format_string.format(pos_val, str(row.subject), row.score, row.value)
+                row_string = row_format_string.format(row.pos, str(row.subject), row.score, row.value)
             else:
-                row_string = row_format_string.format(pos_val, str(row.subject), row.score)
+                row_string = row_format_string.format(row.pos, str(row.subject), row.score)
             if self.show_entries:
                 entries_str = ' '
                 first_row = True
@@ -117,7 +111,6 @@ class Table():
                 row_string += entries_str
             
             string_list.append(row_string)
-            pos += 1
             prev_score = row.score
         return '\n'.join(string_list)
 
@@ -152,7 +145,19 @@ class Table():
             order = sorted(self.subjects)
             if self.sort == 'descending':
                 order = reversed(order)
-        return list(order)
+        
+        pos = 1
+        abs_pos = 1
+        prev_score = None
+        ordered_subjects = []
+        for subject in order:
+            if subject.score != prev_score:
+                pos = abs_pos
+            subject.pos = pos
+            abs_pos += 1
+            prev_score = subject.score
+            ordered_subjects.append(subject)
+        return ordered_subjects
 
 
     def get_subjects_by_pos(self, pos, single_subject_only=False):
