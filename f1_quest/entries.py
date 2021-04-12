@@ -15,6 +15,7 @@ class Entry():
         self.driver_tenth_response = row[7]
         self.driver_tenth_tiebreaker = int(row[8])
         self.driver_qualy_dominance = row[9]
+        
 
         # Reconstitute drivers after splitting on the comma
         driver_split = row[10].split(', ')
@@ -66,6 +67,10 @@ class Entry():
         return self.entry_name
 
 
+    def __lt__(self, other):
+        return self.entry_name < other.entry_name
+
+
     def add_points(self, points):
         self.score += points
         
@@ -86,7 +91,7 @@ class Entries():
                 self.entries[row[1]] = Entry(row)
 
     def list_entries(self):
-        return self.entries.values()
+        return sorted(self.entries.values())
 
 
     

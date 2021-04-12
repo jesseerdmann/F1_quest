@@ -13,11 +13,15 @@ F1_POINTS = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1}
 
 
 class QuestionSummary():
-    def __init__(self, question, desc=None, answer=None, score=None):
+    def __init__(self, short_name, question, desc=None, answer=None, score=None, 
+        entry_var=None, entry_tb=None):
+        self.short_name = short_name
         self.question = question
         self.desc = desc
         self.answer = answer
         self.score = score
+        self.entry_var = entry_var
+        self.entry_tb = entry_tb
 
     
     def __str__(self):
@@ -71,125 +75,146 @@ class AnswerKey():
                     self.single_answer_dict[row[0]] = row[1]
 
         answer, score = self.team_fourth()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q1: Team Fourth',
             'Q1: Which team will finish fourth in the championship?',
             desc='Tie Breaker: How many points will the 4th place team get?',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='team_fourth_response',
+            entry_tb='team_fourth_tiebreaker'))
         
         answer, score = self.avg_points_increase()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q2: Average Points Increase',
             'Q2: Which team will have the highest points per race increase over 2020?',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='team_points_avg_response'))
         
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q3: Fastest Pit Stop',
             'Q3: Which team will win the DHL Fastest Pit Stop?',
-            desc='No data available and everyone voted for Red Bull, so good work everyone!'))
+            desc='No data available and everyone voted for Red Bull, so good work everyone!',
+            entry_var='team_fps_response'))
 
         answer, score = self.driver_of_the_day()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q4: Driver of the Day',
             'Q4: Who will win the most official "Driver of the Day" awards?',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='driver_of_the_day_response'))
 
         answer, score = self.driver_tenth()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q5: Driver Tenth',
             'Q5: Which driver will finish 10th in the Championship?',
             desc='Tie Breaker: How many points did that driver get?',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='driver_tenth_response',
+            entry_tb='driver_tenth_tiebreaker'))
 
         answer, score = self.teammate_qualy()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q6: Qualy Dominance',
             'Q6: Which driver will be most dominant over their teammate in qualifying?',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='driver_qualy_dominance'))
 
         answer, score = self.podium_winners()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q7: Podium Winners',
             'Q7: Check every driver that will have a podium finish during the season.',
             desc='+5 for every correct, -3 for every incorrect guess, -3 for every missed podium',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='driver_podium_response'))
         
         answer, score = self.dis_points()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q8: Disciplinary Points',
             'Q8: Which driver will have the most penalty points?',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='driver_penalty_points'))
 
         answer, score = self.avg_laps()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q9: Fewest Average Laps',
             'Q9: Which driver will have the lowest average race laps per race started?',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='drvier_lowest_laps_avg'))
 
         answer, score = self.six_after_six()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q10: Top Six After Six',
             'Q10: Who will be the top six drivers after the first six races?',
             desc='\n'.join(['Right Diver, right place (+5)',
                 'Right Driver, one place out (+3)', 
                 'Right driver, two places out (+2)',
                 'Right driver, 3 or more places out (+1)']),
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='driver_six_after_six'))
 
         answer, score = self.uninterrupted_leader()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q11: Uninterrupted Leader',
             'Q11: At which race will the champion move to the top of the standings and never drop out of the top spot?',
             desc='At which race does the #2 driver take an unbroken position in the championship?',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='driver_unbroken_lead_response',
+            entry_tb='driver_unbroken_lead_tiebreaker'))
 
         answer, score = self.retirements()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q12: Retirements',
             'Q12: Pick three races, each retirement from the chosen races will cost you -5 points.',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='driver_race_retirements_response'))
 
         answer, score = self.gasly_points()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q13: Gasly Points',
             'Q13: Pick two races, get the points scored by Pierre Gasly for those races.',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='driver_gasly_points_response'))
 
         answer, score = self.stroll_points()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q14: Stroll Points',
             'Q14: Pick two races, get the points scored by Lance Stroll for those races.',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='driver_stroll_points_response'))
 
         answer, score = self.mazepin_points()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q15: Mazepin Points',
             'Q15: Pick two races, SUBTRACT Nikita Mazepin\'s points for those races',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='driver_mazepin_points_response'))
 
         answer, score = self.bottom_seven()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q16: Two from the Bottom Seven',
             'Q16: Pick two drivers who are not currently teammates from the bottom seven teams in 2020.',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='driver_pick_two_response'))
 
         answer, score = self.safety_cars()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q17: Safety Cars',
             'Q17: How many safety and virtual safety cars will be called in 2021?',
             desc='Tie breaker: Which race will have the most safety cars of all types?',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='race_safety_cars_response',
+            entry_tb='race_safety_cars_tiebreaker'))
 
         answer, score = self.fewest_on_lead_lap()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q18: Fewest on Lead Lap',
             'Q18: What is the fewest number of drivers that will finish on the lead lap of any race?',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='race_fewest_on_lead_lap_response'))
 
         answer, score = self.russia_facts()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q19: Soft on Russia',
             'Q19: How many drivers will take on soft tires in the last 5 laps in Russia',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='russia_stop_for_softs_response',
+            entry_tb='russia_stop_for_softs_tiebreaker'))
 
         answer, score = self.first_saudi_retirement()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q20: Retiring to Saudi Arabia',
             'Q20: Which driver that starts the race in Saudi Arabia will be the first one out?',
             desc='Tie breaker: What WDC position will that driver start the race in?\n\nTBD after Saudi Arabian GP is run',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var='saudi_first_retirement_response',
+            entry_tb='saudi_first_retirement_tiebrekaer'))
 
         answer, score = self.by_the_numbers()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q21: By The Numbers',
             'Q21: By the numbers.', 
             desc="Sum the numbers in the following tables and be closest to the total",
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var=[
+                'btn_unique_winners_response',
+                'btn_unique_pole_sitters_response', 
+                'btn_unique_fastest_lap_response',
+                'btn_wet_compound_races_response', 
+                'btn_driver_departure_confirmed_response',
+                'btn_animal_invasions_response'],
+            entry_tb='btn_total_drivers_tiebreaker'))
 
         answer, score = self.mini_bingo()
-        self.questions.append(QuestionSummary(
+        self.questions.append(QuestionSummary('Q22: Mini-Bingo',
             'Q22: Mini-Bingo',
             desc='Correctly True: +5, Correctly False: +1, Incorrect: -3',
-            answer=answer, score=score))
+            answer=answer, score=score, entry_var=[
+                'bingo_pourchaire_response',
+                'bingo_norris_response',
+                'bingo_williams_response',
+                'bingo_red_bull_response',
+                'bingo_twenty_classifieds_response',
+                'bingo_down_to_the_wire_response',
+                'bingo_russell_response']))
 
 
     def __str__(self):
@@ -953,8 +978,9 @@ class AnswerKey():
             else:
                 entry_dict[entry_diff].append(entry)
 
-        score = Table(f"By The Numbers, {table_name} Correct Answer {correct_score}", 
-            'Entry', 'Guess', int, value_label="Difference", sort='ascending')
+        score = Table(f"By The Numbers, {table_name} (Correct Answer: {correct_score})", 
+            'Entry', 'Guess', int, value_label="Difference", sort='ascending',
+            show_entries=False)
         for entry_diff in sorted(entry_dict.keys()):
             for entry in entry_dict[entry_diff]:
                 entry_row = score.add_subject(entry.__dict__[entry_var], entry)
@@ -1122,7 +1148,8 @@ class AnswerKey():
             correct_val = 5
 
         score = Table(f"Mini Bingo, {table_name} Correct Answer {correct_answer}", 
-            'Entry', 'Guess', str, value_label="Points", sort='ascending')
+            'Entry', 'Guess', str, value_label="Points", sort='ascending',
+            show_entries=False)
         for entry in self.entries.list_entries():
             entry_row = score.add_subject(entry.__dict__[entry_var], entry)
             if entry.__dict__[entry_var] == correct_answer:
