@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}F1 Guessathon{% endblock %}
+
+{% block content %}
+    <h2>Overall Standings</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Position</th>
+                <th scope="col">Entry</th>
+                <th scope="col">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for table_row in overall_table.get_ordered_subjects() %}
+            <tr>
+                <th scope="row">{{ table_row.pos }}</th>
+                <td>{{ table_row.subject.entry_name }}</td>
+                <td>{{ table_row.score }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

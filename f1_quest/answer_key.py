@@ -201,10 +201,7 @@ class AnswerKey():
             'This is a snapshot of where things stand if the season were to end today. Expect changes each week!', 
             '']
 
-        score = Table("Overall Standings", "Entry", "Points", int, 
-            show_values=False, show_entries=False)
-        for entry in self.entries.list_entries():
-            score.add_subject(entry.score, entry)
+        score = self.get_overall_standings()
         strings.append(str(score))
         strings.append('')
 
@@ -212,6 +209,14 @@ class AnswerKey():
             strings.append(str(question))
             strings.append('')
         return '\n'.join(strings)
+
+
+    def get_overall_standings(self):
+        score = Table("Overall Standings", "Entry", "Points", int, 
+            show_values=False, show_entries=False)
+        for entry in self.entries.list_entries():
+            score.add_subject(entry.score, entry)
+        return score
         
     def map_table_to_score(self, table, score_map, tie_breaker_pos=None, 
         update_entry_score=False):
