@@ -1,0 +1,57 @@
+<div class="btn-group" role="group" aria-label="menugroup">
+    <div class="dropdown">
+        <button class="btn btn-danger dropdown-toggle" type="button" id="resultsMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            Results
+        </button>
+        <ul class="dropdown-menu  dropdown-menu-dark" aria-labelledby="resultsMenuButton">
+            <li><a class="dropdown-item" href="{{ base_url }}/index.html">Overall</a></li>
+            {% for question in questions %}
+            <li><a class="dropdown-item" href="{{ base_url }}/results/{{ question.short_name.replace(':', '').replace(' ', '_') }}.html">{{ question.short_name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="dropdown">
+        <button class="btn btn-danger dropdown-toggle" type="button" id="entriesMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            Entries
+        </button>
+        <ul class="dropdown-menu  dropdown-menu-dark" aria-labelledby="entriesMenuButton">
+            {% for entry in entries.list_entries() %}
+            <li><a class="dropdown-item" href="#">{{ entry.entry_name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="dropdown">
+        <button class="btn btn-danger dropdown-toggle" type="button" id="driversMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            Drivers
+        </button>
+        <ul class="dropdown-menu  dropdown-menu-dark" aria-labelledby="driversMenuButton">
+            {% for driver in drivers.list_all_drivers() %}
+            <li><a class="dropdown-item" href="#">{{ driver.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="dropdown">
+        <button class="btn btn-danger dropdown-toggle" type="button" id="teamsMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            Teams
+        </button>
+        <ul class="dropdown-menu  dropdown-menu-dark" aria-labelledby="teamsMenuButton">
+            {% for team in teams.list_all_teams() %}
+            <li><a class="dropdown-item" href="#">{{ team.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="dropdown">
+        <button class="btn btn-danger dropdown-toggle" type="button" id="racesMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            Races
+        </button>
+        <ul class="dropdown-menu  dropdown-menu-dark" aria-labelledby="racesMenuButton">
+            {% for race in races.list_races() %}
+            <li><a class="dropdown-item" href="#">{{ race.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

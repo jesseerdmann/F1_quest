@@ -97,22 +97,27 @@ class Table():
             else:
                 row_string = row_format_string.format(row.pos, str(row.subject), row.score)
             if self.show_entries:
-                entries_str = ' '
-                first_row = True
-                for entry in row.matching_entries:
-                    if not first_row:
-                        entries_str += ', '
-                    if self.show_entries:
-                        if self.tie_breaker_var is not None:
-                            entries_str += f"{str(entry)} (TB: {entry.__dict__[self.tie_breaker_var]})"
-                        else:
-                            entries_str += f"{str(entry)}"
-                    first_row = False
+                entries_str = self.entries_string()
                 row_string += entries_str
             
             string_list.append(row_string)
             prev_score = row.score
         return '\n'.join(string_list)
+
+
+    def entries_string(self):
+        entries_str = ' '
+        first_row = True
+        for entry in row.matching_entries:
+            if not first_row:
+                entries_str += ', '
+            if self.show_entries:
+                if self.tie_breaker_var is not None:
+                    entries_str += f"{str(entry)} (TB: {entry.__dict__[self.tie_breaker_var]})"
+                else:
+                    entries_str += f"{str(entry)}"
+            first_row = False
+        return entries_str
 
 
     def add_subject(self, score, subject):

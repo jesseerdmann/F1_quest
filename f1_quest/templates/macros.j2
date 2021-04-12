@@ -1,0 +1,40 @@
+{% macro render_table(table) %}
+<table class="table">
+    <h4>{{ table.name }}</h4>
+    <thead>
+        <tr>
+            <th scope="col">Position</th>
+            <th scope="col">{{ table.subject_label }}</th>
+            <th scope="col">{{ table.score_label }}</th>
+            {% if table.show_values %}
+            <th scope="col">{{ table.value_label }}</th>
+            {% endif %}
+            {% if table.show_entries %}
+            <th scope="col">{{ table.entry_label }}</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for table_row in table.get_ordered_subjects() %}
+        <tr class="{{ loop.cycle('table-light', 'table-secondary') }}">
+            <th scope="row">{{ table_row.pos }}</th>
+            <td>{{ table_row.subject|string }}</td>
+            <td>{{ table_row.score }}</td>
+            {% if table.show_values %}
+            <td scope="col">{{ table_row.value }}</td>
+            {% endif %}
+            {% if table.show_entries %}
+            <td scope="col">
+            {% for entry in table_row.matching_entries %}
+            {{ entry }}{% if not loop.last %}, {% endif %}
+            {% if table.tie_breaker_var is not none %}
+            (TB: {{ entry.__dict__[table.tie_breaker_var]}})
+            {% endif %}
+            {% endfor %}
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endmacro %}
