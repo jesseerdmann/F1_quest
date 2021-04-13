@@ -179,7 +179,8 @@ class AnswerKey():
 
         answer, score = self.russia_facts()
         self.questions.append(QuestionSummary('Q19: Soft on Russia',
-            'Q19: How many drivers will take on soft tires in the last 5 laps in Russia',
+            'Q19: How many drivers will take on soft tires in the last 5 laps in Russia?',
+            desc="Tie breaker: How many laps will the winner have done on soft tires?",
             answer=answer, score=score, entry_var='russia_stop_for_softs_response',
             entry_tb='russia_stop_for_softs_tiebreaker'))
 
@@ -194,27 +195,35 @@ class AnswerKey():
         self.questions.append(QuestionSummary('Q21: By The Numbers',
             'Q21: By the numbers.', 
             desc="Sum the numbers in the following tables and be closest to the total",
-            answer=answer, score=score, entry_var=[
+            answer=answer, score=score, entry_var=list(zip(['Number of Winners',
+                'Number of Pole Sitters', 'Number of Fastest Lap Winners',
+                'Number of Races with Wet Compounds Used', 'Number ofDrivers Confirmed to Leave in Season',
+                'Number of Animal Track Invasions'], [
                 'btn_unique_winners_response',
                 'btn_unique_pole_sitters_response', 
                 'btn_unique_fastest_lap_response',
                 'btn_wet_compound_races_response', 
                 'btn_driver_departure_confirmed_response',
-                'btn_animal_invasions_response'],
+                'btn_animal_invasions_response'])),
             entry_tb='btn_total_drivers_tiebreaker'))
 
         answer, score = self.mini_bingo()
         self.questions.append(QuestionSummary('Q22: Mini-Bingo',
             'Q22: Mini-Bingo',
             desc='Correctly True: +5, Correctly False: +1, Incorrect: -3',
-            answer=answer, score=score, entry_var=[
+            answer=answer, score=score, entry_var=list(zip(['Pourchaire in 2022',
+                'Norris Gets a Podium', 'Williams Finishes Above 10th', 
+                'Red Bull Changes Drivers in Season', 
+                'All 20 Drivers Classified in One Race',
+                'World Driver Championship Goes to Final Race', 
+                'Russell Outscores a Driver That is Not a Teammate'], [
                 'bingo_pourchaire_response',
                 'bingo_norris_response',
                 'bingo_williams_response',
                 'bingo_red_bull_response',
                 'bingo_twenty_classifieds_response',
                 'bingo_down_to_the_wire_response',
-                'bingo_russell_response']))
+                'bingo_russell_response']))))
 
 
     def __str__(self):
