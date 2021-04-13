@@ -17,7 +17,7 @@
         </button>
         <ul class="dropdown-menu  dropdown-menu-dark" aria-labelledby="entriesMenuButton">
             {% for entry in entries.list_entries() %}
-            <li><a class="dropdown-item" href="#">{{ entry.entry_name }}</a></li>
+            <li><a class="dropdown-item" href="{{ base_url }}/entries/{{ entry.entry_name }}.html">{{ entry.entry_name }}</a></li>
             {% endfor %}
         </ul>
     </div>

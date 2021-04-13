@@ -1,6 +1,6 @@
 {% macro render_table(table) %}
 <table class="table">
-    <h4>{{ table.name }}</h4>
+    <h5>{{ table.name }}</h5>
     <thead>
         <tr>
             <th scope="col">Position</th>
@@ -17,7 +17,11 @@
     <tbody>
         {% for table_row in table.get_ordered_subjects() %}
         <tr class="{{ loop.cycle('table-light', 'table-secondary') }}">
-            <th scope="row">{{ table_row.pos }}</th>
+            <th scope="row">
+            {% if loop.first or loop.previtem.pos != table_row.pos %}
+            {{ table_row.pos }}
+            {% endif %}
+            </th>
             <td>{{ table_row.subject|string }}</td>
             <td>{{ table_row.score }}</td>
             {% if table.show_values %}

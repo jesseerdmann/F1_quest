@@ -22,3 +22,12 @@ def render_static_pages(base_url="https://jesseerdmann.github.io/F1_quest"):
                 base_url=base_url, questions=ak.questions,
                 entries=ak.entries, drivers=ak.drivers,
                 races=ak.races, teams=ak.teams))
+
+    entry_template = env.get_template('entry.html')
+    for entry in ak.entries.list_entries():
+        with open(f"docs/entries/{entry.entry_name}.html", 'w') as out:
+            out.write(entry_template.render(entry=entry, 
+                base_url=base_url, questions=ak.questions,
+                entries=ak.entries, drivers=ak.drivers,
+                races=ak.races, teams=ak.teams))
+

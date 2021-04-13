@@ -3,24 +3,25 @@
 {% block title %}{{ question.short_name }}{% endblock %}
 
 {% block content %}
-<h2>{{ question.question }}</h2>
+<h4>{{ question.question }}</h4>
 {% if question.desc is not none %}
-<h3>{{ question.desc.replace('\n', '<br/>') }}</h3>
+<h5>{{ question.desc.replace('\n', '<br/>') }}</h5>
 {% endif %}
 
 {% if question.answer is not none %}
     {% if question.answer is sequence %}
         {% for table in question.answer %}
+            <br/>
             {{ macros.render_table(table) }}
         {% endfor %}
     {% else %}
+        <br/>
         {{ macros.render_table(question.answer) }}
     {% endif %}
 {% endif %}
 
 {% if question.score is not none %}
     <br/>
-    <h3>Final Scores</h3>
     {{ macros.render_table(question.score) }}
 {% endif %}
 {% endblock %}

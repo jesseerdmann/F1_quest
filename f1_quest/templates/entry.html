@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% import 'macros.j2' as macros %}
+{% block title %}{{ entry.entry_name}}'s Entry{% endblock %}
+
+{% block content %}
+    <h5>{{ entry.entry_name}}'s Entry</h5>
+
+    {% for question in questions %}
+        {{ question.question }}<br/>
+        {% if question.entry_var is not string and question.entry_var is iterable %}
+            <table class="table">
+            {% for entry_var in question.entry_var %}
+                <tr class="{{ loop.cycle('table-light', 'table-secondary') }}">
+                    <td>{{ entry_var[0] }}</td>
+                    <td>{{ entry.__dict__[entry_var[1]] }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% else %}
+            {% if entry.__dict__[question.entry_var] is not string and entry.__dict__[question.entry_var] is iterable %}
+                <ul>
+                    {% for answer in entry.__dict__[question.entry_var] %}
+                    <li>{{ answer }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                {{ entry.__dict__[question.entry_var] }}<br/>
+            {% endif %}
+            {% if question.entry_tb is not none %}
+                <br/>{{ question.desc }}<br/>{{ entry.__dict__[question.entry_tb] }}<br/>
+            {% endif %}
+        {% endif %}
+        <br/>
+    {% endfor %}
+{% endblock %}
