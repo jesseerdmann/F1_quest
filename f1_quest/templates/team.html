@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% import 'macros.j2' as macros %}
+{% block title %}{{ team.name }}{% endblock %}
+
+{% block content %}
+<h4>{{ team.name }}</h4>
+
+<table class="table">
+    <tr class="table-light"><td>2021 Points</td><td>{{ team.get_points() }}</td></tr>
+    <tr class="table-secondary"><td>2021 Races</td><td>{{ team.race_results.keys()|length }}</td></tr>
+    <tr class="table-light"><td>2020 Points</td><td>{{ team.points_2020 }}</td></tr>
+    <tr class="table-secondary"><td>2020 Races</td><td>{{ team.races_2020 }}</td></tr>
+</table>
+
+<h5>Drivers</h5>
+<ul>
+{% for driver_name, driver in team.drivers.items() %}
+    <li><a class="text-danger" href="{{ macros.driver_url(base_url, driver|string) }}">{{ driver_name }}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
