@@ -28,7 +28,7 @@
         </button>
         <ul class="dropdown-menu  dropdown-menu-dark" aria-labelledby="driversMenuButton">
             {% for driver in drivers.list_all_drivers() %}
-            <li><a class="dropdown-item" href="#">{{ driver.name }}</a></li>
+            <li><a class="dropdown-item" href="{{ base_url }}/drivers/{{ driver.name.replace(', ', '_').replace(' ', '_') }}.html">{{ driver.name }}</a></li>
             {% endfor %}
         </ul>
     </div>

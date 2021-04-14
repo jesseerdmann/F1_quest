@@ -31,3 +31,11 @@ def render_static_pages(base_url="https://jesseerdmann.github.io/F1_quest"):
                 entries=ak.entries, drivers=ak.drivers,
                 races=ak.races, teams=ak.teams))
 
+    driver_template = env.get_template('driver.html')
+    for driver in ak.drivers.list_all_drivers():
+        with open(f"docs/drivers/{driver.name.replace(', ', '_').replace(' ', '_')}.html", 'w') as out:
+            out.write(driver_template.render(driver=driver, 
+                base_url=base_url, questions=ak.questions,
+                entries=ak.entries, drivers=ak.drivers,
+                races=ak.races, teams=ak.teams))
+

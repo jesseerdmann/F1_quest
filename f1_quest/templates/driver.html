@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}{{ driver.entry_rep }}'s Entry{% endblock %}
+
+{% block content %}
+<h4>{{ driver.entry_rep }}</h4>
+
+<table class="table">
+    <tr class="table-light"><td>Team</td><td>{{ driver.team_name }}</td></tr>
+    <tr class="table-secondary"><td>Wins</td><td>{{ driver.wins }}</td></tr>
+    <tr class="table-light"><td>Podiums</td><td>{{ driver.podiums }}</td></tr>
+    <tr class="table-secondary"><td>Poles</td><td>{{ driver.poles }}</td></tr>
+    <tr class="table-light"><td>Fastest Laps</td><td>{{ driver.fastest_laps }}</td></tr>
+    <tr class="table-secondary"><td>Driver of the Days</td><td>{{ driver.driver_of_the_day }}</td></tr>
+    <tr class="table-light"><td>Points</td><td>{{ driver.points }}</td></tr>
+</table>
+
+<h5>Race Results</h5>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Race</th>
+            <th scope="col">Qualifying Position</th>
+            <th scope="col">Laps</th>
+            <th scope="col">Fastest Lap</th>
+            <th scope="col">Driver of the Day</th>
+            <th scope="col">License Penalty Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for race, result in driver.races.items() %}
+        <tr class="{{ loop.cycle('table-light', 'table-secondary') }}">
+            <td>{{ race }}</td>
+            <td>{{ result.qpos }}</td>
+            <td>{{ result.laps }}</td>
+            <td>{{ result.fastest_lap }}</td>
+            <td>{{ result.driver_of_the_day }}</td>
+            <td>{{ result.dis_points }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

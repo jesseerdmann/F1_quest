@@ -11,15 +11,24 @@
     <body>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
         <div class="container">
-            <div class="row">
+            <div class="row" style="background-color: #181422;">
                 <div class="col-12">
-                    <h1>F1 Guessathon</h1>
+                    <img src="{{ base_url }}/images/Guessathon_2021_Logo.png" class="img-fluid" style="margin-right: auto; margin-left: auto; display: block;" alt="F1 Guessathon 2021">
+                    <br/>
+                </div>
+            </div>
+            <div class="row btn-danger" style="padding-top: 2px;padding-bottom: 2px;">
+                <div class="col-12">
                     {% include 'menu.html' %}
-                    <hr>
+                </div>
+            </div>
+            <div class="row" style="background-color: #181422;">
+                <div class="col-12">
+                    <br/>
                 </div>
             </div>
             <div class="row">
-                <div class="col-12">
+                <div class="col-12" style="border-width: 5px; border-color:  #181422; border-style: double; padding-top: 5px">
                     {% block content %}
                     
                     {% endblock %}

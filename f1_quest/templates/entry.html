@@ -6,7 +6,7 @@
     <h5>{{ entry.entry_name}}'s Entry</h5>
 
     {% for question in questions %}
-        {{ question.question }}<br/>
+        <b>{{ question.question }}</b><br/>
         {% if question.entry_var is not string and question.entry_var is iterable %}
             <table class="table">
             {% for entry_var in question.entry_var %}
