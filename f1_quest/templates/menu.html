@@ -1,3 +1,4 @@
+{% import 'macros.j2' as macros %}
 <div class="btn-group" role="group" aria-label="menugroup">
     <div class="dropdown">
         <button class="btn btn-danger dropdown-toggle" type="button" id="resultsMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -6,7 +7,7 @@
         <ul class="dropdown-menu  dropdown-menu-dark" aria-labelledby="resultsMenuButton">
             <li><a class="dropdown-item" href="{{ base_url }}/index.html">Overall</a></li>
             {% for question in questions %}
-            <li><a class="dropdown-item" href="{{ base_url }}/results/{{ question.short_name.replace(':', '').replace(' ', '_') }}.html">{{ question.short_name }}</a></li>
+            <li><a class="dropdown-item" href="{{ macros.result_url(base_url, question.short_name) }}">{{ question.short_name }}</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -17,7 +18,7 @@
         </button>
         <ul class="dropdown-menu  dropdown-menu-dark" aria-labelledby="entriesMenuButton">
             {% for entry in entries.list_entries() %}
-            <li><a class="dropdown-item" href="{{ base_url }}/entries/{{ entry.entry_name }}.html">{{ entry.entry_name }}</a></li>
+            <li><a class="dropdown-item" href="{{ macros.entry_url(base_url, entry.entry_name) }}">{{ entry.entry_name }}</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -28,7 +29,7 @@
         </button>
         <ul class="dropdown-menu  dropdown-menu-dark" aria-labelledby="driversMenuButton">
             {% for driver in drivers.list_all_drivers() %}
-            <li><a class="dropdown-item" href="#">{{ driver.name }}</a></li>
+            <li><a class="dropdown-item" href="{{ macros.driver_url(base_url, driver|string) }}">{{ driver.name }}</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -39,7 +40,7 @@
         </button>
         <ul class="dropdown-menu  dropdown-menu-dark" aria-labelledby="teamsMenuButton">
             {% for team in teams.list_all_teams() %}
-            <li><a class="dropdown-item" href="#">{{ team.name }}</a></li>
+            <li><a class="dropdown-item" href="{{ macros.team_url(base_url, team.name) }}">{{ team.name }}</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -50,7 +51,7 @@
         </button>
         <ul class="dropdown-menu  dropdown-menu-dark" aria-labelledby="racesMenuButton">
             {% for race in races.list_races() %}
-            <li><a class="dropdown-item" href="#">{{ race.name }}</a></li>
+            <li><a class="dropdown-item" href="{{ macros.race_url(base_url, race|string) }}">{{ race.name }}</a></li>
             {% endfor %}
         </ul>
     </div>

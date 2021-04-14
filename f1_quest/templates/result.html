@@ -12,16 +12,16 @@
     {% if question.answer is sequence %}
         {% for table in question.answer %}
             <br/>
-            {{ macros.render_table(table) }}
+            {{ macros.render_table(base_url, table) }}
         {% endfor %}
     {% else %}
         <br/>
-        {{ macros.render_table(question.answer) }}
+        {{ macros.render_table(base_url, question.answer) }}
     {% endif %}
 {% endif %}
 
 {% if question.score is not none %}
     <br/>
-    {{ macros.render_table(question.score) }}
+    {{ macros.render_table(base_url, question.score) }}
 {% endif %}
 {% endblock %}

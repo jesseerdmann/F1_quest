@@ -127,8 +127,8 @@ class AnswerKey():
         answer, score = self.six_after_six()
         self.questions.append(QuestionSummary('Q10: Top Six After Six',
             'Q10: Who will be the top six drivers after the first six races?',
-            desc='\n'.join(['Right Diver, right place (+5)',
-                'Right Driver, one place out (+3)', 
+            desc='\n'.join(['Right driver, right place (+5)',
+                'Right driver, one place out (+3)', 
                 'Right driver, two places out (+2)',
                 'Right driver, 3 or more places out (+1)']),
             answer=answer, score=score, entry_var='driver_six_after_six'))
