@@ -22,7 +22,15 @@
             {{ table_row.pos }}
             {% endif %}
             </th>
-            <td>{{ table_row.subject|string }}</td>
+            {% if table.subject_label == 'Driver' %}
+            <td><a class="text-danger" href="{{ driver_url(base_url, table_row.subject|string) }}">{{ table_row.subject|string }}</a></td>
+            {% elif table.subject_label == 'Entry' %}
+            <td><a class="text-danger" href="{{ entry_url(base_url, table_row.subject|string) }}">{{ table_row.subject|string }}</a></td>
+            {% elif table.subject_label == 'Race' %}
+            <td><a class="text-danger" href="{{ race_url(base_url, table_row.subject|string) }}">{{ table_row.subject|string }}</a></td>
+            {% elif table.subject_label == 'Team' %}
+            <td><a class="text-danger" href="{{ team_url(base_url, table_row.subject|string) }}">{{ table_row.subject|string }}</a></td>
+            {% endif %}
             <td>{{ table_row.score }}</td>
             {% if table.show_values %}
             <td scope="col">{{ table_row.value }}</td>
