@@ -702,7 +702,8 @@ class AnswerKey():
         for entry in self.entries.list_entries():
             entry_score = 0
             for race in entry.driver_race_retirements_response:
-                entry_score += race_dict[race]
+                if type(race_dict[race]) == int:
+                    entry_score += race_dict[race]
             scores.add_subject(entry_score, entry)
             entry.add_points(entry_score)
         return (table, scores)
@@ -841,9 +842,10 @@ class AnswerKey():
         table = Table('Total Safety Cars', 'Race', 'Saftey Cars', int, 
             show_values=False)
         for race in self.races.race_list:
-            total_safety_cars += race.safety_cars
-            table.add_subject(race.safety_cars, race)
-            safety_car_dict[str(race)] = race.safety_cars
+            if type(race.safety_cars) == int:
+                total_safety_cars += race.safety_cars
+                table.add_subject(race.safety_cars, race)
+                safety_car_dict[str(race)] = race.safety_cars
         table.add_entries(self.entries, 'race_safety_cars_tiebreaker')
 
         entry_scores = {}

@@ -49,7 +49,7 @@ class Driver:
     def add_race(self, race, points, dis_points, qpos, laps, fastest_lap=False,
         driver_of_the_day=False):
 
-        if points < 0:
+        if type(points) == str or points < 0:
             return self
         
         self.races[race] = DriverRaceResult(race=race, points=points, 

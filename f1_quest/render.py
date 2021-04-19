@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 
 def render_static_pages(base_url="https://jesseerdmann.github.io/F1_quest", 
     data_dir='data', datetime=datetime.now(), output_dir='docs'):
-    ak = AnswerKey(data_dir=data_dir, datetime=datetime)
+    ak = AnswerKey(datetime=datetime)
     file_loader = FileSystemLoader('f1_quest/templates')
     env = Environment(loader=file_loader)
 
