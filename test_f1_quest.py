@@ -1,8 +1,11 @@
+import os
+
 from datetime import datetime
 from f1_quest.answer_key import AnswerKey
 from f1_quest.drivers import Driver, Drivers
 from f1_quest.entries import Entries
 from f1_quest.races import Races
+from f1_quest.render import render_static_pages
 from f1_quest.tables import Table
 from f1_quest.teams import Teams
 
@@ -496,3 +499,16 @@ def test_entries():
     assert('08/29/2021 09:00 AM: Belgium @ Circuit de Spa-Francorchamps' in jesse.driver_gasly_points_response)
     assert('Fernando Alonso, Alpine' in jesse.driver_pick_two_response)
     assert('Charles LeClerc, Ferrari' in jesse.driver_pick_two_response)
+
+
+def test_render():
+    after_one_race_date = datetime.strptime("04/01/2021", "%m/%d/%Y")
+    render_static_pages(output_dir="test_data/out", data_dir="test_data/")
+    assert(os.path.isdir("test_data/out"))
+    assert(os.path.isfile("test_data/out/index.html"))
+    assert(os.path.isdir("test_data/out/drivers"))
+    assert(os.path.isdir("test_data/out/entries"))
+    assert(os.path.isdir("test_data/out/races"))
+    assert(os.path.isdir("test_data/out/results"))
+    assert(os.path.isdir("test_data/out/teams"))
+    assert(os.path.isfile("test_data/out/drivers/Carlos_Sainz_Ferrari.html"))
