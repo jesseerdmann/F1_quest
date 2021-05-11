@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from datetime import datetime
 from f1_quest.answer_key import AnswerKey
@@ -512,3 +513,4 @@ def test_render():
     assert(os.path.isdir("test_data/out/results"))
     assert(os.path.isdir("test_data/out/teams"))
     assert(os.path.isfile("test_data/out/drivers/Carlos_Sainz_Ferrari.html"))
+    shutil.rmtree("test_data/out")
