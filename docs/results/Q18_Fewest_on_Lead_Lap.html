@@ -321,10 +321,79 @@
             
         </tr>
         
+        <tr class="table-light">
+            <th scope="row">
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/races/05_23_2021_08_00_AM__Monaco_Circuit_de_Monaco.html">05/23/2021 08:00 AM: Monaco @ Circuit de Monaco</a></td>
+            
+            <td>7</td>
+            
+            
+        </tr>
+        
     </tbody>
 </table>
 
     
+
+
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <div id="chart"></div>
+    <script>
+        var data = {
+            series: ,
+            races: ,
+            results_table: 
+        }
+
+        var margin = {top: 20, right: 20, bottom: 30, left: 30};
+        var width = 800 - margin.left - margin.right;
+        var height = 600 - margin.top - margin.bottom;
+
+        var svg = d3.select("#chart")
+            .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+            
+        var x = d3.scalePoint()
+            .domain(data.races)
+            .range([margin.left, width - margin.right]);
+        svg.append("g")
+            .attr("transform", `translate(0, ${height - margin.bottom})`)
+            .call(d3.axisBottom(x));
+        var y = d3.scaleLinear()
+            .domain([d3.min(data.series, d => d3.min(d.values)), d3.max(data.series, d => d3.max(d.values))]).nice()
+            .range([height - margin.bottom, margin.top]);
+        svg.append("g")
+            .call(d3.axisLeft(y))
+            .call(g => g.select(".tick:last-of-type text").clone()
+                .attr("x", 3)
+                .attr("text-anchor", "start")
+                .attr("font-weight", "bold")
+                .text("Points")
+            );
+        
+        for (array in data.series) {
+            console.log(data.series[array].name);
+            console.log(data.series[array].values);
+            for (d in data.series[array].values) {
+                console.log("-> x: " + data.series[array].values[d].x + ", y: " + data.series[array].values[d].y);
+            }
+        
+            svg.append("path")
+                .datum(data.series[array].values)
+                .attr("fill", "none")
+                .attr("stroke", "red")
+                .attr("stroke-width", 1.5)
+                .attr("d", d3.line()
+                    .x(function(d) { return x(d.x) })
+                    .y(function(d) { return y(d.y) })
+                );
+        }
+    </script>
 
 
 
