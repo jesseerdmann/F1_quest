@@ -20,6 +20,10 @@
     {% endif %}
 {% endif %}
 
+{% if results_table is not none %}
+    {{ macros.results_plot(results_table)}}
+{% endif %}
+
 {% if question.score is not none %}
     <br/>
     {{ macros.render_table(base_url, question.score) }}

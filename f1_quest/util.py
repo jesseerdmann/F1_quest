@@ -8,3 +8,7 @@ def get_type_val(row, header_row, header_name, type=str):
     if val is not None and len(val) > 0:
         return type(val)
     return val
+
+
+def urlify_name(name):
+    return name.replace(', ', '_').replace('/', '_').replace(' @ ', '_').replace('M:', 'M_').replace(': ', '_').replace(':', '_').replace(' ', '_')
