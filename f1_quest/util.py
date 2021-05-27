@@ -11,4 +11,4 @@ def get_type_val(row, header_row, header_name, type=str):
 
 
 def urlify_name(name):
-    return name.replace(', ', '_').replace('/', '_').replace(' @ ', '_').replace(':', '').replace(' ', '_')
+    return name.replace(', ', '_').replace('/', '_').replace(' @ ', '_').replace('M:', 'M_').replace(': ', '_').replace(':', '_').replace(' ', '_')
