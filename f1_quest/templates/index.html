@@ -3,5 +3,9 @@
 {% block title %}F1 Guessathon{% endblock %}
 
 {% block content %}
+    {% if series_list is not none and race_list is not none and results_table is not none and False %}
+        {{ macros.results_plot(race_list, series_list, results_table) }}
+    {% endif %}
+
     {{ macros.render_table(base_url, overall_table) }}
 {% endblock %}

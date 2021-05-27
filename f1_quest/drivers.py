@@ -25,7 +25,6 @@ class Driver:
         self.started_season = started_season == 'yes'
         self.points = 0
         self.dis_points = 0
-        self.laps = 0
         self.races = {}
         self.podiums = 0
         self.poles = 0
@@ -57,7 +56,6 @@ class Driver:
             fastest_lap=fastest_lap, driver_of_the_day=driver_of_the_day)
         self.points += points
         self.dis_points += dis_points
-        self.laps += laps
         if qpos == 1:
             self.poles += 1
         if points >= 15:
@@ -68,6 +66,16 @@ class Driver:
             self.driver_of_the_day += 1
         if fastest_lap:
             self.fastest_laps += 1
+
+
+    def get_avg_laps(self):
+        races = 0
+        total_laps = 0
+        for race, race_result in  self.races.items():
+            if race_result.laps >= 0:
+                races += 1
+                total_laps += race_result.laps
+        return total_laps/races
 
 
     def qualy_win_pct(self, others):
@@ -81,19 +89,23 @@ class Driver:
         The percentage of times the driver out qualified the others
         """
         other_best_pos_dict = {}
+        qualy_count = 0
         for driver in others:
             for race_result in driver.races.values():
                 if race_result.race not in other_best_pos_dict or \
-                    race_result.qpos > other_best_pos_dict[race_result.race]:
+                    (race_result.qpos > 0 and 
+                     race_result.qpos < other_best_pos_dict[race_result.race]):
                     other_best_pos_dict[race_result.race] = race_result.qpos
         
         wins = 0
         for race_result in self.races.values():
-            if race_result.race not in other_best_pos_dict or \
-                race_result.qpos < other_best_pos_dict[race_result.race]:
+            if race_result.race in other_best_pos_dict and race_result.qpos > 0 \
+                and race_result.qpos < other_best_pos_dict[race_result.race]:
                 wins += 1
+            if race_result.qpos > 0:
+                qualy_count += 1
 
-        return wins/len(self.races)
+        return wins/qualy_count
 
 
 class Drivers:
@@ -243,7 +255,8 @@ class Drivers:
         table = Table('Driver Average Laps', 'Driver', 'Average Laps', float, 
             sort='ascending')
         for driver in self.driver_list:
-            table.add_subject(driver.laps/len(driver.races), driver)
+            # table.add_subject(driver.laps/len(driver.races), driver)
+            table.add_subject(driver.get_avg_laps(), driver)
         return table
 
 
