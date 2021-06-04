@@ -504,7 +504,7 @@ def test_entries():
 
 def test_render():
     after_one_race_date = datetime.strptime("04/01/2021", "%m/%d/%Y")
-    render_static_pages(output_dir="test_data/out", data_dir="test_data/")
+    render_static_pages(output_dir="test_data/out", data_dir="test_data/", datetime=after_one_race_date)
     assert(os.path.isdir("test_data/out"))
     assert(os.path.isfile("test_data/out/index.html"))
     assert(os.path.isdir("test_data/out/drivers"))

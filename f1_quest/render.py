@@ -34,10 +34,8 @@ def render_static_pages(base_url="https://jesseerdmann.github.io/F1_quest",
     series_list = []
     for entry in results_table:
         entry_obj = {'name': entry, 'values': []}
-        race_num = 1
         for race in race_list:
-            entry_obj['values'].append({"x": race_num, "y": results_table[entry][race]})
-            race_num += 1
+            entry_obj['values'].append({race: results_table[entry][race]})
         series_list.append(entry_obj)
     with open(os.path.join(output_dir, 'index.html'), 'w') as out:
         out.write(index.render(overall_table=ak.get_overall_standings(), 
