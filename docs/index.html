@@ -246,6 +246,74 @@
                 <div class="col-12" style="border-width: 5px; border-color:  #181422; border-style: double; padding-top: 5px">
                     
     
+        <script src="https://d3js.org/d3.v6.min.js"></script>
+    <h5>As it happened...</h5>
+    <div class="row" id="chart"></div>
+    <div class="row" id="hover_path" style="margin:auto; height 50px; text-align: center">
+        <h5 style='color:white'>_</h5>
+    </div>
+    <script>
+        var data = {
+            series: [{"name": "Stephen", "values": [{"race": "Bahrain", "points": 208}, {"race": "Italy", "points": 224}, {"race": "Portugal", "points": 209}, {"race": "Spain", "points": 211}, {"race": "Monaco", "points": 211}, {"race": "Azerbaijan", "points": 182}], "color": "DarkCyan"}, {"name": "Douglas", "values": [{"race": "Bahrain", "points": 201}, {"race": "Italy", "points": 226}, {"race": "Portugal", "points": 199}, {"race": "Spain", "points": 202}, {"race": "Monaco", "points": 186}, {"race": "Azerbaijan", "points": 176}], "color": "YellowGreen"}, {"name": "Jesse", "values": [{"race": "Bahrain", "points": 196}, {"race": "Italy", "points": 206}, {"race": "Portugal", "points": 217}, {"race": "Spain", "points": 217}, {"race": "Monaco", "points": 211}, {"race": "Azerbaijan", "points": 211}], "color": "Red"}, {"name": "Jameson", "values": [{"race": "Bahrain", "points": 194}, {"race": "Italy", "points": 188}, {"race": "Portugal", "points": 179}, {"race": "Spain", "points": 158}, {"race": "Monaco", "points": 149}, {"race": "Azerbaijan", "points": 167}], "color": "DarkRed"}, {"name": "Moksha Gren", "values": [{"race": "Bahrain", "points": 174}, {"race": "Italy", "points": 195}, {"race": "Portugal", "points": 188}, {"race": "Spain", "points": 184}, {"race": "Monaco", "points": 172}, {"race": "Azerbaijan", "points": 195}], "color": "Blue"}, {"name": "Paul", "values": [{"race": "Bahrain", "points": 165}, {"race": "Italy", "points": 156}, {"race": "Portugal", "points": 168}, {"race": "Spain", "points": 174}, {"race": "Monaco", "points": 187}, {"race": "Azerbaijan", "points": 206}], "color": "BlueViolet"}, {"name": "Heidi", "values": [{"race": "Bahrain", "points": 160}, {"race": "Italy", "points": 151}, {"race": "Portugal", "points": 137}, {"race": "Spain", "points": 139}, {"race": "Monaco", "points": 145}, {"race": "Azerbaijan", "points": 152}], "color": "DarkKhaki"}, {"name": "Davin", "values": [{"race": "Bahrain", "points": 160}, {"race": "Italy", "points": 175}, {"race": "Portugal", "points": 168}, {"race": "Spain", "points": 167}, {"race": "Monaco", "points": 166}, {"race": "Azerbaijan", "points": 181}], "color": "Green"}, {"name": "David", "values": [{"race": "Bahrain", "points": 159}, {"race": "Italy", "points": 164}, {"race": "Portugal", "points": 137}, {"race": "Spain", "points": 140}, {"race": "Monaco", "points": 119}, {"race": "Azerbaijan", "points": 137}], "color": "Orange"}],
+            races: ["Bahrain", "Italy", "Portugal", "Spain", "Monaco", "Azerbaijan"],
+            results_table: {"Stephen": {"Bahrain": 208, "Italy": 224, "Portugal": 209, "Spain": 211, "Monaco": 211, "Azerbaijan": 182}, "Douglas": {"Bahrain": 201, "Italy": 226, "Portugal": 199, "Spain": 202, "Monaco": 186, "Azerbaijan": 176}, "Jesse": {"Bahrain": 196, "Italy": 206, "Portugal": 217, "Spain": 217, "Monaco": 211, "Azerbaijan": 211}, "Jameson": {"Bahrain": 194, "Italy": 188, "Portugal": 179, "Spain": 158, "Monaco": 149, "Azerbaijan": 167}, "Moksha Gren": {"Bahrain": 174, "Italy": 195, "Portugal": 188, "Spain": 184, "Monaco": 172, "Azerbaijan": 195}, "Paul": {"Bahrain": 165, "Italy": 156, "Portugal": 168, "Spain": 174, "Monaco": 187, "Azerbaijan": 206}, "Heidi": {"Bahrain": 160, "Italy": 151, "Portugal": 137, "Spain": 139, "Monaco": 145, "Azerbaijan": 152}, "Davin": {"Bahrain": 160, "Italy": 175, "Portugal": 168, "Spain": 167, "Monaco": 166, "Azerbaijan": 181}, "David": {"Bahrain": 159, "Italy": 164, "Portugal": 137, "Spain": 140, "Monaco": 119, "Azerbaijan": 137}}
+        }
+
+        var margin = {top: 20, right: 20, bottom: 30, left: 30};
+        var width = document.getElementById("chart").offsetWidth - margin.left - margin.right;
+        var height = 250 - margin.top - margin.bottom;
+
+        var svg = d3.select("#chart")
+            .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom);
+            
+        const x = d3.scalePoint()
+            .domain(data.races)
+            .range([margin.left, width - margin.right]);
+        const y = d3.scaleLinear()
+            .domain([119, 226]).nice()
+            .range([height - margin.bottom, margin.top]);
+        svg.append("g")
+            .attr("transform", `translate(0, ${height - margin.bottom})`)
+            .call(d3.axisBottom(x));
+        svg.append("g")
+            .attr("transform", `translate(${margin.left}, 0)`)
+            .call(d3.axisLeft(y))
+            .call(g => g.select(".tick:last-of-type text").clone()
+                .attr("x", 3)
+                .attr("text-anchor", "start")
+                .attr("font-weight", "bold")
+                .text("Points")
+            );
+        
+        for (array in data.series) {        
+            const path = svg.append("path")
+                .datum(data.series[array].values)
+                .attr("fill", "none")
+                .attr("stroke", data.series[array].color)
+                .attr("stroke-width", 2)
+                .attr("opacity", 0.3)
+                .attr("id", data.series[array].name)
+                .attr("d", d3.line()
+                    .x(d => x(d.race))
+                    .y(d => y(d.points))
+                )
+                .on("mouseover", function(d) {
+                    d3.select(this).attr("opacity", 1).attr("stroke-width", 4);
+                    console.log(d.explicitOriginalTarget);
+                    console.log(d.explicitOriginalTarget.id);
+                    console.log(d.explicitOriginalTarget.stroke);
+                    var text_div = document.getElementById('hover_path')
+                    text_div.innerHTML = "<h5 style='color:red'>" + d.explicitOriginalTarget.id + "</h5>";
+                })
+                .on("mouseout", function(d) {
+                    d3.select(this).attr("opacity", 0.3).attr("stroke-width", 2);
+                    //document.getElementById('hover_path').innerHTML = "<h5 style='color:white'>_</h5>";
+                });
+        }
+    </script>
+    
 
     
 <table class="table">
@@ -268,7 +336,7 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Stephen.html">Stephen</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jesse.html">Jesse</a></td>
             
             <td>211</td>
             
@@ -278,11 +346,13 @@
         <tr class="table-secondary">
             <th scope="row">
             
+            2
+            
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jesse.html">Jesse</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Paul.html">Paul</a></td>
             
-            <td>211</td>
+            <td>206</td>
             
             
         </tr>
@@ -294,9 +364,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Paul.html">Paul</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Moksha_Gren.html">Moksha Gren</a></td>
             
-            <td>187</td>
+            <td>195</td>
             
             
         </tr>
@@ -308,9 +378,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Douglas.html">Douglas</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Stephen.html">Stephen</a></td>
             
-            <td>186</td>
+            <td>182</td>
             
             
         </tr>
@@ -322,9 +392,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Moksha_Gren.html">Moksha Gren</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Davin.html">Davin</a></td>
             
-            <td>172</td>
+            <td>181</td>
             
             
         </tr>
@@ -336,9 +406,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Davin.html">Davin</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Douglas.html">Douglas</a></td>
             
-            <td>166</td>
+            <td>176</td>
             
             
         </tr>
@@ -352,7 +422,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jameson.html">Jameson</a></td>
             
-            <td>149</td>
+            <td>167</td>
             
             
         </tr>
@@ -366,7 +436,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Heidi.html">Heidi</a></td>
             
-            <td>145</td>
+            <td>152</td>
             
             
         </tr>
@@ -380,7 +450,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/David.html">David</a></td>
             
-            <td>119</td>
+            <td>137</td>
             
             
         </tr>
