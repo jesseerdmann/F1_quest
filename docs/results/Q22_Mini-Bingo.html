@@ -1369,11 +1369,8 @@
                 )
                 .on("mouseover", function(d) {
                     d3.select(this).attr("opacity", 1).attr("stroke-width", 4);
-                    console.log(d.explicitOriginalTarget);
-                    console.log(d.explicitOriginalTarget.id);
-                    console.log(d.explicitOriginalTarget.stroke);
                     var text_div = document.getElementById('hover_path')
-                    text_div.innerHTML = "<h5 style='color:red'>" + d.explicitOriginalTarget.id + "</h5>";
+                    text_div.innerHTML = "<h5 style='color:" + d.srcElement.attributes.stroke.value + "'>" + d.srcElement.id + "</h5>";
                 })
                 .on("mouseout", function(d) {
                     d3.select(this).attr("opacity", 0.3).attr("stroke-width", 2);
