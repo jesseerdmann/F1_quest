@@ -7,6 +7,22 @@ from f1_quest.util import urlify_name
 from jinja2 import Environment, FileSystemLoader
 
 
+def table_to_series(ak, race_list, results_table):
+    series_list = []
+    min_y = 1000
+    max_y = 0
+    for entry in results_table:
+        entry_obj = {'name': entry, 'values': [], 'color': ak.entries.entries[entry].color}
+        for race in race_list:
+            entry_obj['values'].append({'race': race, 'points': results_table[entry][race]})
+            if results_table[entry][race] < min_y:
+                min_y = results_table[entry][race]
+            if results_table[entry][race] > max_y:
+                max_y = results_table[entry][race]
+        series_list.append(entry_obj)
+    return (min_y, max_y, series_list)
+
+
 def render_static_pages(base_url="https://jesseerdmann.github.io/F1_quest", 
     data_dir='data', datetime=datetime.now(), output_dir='docs'):
     ak = AnswerKey(datetime=datetime, data_dir=data_dir)
@@ -31,19 +47,14 @@ def render_static_pages(base_url="https://jesseerdmann.github.io/F1_quest",
         results_table[str(subject.subject)][curr_race.name] = subject.score
     with open(results_table_path, 'w') as results_table_out:
         results_table_out.write(json.dumps(results_table))
-    series_list = []
-    for entry in results_table:
-        entry_obj = {'name': entry, 'values': []}
-        for race in race_list:
-            entry_obj['values'].append({race: results_table[entry][race]})
-        series_list.append(entry_obj)
+    (min_y, max_y, series_list) = table_to_series(ak, race_list, results_table)
     with open(os.path.join(output_dir, 'index.html'), 'w') as out:
         out.write(index.render(overall_table=ak.get_overall_standings(), 
             base_url=base_url, questions=ak.questions,
             entries=ak.entries, drivers=ak.drivers,
             races=ak.races, teams=ak.teams, race_list=json.dumps(race_list), 
             series_list=json.dumps(series_list), 
-            results_table=json.dumps(results_table)))
+            results_table=json.dumps(results_table), min_y=min_y, max_y=max_y))
     
 
     result = env.get_template('result.html')
@@ -53,13 +64,17 @@ def render_static_pages(base_url="https://jesseerdmann.github.io/F1_quest",
     if not os.path.isdir(output_subdir):
         raise Exception(f"{output_subdir} is not a directory")
     for question in ak.questions:
+        results_table = question.write_results_table()
+        (min_y, max_y, series_list) = table_to_series(ak, race_list, results_table)
         with open(os.path.join(output_subdir, 
             f"{urlify_name(question.short_name)}.html"), 'w') as out:
             out.write(result.render(question=question, 
                 base_url=base_url, questions=ak.questions,
                 entries=ak.entries, drivers=ak.drivers,
-                races=ak.races, teams=ak.teams))
-        question.write_results_table()
+                races=ak.races, teams=ak.teams, race_list=json.dumps(race_list), 
+                series_list=json.dumps(series_list), 
+                results_table=json.dumps(results_table), min_y=min_y, 
+                max_y=max_y))
 
     entry_template = env.get_template('entry.html')
     output_subdir = os.path.join(output_dir, "entries")
