@@ -102,7 +102,7 @@ class Driver:
             if race_result.race in other_best_pos_dict and race_result.qpos > 0 \
                 and race_result.qpos < other_best_pos_dict[race_result.race]:
                 wins += 1
-            if race_result.qpos > 0:
+            if race_result.qpos > 0 and other_best_pos_dict[race_result.race] > 0:
                 qualy_count += 1
 
         return wins/qualy_count

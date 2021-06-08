@@ -3,8 +3,8 @@
 {% block title %}F1 Guessathon{% endblock %}
 
 {% block content %}
-    {% if series_list is not none and race_list is not none and results_table is not none and False %}
-        {{ macros.results_plot(race_list, series_list, results_table) }}
+    {% if series_list is not none and race_list is not none and results_table is not none %}
+        {{ macros.results_plot(race_list, series_list, results_table, min_y, max_y) }}
     {% endif %}
 
     {{ macros.render_table(base_url, overall_table) }}

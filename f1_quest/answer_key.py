@@ -25,7 +25,7 @@ class QuestionSummary():
         self.entry_var = entry_var
         self.entry_tb = entry_tb
         self.results_table = {}
-        self.race = race.name
+        self.race = race
 
         self.results_table_path = os.path.join(data_dir, '_'.join([urlify_name(self.short_name), 'results_table.json']))
         if os.path.exists(self.results_table_path):
@@ -55,16 +55,17 @@ class QuestionSummary():
         if self.score is not None:
             for subject in self.score.get_ordered_subjects():
                 if str(str(subject.subject)) not in self.results_table: 
-                        self.results_table[str(subject.subject)] = {}
-                self.results_table[str(subject.subject)][self.race] = subject.score
+                    self.results_table[str(subject.subject)] = {}
+                self.results_table[str(subject.subject)][self.race.name] = subject.score
         elif self.answer is not None:
             for subject in self.answer.get_ordered_subjects():
                 for entry in subject.matching_entries:
                     if str(entry) not in self.results_table: 
                         self.results_table[str(entry)] = {}
-                    self.results_table[str(entry)][self.race] = subject.value
+                    self.results_table[str(entry)][self.race.name] = subject.value
         with open(self.results_table_path, 'w') as result_table_out:
             result_table_out.write(json.dumps(self.results_table))
+        return self.results_table
 
 
 

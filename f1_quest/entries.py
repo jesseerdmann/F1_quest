@@ -7,6 +7,7 @@ class Entry():
         self.score = 0
         self.timestamp = row[0]
         self.entry_name = row[1]
+        self.color = row[47]
         self.team_fourth_response = row[2]
         self.team_fourth_tiebreaker = int(row[3])
         self.team_points_avg_response = row[4]
@@ -90,8 +91,7 @@ class Entries():
                     continue
                 self.entries[row[1]] = Entry(row)
 
+
     def list_entries(self):
         return sorted(self.entries.values())
-
-
     
