@@ -144,7 +144,7 @@ def test_seventh_race():
     teams = Teams(data_dir='test_data')
     drivers = Drivers(data_dir='test_data')
     races = Races(data_dir='test_data')
-    after_seven_races_date = datetime.strptime("06/14/2021", "%m/%d/%Y")
+    after_seven_races_date = datetime.strptime("06/21/2021", "%m/%d/%Y")
     races.read_results(data_dir='test_data', drivers=drivers, teams=teams, 
         datetime=after_seven_races_date)
 
