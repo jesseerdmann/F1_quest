@@ -104,7 +104,6 @@ class Driver:
                 wins += 1
             if race_result.qpos > 0 and other_best_pos_dict[race_result.race] > 0:
                 qualy_count += 1
-
         return wins/qualy_count
 
 
