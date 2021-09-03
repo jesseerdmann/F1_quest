@@ -76,8 +76,6 @@ class AnswerKey():
         self.drivers = Drivers(data_dir=data_dir)
         self.entries = Entries  (data_dir=data_dir)
         self.races = Races(data_dir=data_dir)
-        self.races.read_results(data_dir=data_dir, drivers=self.drivers, 
-            teams=self.teams, datetime=datetime)
         self.datetime = datetime
         self.questions = []
 
@@ -101,6 +99,11 @@ class AnswerKey():
                     self.single_answer_dict[row[0]] = row[1]
 
         current_race = self.races.list_races_before(datetime)[-1]
+
+        # This needs to happen after the scoring_single_answer because of SPA half points
+        self.races.read_results(data_dir=data_dir, drivers=self.drivers, 
+            teams=self.teams, datetime=datetime, 
+            half_points=self.single_answer_dict['Half-points races'])
 
         answer, score = self.team_fourth()
         self.questions.append(QuestionSummary(data_dir, current_race, 'Q1: Team Fourth',

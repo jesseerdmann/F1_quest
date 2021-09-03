@@ -46,7 +46,7 @@ class Driver:
 
 
     def add_race(self, race, points, dis_points, qpos, laps, fastest_lap=False,
-        driver_of_the_day=False):
+        driver_of_the_day=False, half_points=False):
 
         if type(points) == str or points < 0:
             return self
@@ -58,9 +58,9 @@ class Driver:
         self.dis_points += dis_points
         if qpos == 1:
             self.poles += 1
-        if points >= 15:
+        if points >= 15 or (half_points and points >= 7.5):
             self.podiums += 1
-        if points >= 25:
+        if points >= 25 or (half_points and points >= 12.5):
             self.wins += 1
         if driver_of_the_day:
             self.driver_of_the_day += 1

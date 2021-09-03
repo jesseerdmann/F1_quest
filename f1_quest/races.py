@@ -146,7 +146,7 @@ class Races:
 
     def read_results(self, drivers, teams, 
         data_dir=os.getenv('F1_DATA', 'data'), file_name="race_results.csv",
-        datetime=datetime.now()):
+        datetime=datetime.now(), half_points=[]):
         file_path = os.path.join(data_dir, file_name)
 
         # Ensure teams have the correct list of drivers
@@ -181,7 +181,7 @@ class Races:
                     fastest_lap_winner = driver.name == get_type_val(row,
                         self.header_row, 'Fastest Lap Winner')
                     points = get_type_val(row, self.header_row, 
-                        ' '.join([driver.name, 'Pts']), int)
+                        ' '.join([driver.name, 'Pts']), float)
                     dis_points = get_type_val(row, self.header_row, 
                         ' '.join([driver.name, 'Dis Pts']), int)
                     qpos = get_type_val(row, self.header_row, 
@@ -191,7 +191,8 @@ class Races:
                     driver.add_race(race=row[0], points=points, 
                         dis_points=dis_points, qpos=qpos, laps=laps, 
                         driver_of_the_day=driver_of_the_day,
-                        fastest_lap=fastest_lap_winner)
+                        fastest_lap=fastest_lap_winner, 
+                        half_points=(row[0] in half_points))
                 
                 # Get post-race driver points
                 race.post_race_driver_points = drivers.get_points_table()
