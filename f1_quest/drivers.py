@@ -75,7 +75,10 @@ class Driver:
             if race_result.laps >= 0:
                 races += 1
                 total_laps += race_result.laps
-        return total_laps/races
+        if races > 0:
+            return total_laps/races
+        else: 
+            return 0
 
 
     def qualy_win_pct(self, others):
@@ -104,7 +107,10 @@ class Driver:
                 wins += 1
             if race_result.qpos > 0 and other_best_pos_dict[race_result.race] > 0:
                 qualy_count += 1
-        return wins/qualy_count
+        if qualy_count > 0 :
+            return wins/qualy_count
+        else:
+            return 0
 
 
 class Drivers:
