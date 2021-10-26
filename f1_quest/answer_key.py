@@ -384,7 +384,7 @@ class AnswerKey():
                     if entry.entry_name in entry_placed_dict:
                         continue
                     entry_placed_dict[entry.entry_name] = True
-                    entry_tb_score = abs(entry.__dict__[tie_breaker_var]) - tie_breaker
+                    entry_tb_score = abs(entry.__dict__[tie_breaker_var] - tie_breaker)
                     if pts not in score_dict:
                         score_dict[pts] = {}
                     if entry_tb_score not in score_dict[pts]:
