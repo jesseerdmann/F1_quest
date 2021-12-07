@@ -14,6 +14,8 @@ def table_to_series(ak, race_list, results_table):
     for entry in results_table:
         entry_obj = {'name': entry, 'values': [], 'color': ak.entries.entries[entry].color}
         for race in race_list:
+            if not race in results_table[entry]:
+                continue
             entry_obj['values'].append({'race': race, 'points': results_table[entry][race]})
             if results_table[entry][race] < min_y:
                 min_y = results_table[entry][race]

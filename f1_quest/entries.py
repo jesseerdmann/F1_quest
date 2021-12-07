@@ -47,7 +47,7 @@ class Entry():
         self.russia_stop_for_softs_response = int(row[29])
         self.russia_stop_for_softs_tiebreaker = int(row[30])
         self.saudi_first_retirement_response = row[31]
-        self.saudi_first_retirement_tiebrekaer = int(row[32])
+        self.saudi_first_retirement_tiebreaker = int(row[32])
         self.btn_unique_winners_response = int(row[33])
         self.btn_unique_pole_sitters_response = int(row[34])
         self.btn_unique_fastest_lap_response = int(row[35])

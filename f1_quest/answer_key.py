@@ -11,7 +11,8 @@ from f1_quest.teams import Teams
 from f1_quest.util import urlify_name
 
 
-F1_POINTS = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1}
+F1_POINTS = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1, 
+             11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 18: 0, 19: 0, 20: 0}
 
 
 class QuestionSummary():
@@ -91,7 +92,7 @@ class AnswerKey():
         if not os.path.exists(file_path):
             raise Exception(f"{file_path} not found, exiting.")
         with open(file_path, newline='') as file_pointer:
-            file_reader = csv.reader(file_pointer, delimiter=',', quotechar='"')
+            file_reader = csv.reader(file_pointer, delimiter=',', quotechar='\'')
             for row in file_reader:
                 if row[0] in int_answers:
                     self.single_answer_dict[row[0]] = int(row[1])
@@ -671,8 +672,9 @@ class AnswerKey():
             for pos, pos_dict in places_dict.items():
                 drivers = race.post_race_driver_points.get_subjects_by_pos(pos)
                 if len(drivers) > 1:
-                    pos_dict['driver'] = None
-                    pos_dict['race'] = None
+                    drivers_names = [driver.subject.name for driver in drivers]
+                    pos_dict['driver'] = "Tie: " + ", ".join(drivers_names)
+                    pos_dict['race'] = race
                 elif drivers[0].subject.name != pos_dict['driver']:
                     pos_dict['driver'] = drivers[0].subject.name
                     pos_dict['race'] = race
@@ -1022,13 +1024,47 @@ class AnswerKey():
         # Race has not occurred yet
         if first_retirement is None or len(first_retirement) == 0:
             return (None, None)
-        driver = self.drivers.get_driver_by_short_name(first_retirement)
-        previous_race = self.races.get_race_by_name('Australia')
+        driver_order = json.loads(first_retirement)
+        race = self.races.get_race_by_name('Saudi Arabia')
         # Race has not occurred yet
-        if previous_race is None or previous_race.post_race_driver_points is None:
+        if race is None or race.post_race_driver_points is None:
             return (None, None)
-        wdc_pos = previous_race.post_race_driver_points.get_position_of_entry(driver)
-        return (first_retirement, wdc_pos)
+        wdc_pos = 19
+        
+        table = Table("First Retirement in Saudi Arabia", 'Driver', 'Retirement Position', int, 
+            show_values=False, show_entries=True, sort="ascending")
+        pos = 1
+        driver_scores = {}
+        for driver in driver_order:
+            driver_scores[driver] = pos
+            table.add_subject(pos, driver)
+            pos += 1
+        table.add_entries(self.entries, 'saudi_first_retirement_response',
+                          'saudi_first_retirement_tiebreaker')
+        
+        entry_scores = {}
+        for entry in self.entries.list_entries():
+            entry_val = driver_scores[entry.saudi_first_retirement_response]
+            if entry_val not in entry_scores:
+                entry_scores[entry_val] = {}
+            tie_breaker_val = abs(wdc_pos-entry.saudi_first_retirement_tiebreaker)
+            if tie_breaker_val not in entry_scores[entry_val]:
+                entry_scores[entry_val][tie_breaker_val] = [entry]
+            else:
+                 entry_scores[entry_val][tie_breaker_val].append(entry)
+        
+        score = Table(f"Final Scores: Correct Answer Mick Schumacher (tiebreaker: {wdc_pos})", 
+            'Entry', 'Points', int, show_values=False, show_entries=False, value_label="Tiebreaker Guess")
+        pos = 1
+        for entry_score in sorted(entry_scores.keys()):
+            for tie_breaker in sorted(entry_scores[entry_score]):
+                for entry in entry_scores[entry_score][tie_breaker]:
+                    entry_row = score.add_subject(F1_POINTS[pos], entry)
+                    entry.add_points(F1_POINTS[pos])
+                    entry_row.value = entry.saudi_first_retirement_tiebreaker
+                pos += len(entry_scores[entry_score][tie_breaker])
+        
+        return (table, score)
 
 
     def btn_subscore_table(self, table_name, correct_score, entry_var):
