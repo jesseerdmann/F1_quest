@@ -647,6 +647,19 @@ class AnswerKey():
         return (points_table, score_table)
 
 
+    def break_driver_tie(self, drivers):
+        win_dict = {}
+        for driver in drivers:
+            if driver.subject.wins in win_dict:
+                win_dict[driver.subject.wins].append(driver)
+            else:
+                win_dict[driver.subject.wins] = [driver]
+        result = []
+        for win_count in reversed(sorted(win_dict.keys())):
+            result.append(win_dict[win_count])
+        return result
+
+
     def uninterrupted_leader(self):
         """
         Answer the question "At which race will the champion move to the top of
@@ -669,15 +682,41 @@ class AnswerKey():
             }
         }
         for race in completed_races:
-            for pos, pos_dict in places_dict.items():
-                drivers = race.post_race_driver_points.get_subjects_by_pos(pos)
-                if len(drivers) > 1:
-                    drivers_names = [driver.subject.name for driver in drivers]
-                    pos_dict['driver'] = "Tie: " + ", ".join(drivers_names)
-                    pos_dict['race'] = race
-                elif drivers[0].subject.name != pos_dict['driver']:
-                    pos_dict['driver'] = drivers[0].subject.name
-                    pos_dict['race'] = race
+            first_name = ''
+            second_name = ''
+            # Determine first
+            first_drivers = race.post_race_driver_points.get_subjects_by_pos(1)
+            # Use tie breaker
+            if len(first_drivers) > 1:
+                sorted_drivers = self.break_driver_tie(first_drivers)
+                if len(sorted_drivers[0]) > 1:
+                    first_name = "Tie: " + ", ".join(sorted_drivers[0])
+                    second_name = "Tie: " + ", ".join(sorted_drivers[0])
+                else:
+                    first_name = sorted_drivers[0][0].subject.name
+                    if len(sorted_drivers[1]) > 1:
+                        second_name = "Tie: " + ", ".join(sorted_drivers[1])
+                    else:
+                        second_name = sorted_drivers[1][0].subject.name
+            else:
+                first_name = first_drivers[0].subject.name
+                second_drivers = race.post_race_driver_points.get_subjects_by_pos(2)
+                # Use tie breaker
+                if len(second_drivers) > 1:
+                    sorted_drivers = self.break_driver_tie(second_drivers)
+                    if len(sorted_drivers[0]) > 1:
+                        second_name = "Tie: " + ", ".join(sorted_drivers[0])
+                    else:
+                        second_name = sorted_drivers[0][0].subject.name
+                else:
+                    second_name = second_drivers[0].subject.name
+
+            if places_dict[1]['driver'] != first_name:
+                places_dict[1]['driver'] = first_name
+                places_dict[1]['race'] = race
+            if places_dict[2]['driver'] != second_name:
+                places_dict[2]['driver'] = second_name
+                places_dict[2]['race'] = race    
 
         """
         Once the race is determined, build a dictionary of race to distance 
@@ -780,7 +819,8 @@ class AnswerKey():
             raise Exception(f"No driver matches found for {driver_short_name}")
 
         for race, result in driver.races.items():
-            race_dict[race] = result.points * mult
+            if result.points >= 0:
+                race_dict[race] = result.points * mult
         
         table = Table(f"{driver_short_name} Points", "Race", "Points", int, 
             show_values=False, sort=None)
@@ -1351,6 +1391,9 @@ class AnswerKey():
         remaining_races = self.races.list_races_after(self.datetime)
         if first[0].score - second[0].score <= (26 * len(remaining_races)):
             answer = 'TRUE'
+        # Hacking answer in because it was true heading into the final race and it doesn't make 
+        # sense to figure out how to recognize that it was true at this point.
+        answer = 'TRUE'
         score = self.mini_bingo_sub('World Driver Championship goes all the way to the final race.', 
             answer, 'bingo_down_to_the_wire_response')
         return score

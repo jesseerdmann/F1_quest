@@ -48,8 +48,8 @@ class Driver:
     def add_race(self, race, points, dis_points, qpos, laps, fastest_lap=False,
         driver_of_the_day=False, half_points=False):
 
-        if type(points) == str or points < 0:
-            return self
+        #if type(points) == str or points < 0:
+        #    return self
         
         self.races[race] = DriverRaceResult(race=race, points=points, 
             dis_points=dis_points, qpos=qpos, laps=laps, 
@@ -95,9 +95,9 @@ class Driver:
         qualy_count = 0
         for driver in others:
             for race_result in driver.races.values():
-                if race_result.race not in other_best_pos_dict or \
-                    (race_result.qpos > 0 and 
-                     race_result.qpos < other_best_pos_dict[race_result.race]):
+                if race_result.qpos > 0 and (
+                    race_result.race not in other_best_pos_dict or
+                    race_result.qpos < other_best_pos_dict[race_result.race]):
                     other_best_pos_dict[race_result.race] = race_result.qpos
         
         wins = 0
@@ -105,8 +105,10 @@ class Driver:
             if race_result.race in other_best_pos_dict and race_result.qpos > 0 \
                 and race_result.qpos < other_best_pos_dict[race_result.race]:
                 wins += 1
-            if race_result.qpos > 0 and other_best_pos_dict[race_result.race] > 0:
+            if race_result.qpos > 0 and race_result.race in other_best_pos_dict and \
+                other_best_pos_dict[race_result.race] > 0:
                 qualy_count += 1
+
         if qualy_count > 0 :
             return wins/qualy_count
         else:
