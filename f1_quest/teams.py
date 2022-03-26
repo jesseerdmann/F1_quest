@@ -10,11 +10,11 @@ class TeamRaceResult():
 
 
 class Team():
-    def __init__(self, name, points_2020):
+    def __init__(self, name, points_last_year):
         self.drivers = {}
         self.race_results = {}
-        self.points_2020 = points_2020
-        self.races_2020 = 17
+        self.points_last_year = points_last_year
+        self.races_last_year = 22
         self.name = name
 
 
@@ -74,9 +74,9 @@ class Teams():
                         self.header_row[header] = idx
                     continue
                 name = row[0]
-                points_2020 = get_type_val(row, self.header_row, 'Points 2020',
-                    int)
-                self.team_dict[name] = Team(name=name, points_2020=points_2020)
+                points_last_year = get_type_val(row, self.header_row, 'Points 2021',
+                    float)
+                self.team_dict[name] = Team(name=name, points_last_year=points_last_year)
 
 
     def add_drivers(self, drivers):
@@ -137,33 +137,34 @@ class Teams():
         return table
 
 
-    def get_average_point_change_table(self):
+    def get_q3_appearances_table(self, drivers):
         """
-        Build a table on team points improvement over 2020
+        Build a table based on the drivers' Q3 appearances if in the bottom
+        six teams last season
 
         Returns:
-        A table of teams based on their points/race change from 2020
+        A table object with drivers and Q3 appearances
         """
-        table = Table('Team Improvement from 2020', 'Team', 'Average Points Difference', float)
-        for team in self.team_dict.values():
-            avg_2020 = team.points_2020 / team.races_2020
-            avg = team.get_points() / len(team.race_results.keys())
-            table.add_subject(avg - avg_2020, team)
+        table = Table('Driver Q3 appearances', 'Driver', 'Q3 Appearances', int)
+        for team in self.list_all_teams():
+            if team.name in ['Alfa Romeo Racing', 'Alpine', 'AlphaTauri', 'Aston Martin', 'Haas F1 Team', 'Williams']:
+                for driver_name in team.drivers:
+                    driver = drivers.get_driver_by_short_name(driver_name)
+                    if driver.started_season:
+                        table.add_subject(driver.q3s, driver)
         return table
 
-    def get_teammate_qualy_table(self):
+
+    def get_average_point_change_table(self):
         """
-        Build a table based on a driver out qualifying their teammate
+        Build a table on team points improvement over last year
 
         Returns:
-        A table of drivers based on their qualy wins over their teammate
+        A table of teams based on their points/race change from Last Year
         """
-        table = Table('Qualy Wins over Teammate', 'Driver', 'Win Average', float)
+        table = Table('Team Improvement from Last Year', 'Team', 'Average Points Difference', float)
         for team in self.team_dict.values():
-            for driver in team.drivers.values():
-                teammates = []
-                for driver2 in team.drivers.values():
-                    if driver != driver2:
-                        teammates.append(driver2)
-                table.add_subject(driver.qualy_win_pct(teammates), driver)
+            avg_last_year = team.points_last_year / team.races_last_year
+            avg = team.get_points() / len(team.race_results.keys())
+            table.add_subject(avg - avg_last_year, team)
         return table
