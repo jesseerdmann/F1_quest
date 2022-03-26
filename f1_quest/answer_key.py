@@ -13,6 +13,8 @@ from f1_quest.util import urlify_name
 
 F1_POINTS = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1, 
              11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 18: 0, 19: 0, 20: 0}
+SPRINT_POINTS = {1: 8, 2: 7, 3: 6, 4: 5, 5: 4, 6: 3, 7: 2, 8: 1, 9: 0, 10: 0, 
+             11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 18: 0, 19: 0, 20: 0}
 
 
 class QuestionSummary():
@@ -75,43 +77,33 @@ class AnswerKey():
         file_name='scoring_single_answer.csv'):
         self.teams = Teams(data_dir=data_dir)
         self.drivers = Drivers(data_dir=data_dir)
-        self.entries = Entries  (data_dir=data_dir)
+        self.entries = Entries  (data_dir=data_dir, drivers=self.drivers)
         self.races = Races(data_dir=data_dir)
         self.datetime = datetime
         self.questions = []
 
         # Read scoring_single_answer.csv
         self.single_answer_dict = {}
-        # These entries need to be read as strings
-        int_answers = ["Pitted for Softs in last five laps at Russia", 
-            "Total laps on softs for winner at Russia", 
-            "How many races have wet compound used", 
-            "How many drivers confirmed to leave",
-            "How many races with animal invasions"]
         file_path = os.path.join(data_dir, file_name)
         if not os.path.exists(file_path):
             raise Exception(f"{file_path} not found, exiting.")
         with open(file_path, newline='') as file_pointer:
             file_reader = csv.reader(file_pointer, delimiter=',', quotechar='\'')
             for row in file_reader:
-                if row[0] in int_answers:
-                    self.single_answer_dict[row[0]] = int(row[1])
-                else:
-                    self.single_answer_dict[row[0]] = row[1]
+                self.single_answer_dict[row[0]] = row[1]
 
         current_race = self.races.list_races_before(datetime)[-1]
 
         # This needs to happen after the scoring_single_answer because of SPA half points
         self.races.read_results(data_dir=data_dir, drivers=self.drivers, 
-            teams=self.teams, datetime=datetime, 
-            half_points=self.single_answer_dict['Half-points races'])
+            teams=self.teams, datetime=datetime)
 
-        answer, score = self.team_fourth()
-        self.questions.append(QuestionSummary(data_dir, current_race, 'Q1: Team Fourth',
-            'Q1: Which team will finish fourth in the championship?',
-            desc='Tie Breaker: How many points will the 4th place team get?',
-            answer=answer, score=score, entry_var='team_fourth_response',
-            entry_tb='team_fourth_tiebreaker'))
+        answer, score = self.team_fifth()
+        self.questions.append(QuestionSummary(data_dir, current_race, 'Q1: Team Fifth',
+            'Q1: Which team will finish fifth in the championship?',
+            desc='Tie Breaker: How many points will the fifth place team get?',
+            answer=answer, score=score, entry_var='team_fifth_response',
+            entry_tb='team_fifth_tiebreaker'))
         
         answer, score = self.avg_points_increase()
         self.questions.append(QuestionSummary(data_dir, current_race, 
@@ -119,55 +111,37 @@ class AnswerKey():
             'Q2: Which team will have the highest points per race increase over 2020?',
             answer=answer, score=score, entry_var='team_points_avg_response'))
         
-        self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q3: Fastest Pit Stop',
-            'Q3: Which team will win the DHL Fastest Pit Stop?',
-            desc='No data available and everyone voted for Red Bull, so good work everyone!',
-            entry_var='team_fps_response'))
-
         answer, score = self.driver_of_the_day()
         self.questions.append(QuestionSummary(data_dir, current_race,  
-            'Q4: Driver of the Day',
-            'Q4: Who will win the most official "Driver of the Day" awards?',
+            'Q3: Driver of the Day',
+            'Q3: Who will win the most official "Driver of the Day" awards?',
             answer=answer, score=score, entry_var='driver_of_the_day_response'))
 
         answer, score = self.driver_tenth()
         self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q5: Driver Tenth',
-            'Q5: Which driver will finish 10th in the Championship?',
+            'Q4: Driver Tenth',
+            'Q4: Which driver will finish 10th in the Championship?',
             desc='Tie Breaker: How many points did that driver get?',
             answer=answer, score=score, entry_var='driver_tenth_response',
             entry_tb='driver_tenth_tiebreaker'))
 
-        answer, score = self.teammate_qualy()
-        self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q6: Qualy Dominance',
-            'Q6: Which driver will be most dominant over their teammate in qualifying?',
-            answer=answer, score=score, entry_var='driver_qualy_dominance'))
-
         answer, score = self.podium_winners()
         self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q7: Podium Winners',
-            'Q7: Check every driver that will have a podium finish during the season.',
+            'Q5 : Podium Winners',
+            'Q5: Check every driver that will have a podium finish during the season.',
             desc='+5 for every correct, -3 for every incorrect guess, -3 for every missed podium',
             answer=answer, score=score, entry_var='driver_podium_response'))
-        
-        answer, score = self.dis_points()
-        self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q8: Disciplinary Points',
-            'Q8: Which driver will have the most penalty points?',
-            answer=answer, score=score, entry_var='driver_penalty_points'))
 
         answer, score = self.avg_laps()
         self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q9: Fewest Average Laps',
-            'Q9: Which driver will have the lowest average race laps per race started?',
+            'Q6: Fewest Average Laps',
+            'Q6: Which driver will have the lowest average race laps per race started?',
             answer=answer, score=score, entry_var='drvier_lowest_laps_avg'))
 
         answer, score = self.six_after_six()
         self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q10: Top Six After Six',
-            'Q10: Who will be the top six drivers after the first six races?',
+            'Q7: Top Six After Six',
+            'Q7: Who will be the top six drivers after the first six races?',
             desc='\n'.join(['Right driver, right place (+5)',
                 'Right driver, one place out (+3)', 
                 'Right driver, two places out (+2)',
@@ -176,106 +150,87 @@ class AnswerKey():
 
         answer, score = self.uninterrupted_leader()
         self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q11: Uninterrupted Leader',
-            'Q11: At which race will the champion move to the top of the standings and never drop out of the top spot?',
+            'Q8: Uninterrupted Leader',
+            'Q8: At which race will the champion move to the top of the standings and never drop out of the top spot?',
             desc='At which race does the #2 driver take an unbroken position in the championship?',
             answer=answer, score=score, entry_var='driver_unbroken_lead_response',
             entry_tb='driver_unbroken_lead_tiebreaker'))
 
         answer, score = self.retirements()
         self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q12: Retirements',
-            'Q12: Pick three races, each retirement from the chosen races will cost you -5 points.',
+            'Q9: Retirements',
+            'Q9: Pick three races, each retirement from the chosen races will cost you -5 points.',
             answer=answer, score=score, entry_var='driver_race_retirements_response'))
-
-        answer, score = self.gasly_points()
-        self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q13: Gasly Points',
-            'Q13: Pick two races, get the points scored by Pierre Gasly for those races.',
-            answer=answer, score=score, entry_var='driver_gasly_points_response'))
-
-        answer, score = self.stroll_points()
-        self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q14: Stroll Points',
-            'Q14: Pick two races, get the points scored by Lance Stroll for those races.',
-            answer=answer, score=score, entry_var='driver_stroll_points_response'))
-
-        answer, score = self.mazepin_points()
-        self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q15: Mazepin Points',
-            'Q15: Pick two races, SUBTRACT Nikita Mazepin\'s points for those races',
-            answer=answer, score=score, entry_var='driver_mazepin_points_response'))
-
-        answer, score = self.bottom_seven()
-        self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q16: Two from the Bottom Seven',
-            'Q16: Pick two drivers who are not currently teammates from the bottom seven teams in 2020.',
-            answer=answer, score=score, entry_var='driver_pick_two_response'))
-
-        answer, score = self.safety_cars()
-        self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q17: Safety Cars',
-            'Q17: How many safety and virtual safety cars will be called in 2021?',
-            desc='Tie breaker: Which race will have the most safety cars of all types?',
-            answer=answer, score=score, entry_var='race_safety_cars_response',
-            entry_tb='race_safety_cars_tiebreaker'))
 
         answer, score = self.fewest_on_lead_lap()
         self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q18: Fewest on Lead Lap',
-            'Q18: What is the fewest number of drivers that will finish on the lead lap of any race?',
+            'Q10: Fewest on Lead Lap',
+            'Q10: What is the fewest number of drivers that will finish on the lead lap of any race?',
             answer=answer, score=score, entry_var='race_fewest_on_lead_lap_response'))
-
-        answer, score = self.russia_facts()
-        self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q19: Soft on Russia',
-            'Q19: How many drivers will take on soft tires in the last 5 laps in Russia?',
-            desc="Tie breaker: How many laps will the winner have done on soft tires?",
-            answer=answer, score=score, entry_var='russia_stop_for_softs_response',
-            entry_tb='russia_stop_for_softs_tiebreaker'))
 
         answer, score = self.first_saudi_retirement()
         self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q20: Retiring to Saudi Arabia',
-            'Q20: Which driver that starts the race in Saudi Arabia will be the first one out?',
+            'Q11: Retiring to Saudi Arabia',
+            'Q11: Which driver that starts the race in Saudi Arabia will be the first one out?',
             desc='Tie breaker: What WDC position will that driver start the race in?\n\nTBD after Saudi Arabian GP is run',
             answer=answer, score=score, entry_var='saudi_first_retirement_response',
             entry_tb='saudi_first_retirement_tiebrekaer'))
 
-        answer, score = self.by_the_numbers()
+        answer, score = self.q3_appearances()
         self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q21: By The Numbers',
-            'Q21: By the numbers.', 
-            desc="Sum the numbers in the following tables and be closest to the total",
-            answer=answer, score=score, entry_var=list(zip(['Number of Winners',
-                'Number of Pole Sitters', 'Number of Fastest Lap Winners',
-                'Number of Races with Wet Compounds Used', 'Number ofDrivers Confirmed to Leave in Season',
-                'Number of Animal Track Invasions'], [
-                'btn_unique_winners_response',
-                'btn_unique_pole_sitters_response', 
-                'btn_unique_fastest_lap_response',
-                'btn_wet_compound_races_response', 
-                'btn_driver_departure_confirmed_response',
-                'btn_animal_invasions_response'])),
-            entry_tb='btn_total_drivers_tiebreaker'))
+            'Q12: Q3 Appearances',
+            'Q12: Which driver from the bottom 6 teams last year will have the most appearances in the final round of qualifying (Q3) over the season?',
+            answer=answer, score=score, entry_var='driver_q3s'))
+        
+        qnum = 13
+        for driver in self.drivers.list_all_drivers():
+            if driver.started_season:
+                answer, score = self.driver_points_by_race(driver.name, f"fantasy_{driver.last_name}")
+                self.questions.append(QuestionSummary(data_dir, current_race, 
+                    f"Q{qnum}: Fantasy {driver.last_name}",
+                    f"Q{qnum}: Pick a race for {driver.first_name} {driver.last_name} and get the points based on their finishing position",
+                    answer=answer, score=score, entry_var=f"fantasy_{driver.last_name}"))
+                qnum = qnum + 1
+
+        answer, score = self.unique_race_winners()
+        self.questions.append(QuestionSummary(data_dir, current_race, 
+            f"Q{qnum}: Unique Race Winners",
+            f"Q{qnum}: Unique Race Winners.", 
+            desc="How many different drivers will win a race this season?",
+            answer=answer, score=score, entry_var='btn_unique_winners_response'))
+        qnum = qnum + 1
+
+        answer, score = self.unique_pole_sitters()
+        self.questions.append(QuestionSummary(data_dir, current_race, 
+            f"Q{qnum}: Unique Pole Sitters",
+            f"Q{qnum}: Unique Pole Sitters", 
+            desc="How many different drivers will win pole position?",
+            answer=answer, score=score, entry_var='btn_unique_pole_sitters_response'))
+        qnum = qnum + 1
+
+        answer, score = self.unique_fastest_lap()
+        self.questions.append(QuestionSummary(data_dir, current_race, 
+            f"Q{qnum}: Unique Fastest Lappers",
+            f"Q{qnum}: Unique Fastest Lappers", 
+            desc="How many different drivers will finish with the fastest lap of the race?",
+            answer=answer, score=score, entry_var='btn_unique_fastest_lap_response'))
+        qnum = qnum + 1
 
         answer, score = self.mini_bingo()
         self.questions.append(QuestionSummary(data_dir, current_race, 
-            'Q22: Mini-Bingo', 'Q22: Mini-Bingo',
+            f"Q{qnum}: Mini-Bingo", f"Q{qnum}: Mini-Bingo",
             desc='Correctly True: +5, Correctly False: +1, Incorrect: -3',
             answer=answer, score=score, entry_var=list(zip(['Pourchaire in 2022',
-                'Norris Gets a Podium', 'Williams Finishes Above 10th', 
-                'Red Bull Changes Drivers in Season', 
+                'Yuki Gets a Podium', 'Haas Finishes Above 10th', 
                 'All 20 Drivers Classified in One Race',
                 'World Driver Championship Goes to Final Race', 
-                'Russell Outscores a Driver That is Not a Teammate'], [
+                'Schumacher Outscores a Driver That is Not a Teammate'], [
                 'bingo_pourchaire_response',
-                'bingo_norris_response',
-                'bingo_williams_response',
-                'bingo_red_bull_response',
+                'bingo_yuki_response',
+                'bingo_haas_response',
                 'bingo_twenty_classifieds_response',
                 'bingo_down_to_the_wire_response',
-                'bingo_russell_response']))))
+                'bingo_schumacher_response']))))
 
 
     def __str__(self):
@@ -406,30 +361,30 @@ class AnswerKey():
         return entry_table
 
 
-    def team_fourth(self):
+    def team_fifth(self):
         '''
-        Provide the answer key for the question "Which team will finish fourth
+        Provide the answer key for the question "Which team will finish fifth
          in the championship?" and its tiebreaker, "How many points will the 
-         fourth place team collect?"
+         fifth place team collect?"
 
         Returns:
         A dictionary mapping team names to point value if chosen, and the tiebreaker
         value
         '''
         team_points = self.teams.get_points_table()
-        score_map = { 4: 25, 3: 18, 5: 18, 2: 15, 6: 15, 1: 12, 7: 12, 8: 10,
-            9: 8, 10: 6 }
-        team_points.add_entries(self.entries, 'team_fourth_response', 
-                                'team_fourth_tiebreaker')
+        score_map = { 5: 25, 4: 18, 6: 18, 3: 15, 7: 15, 2: 12, 8: 12, 1: 10, 9: 10,
+            10: 8 }
+        team_points.add_entries(self.entries, 'team_fifth_response', 
+                                'team_fifth_tiebreaker')
         team_points.show_values = False
         answer_key, tie_breaker = self.map_table_to_score(team_points, 
                                                           score_map, 
-                                                          tie_breaker_pos=4)
+                                                          tie_breaker_pos=5)
 
         entry_table = self.tie_breaker_scoring("Final Scores", 
                                                score_map, team_points,
                                                tie_breaker, 
-                                               'team_fourth_tiebreaker')
+                                               'team_fifth_tiebreaker')
 
         return (team_points, entry_table)
 
@@ -495,25 +450,6 @@ class AnswerKey():
         return (driver_points_table, entry_table)
 
 
-    def teammate_qualy(self):
-        """
-        Answer the question "Which driver will be most dominant over their 
-         teammate in qualifying?"
-
-        Returns:
-        A dictionary mapping driver names to point value if chosen
-        """
-        teammate_qualy_table = self.teams.get_teammate_qualy_table()
-        score_map = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 
-            9: 2, 10: 1, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 
-            18: 0, 19: 0, 20: 0}
-        teammate_qualy_table.add_entries(self.entries, 
-            'driver_qualy_dominance')
-        answer_key, tie_breaker =  self.map_table_to_score(
-            teammate_qualy_table, score_map, update_entry_score=True)
-        return (teammate_qualy_table, None)
-
-
     def podium_winners(self):
         """
         Answer the question "Check every driver that will have a podium finish 
@@ -557,23 +493,6 @@ class AnswerKey():
             entry.add_points(entry_points)
             
         return (podium_winners_table, score_table)
-
-
-    def dis_points(self):
-        """
-        Answer the question "Which driver will have the most penalty points?"
-
-        Returns:
-        A dictionary mapping driver names to point value if chosen
-        """
-        dis_points_table = self.drivers.get_dis_points_table()
-        score_map = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 
-            9: 2, 10: 1, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 
-            18: 0, 19: 0, 20: 0}
-        dis_points_table.add_entries(self.entries, 'driver_penalty_points')
-        answer_key, tie_breaker = self.map_table_to_score(dis_points_table, 
-            score_map, update_entry_score=True)
-        return (dis_points_table, None)
         
 
     def avg_laps(self):
@@ -592,6 +511,23 @@ class AnswerKey():
         answer_key, tie_breaker = self.map_table_to_score(average_laps_table, 
             score_map, update_entry_score=True)
         return (average_laps_table, None)
+
+
+    def q3_appearances(self):
+        """
+        Answer the question "Which driver in the bottom six teams will have
+         the most Q3 appearances?
+
+        Returns:
+        A dictionary mapping driver names to point value if chosen
+        """
+        q3s_table = self.teams.get_q3_appearances_table(self.drivers)
+        q3s_table.add_entries(self.entries, 'driver_q3s')
+        score_map = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4,
+            9: 2, 10: 1, 11: 0, 12: 0}
+        answer_key, tie_breaker = self.map_table_to_score(q3s_table, 
+            score_map, update_entry_score=True)
+        return (q3s_table, None)
 
 
     def six_after_six(self):
@@ -757,6 +693,8 @@ class AnswerKey():
                 sorting_dict[off_by] = {}
             if tie_breaker not in sorting_dict[off_by]:
                 sorting_dict[off_by][tie_breaker] = [entry]
+            else:
+                sorting_dict[off_by][tie_breaker].append(entry)
 
         # Assign scores based on distance from answer for leader and second
         scores_assigned = 1
@@ -801,7 +739,7 @@ class AnswerKey():
         return (table, scores)
 
 
-    def driver_points_by_race(self, driver_short_name, entry_var, mult=1):
+    def driver_points_by_race(self, driver_short_name, entry_var):
         """
         Build a dicitonary of races to points scored by the provided driver
 
@@ -814,13 +752,15 @@ class AnswerKey():
         A dictionary mapping a race to the drivers points for that race
         """
         race_dict = {}
+        score_map = {1: 25, 2: 18, 3:15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1, 
+                     20: -25, 19: -18, 18: -15, 17: -12, 16: -10, 15: -8, 14: -6, 13: -4, 12: -2, 11: -1}
         driver = self.drivers.get_driver_by_short_name(driver_short_name)
         if driver is None:
             raise Exception(f"No driver matches found for {driver_short_name}")
 
         for race, result in driver.races.items():
-            if result.points >= 0:
-                race_dict[race] = result.points * mult
+            if result.classification >= 0:
+                race_dict[race] = score_map[result.classification]
         
         table = Table(f"{driver_short_name} Points", "Race", "Points", int, 
             show_values=False, sort=None)
@@ -835,136 +775,13 @@ class AnswerKey():
             show_values=False, show_entries=False)
         for entry in self.entries.list_entries():
             entry_score = 0
-            for race in entry.__dict__[entry_var]:
-                if str(race) in race_dict:
-                    entry_score += race_dict[str(race)]
+            race = str(entry.__dict__[entry_var])
+            if race in race_dict:
+                entry_score = race_dict[race]
             scores.add_subject(entry_score, entry)
             entry.add_points(entry_score)
         
-        return (table, scores)
-
-
-    def gasly_points(self):
-        """
-        Answer the question "Pick two races, get the points scored by Pierre 
-         Gasly for those races."
-
-        Returns:
-        A dictionary mapping a race to Pierre Gasly's points for that race
-        """
-        return self.driver_points_by_race("Gasly, Pierre", "driver_gasly_points_response")
-
-
-    def stroll_points(self):
-        """
-        Answer the question "Pick two races, get the points scored by Lance 
-         Stroll for those races."
-
-        Returns:
-        A dictionary mapping a race to Lance Stroll's points for that race
-        """
-        return self.driver_points_by_race("Stroll, Lance", "driver_stroll_points_response")
-
-
-    def mazepin_points(self):
-        """
-        Answer the question "Pick two races, SUBTRACT Nikita Mazepin's points 
-         for those races"
-
-        Returns:
-        A dictionary mapping a race to Nikita Mazepin's points for that race
-        """
-        return self.driver_points_by_race("Mazepin, Nikita", "driver_mazepin_points_response", -1)
-
-
-    def bottom_seven(self):
-        """
-        Answer the question "Pick two drivers who are not currently teammates 
-         from the bottom seven teams in 2020. (Combined Championship points 
-         used to rank against fellow players. Points scored by F1 system)"
-         In this case that means returning a driver points dictionary for 
-         drivers in those bottom seven teams of 2020.
-
-        Returns:
-        A dictionary mapping drivers to points from the bottom seven teams of 
-         2020
-        """
-        teams = ["Aston Martin", "Alpine", "Ferrari", "AlphaTauri", 
-            "Alfa Romeo Racing", "Haas F1 Team", "Williams"]
-        driver_points_dict = {}
-        table = Table('Bottom seven driver points', 'Driver', 'Points', int, show_values=False)
-        for driver in self.drivers.driver_list:
-            if driver.team_name in teams:
-                driver_points_dict[str(driver)] = driver.points
-                table.add_subject(driver.points, driver)
-        table.add_entries(self.entries, 'driver_pick_two_response')
-
-        entry_scores = {}
-        for entry in self.entries.list_entries():
-            entry_score = 0
-            for driver in entry.driver_pick_two_response:
-                entry_score += driver_points_dict[str(driver)]
-            if entry_score not in entry_scores:
-                entry_scores[entry_score] = [entry]
-            else:
-                entry_scores[entry_score].append(entry)
-        
-        scores = Table("Final Score", "Entry", "Points", int, 
-            show_values=False, show_entries=False)
-        pos = 1
-        for score in reversed(sorted(entry_scores.keys())):
-            for entry in entry_scores[score]:
-                scores.add_subject(F1_POINTS[pos], entry)
-                entry.add_points(F1_POINTS[pos])
-            pos += len(entry_scores[score])
-        return (table, scores)
-
-
-    def safety_cars(self):
-        """
-        Answer the qeustion "How many safety and virtual safety cars will be 
-         called in 2021?" and the tie breaker "Which race will have the most 
-         safety cars of all types?"
-
-        Returns:
-        A dictionary mapping races to safety cars and a list of races that 
-         tied for the most safety cars
-        """
-        safety_car_dict = {}
-        total_safety_cars = 0
-        table = Table('Total Safety Cars', 'Race', 'Saftey Cars', int, 
-            show_values=False)
-        for race in self.races.race_list:
-            if type(race.safety_cars) == int:
-                total_safety_cars += race.safety_cars
-                table.add_subject(race.safety_cars, race)
-                safety_car_dict[str(race)] = race.safety_cars
-        table.add_entries(self.entries, 'race_safety_cars_tiebreaker')
-
-        entry_scores = {}
-        for entry in self.entries.list_entries():
-            entry_val = abs(total_safety_cars - entry.race_safety_cars_response)
-            if entry_val not in entry_scores:
-                entry_scores[entry_val] = {}
-            tie_breaker_val = safety_car_dict[str(entry.race_safety_cars_tiebreaker)]
-            if tie_breaker_val not in entry_scores[entry_val]:
-                entry_scores[entry_val][tie_breaker_val] = [entry]
-            else:
-                 entry_scores[entry_val][tie_breaker_val].append(entry)
-        
-        score = Table(f"Final Scores: Correct Answer {total_safety_cars}", 
-            'Entry', 'Points', int, show_entries=False, value_label="Guess")
-        pos = 1
-        
-        for entry_score in sorted(entry_scores.keys()):
-            for tie_breaker in reversed(sorted(entry_scores[entry_score])):
-                for entry in entry_scores[entry_score][tie_breaker]:
-                    entry_row = score.add_subject(F1_POINTS[pos], entry)
-                    entry.add_points(F1_POINTS[pos])
-                    entry_row.value = entry.race_safety_cars_response
-                pos += len(entry_scores[entry_score][tie_breaker])
-        
-        return (table, score)
+        return (table, None)
 
 
     def fewest_on_lead_lap(self):
@@ -1009,44 +826,6 @@ class AnswerKey():
             pos += len(entry_scores[entry_score])
         
         return (table, score)
-
-
-    def russia_facts(self):
-        """
-        Answer the questions "How many drivers will take on soft tires in the 
-         last 5 laps in Russia" and the tie breaker "What will be the total 
-         number of laps run on softs by the race winner in Russia?"
-
-        Returns:
-        A set of two integers, the number of drivers that pitted for softs at 
-         the end and the total number of laps on soft for the winner in Russia
-        """
-        # TODO: Map Entries
-        pitted = self.single_answer_dict['Pitted for Softs in last five laps at Russia']
-        winner_laps = self.single_answer_dict['Total laps on softs for winner at Russia']
-        entry_dict = {}
-        for entry in self.entries.list_entries():
-            pitted_diff = abs(pitted - entry.russia_stop_for_softs_response)
-            if pitted_diff not in entry_dict:
-                entry_dict[pitted_diff] = {}
-            winner_laps_diff = abs(winner_laps - entry.russia_stop_for_softs_tiebreaker)
-            if winner_laps_diff not in entry_dict[pitted_diff]:
-                entry_dict[pitted_diff][winner_laps_diff] = [entry]
-            else:
-                entry_dict[pitted_diff][winner_laps_diff].append(entry)
-
-        score = Table(f"Final Scores: Correct Answer {pitted}, Tie Breaker {winner_laps}", 
-            'Entry', 'Points', int, show_values=True, value_label="Guess")
-        pos = 1
-        for entry_score in sorted(entry_dict.keys()):
-            for tie_breaker_score in sorted(entry_dict[entry_score].keys()):
-                for entry in entry_dict[entry_score][tie_breaker_score]:
-                    entry_row = score.add_subject(F1_POINTS[pos], entry)
-                    entry.add_points(F1_POINTS[pos])
-                    entry_row.value = entry.russia_stop_for_softs_response
-                pos += len(entry_dict[entry_score][tie_breaker_score])
-        score.add_entries(self.entries, 'entry_name', tie_breaker_var='russia_stop_for_softs_tiebreaker')
-        return (None, score)
 
 
     def first_saudi_retirement(self):
@@ -1115,14 +894,18 @@ class AnswerKey():
                 entry_dict[entry_diff] = [entry]
             else:
                 entry_dict[entry_diff].append(entry)
+        from pprint import pprint
 
-        score = Table(f"By The Numbers, {table_name} (Correct Answer: {correct_score})", 
-            'Entry', 'Guess', int, value_label="Difference", sort='ascending',
+        score = Table(f"{table_name} (Correct Answer: {correct_score})", 
+            'Entry', 'Miss Amount', int, value_label="Score", sort='ascending',
             show_entries=False)
+        pos = 1
         for entry_diff in sorted(entry_dict.keys()):
             for entry in entry_dict[entry_diff]:
-                entry_row = score.add_subject(entry.__dict__[entry_var], entry)
-                entry_row.value = entry_diff
+                entry_row = score.add_subject(entry_diff, entry)
+                entry.add_points(F1_POINTS[pos])
+                entry_row.value = F1_POINTS[pos]
+            pos += len(entry_dict[entry_diff])
         return score
 
     def unique_race_winners(self):
@@ -1138,7 +921,7 @@ class AnswerKey():
                 winners.add(str(driver))
         score = self.btn_subscore_table('Unique Race Winners', len(winners), 
             'btn_unique_winners_response')
-        return (len(winners), score)
+        return (score, None)
 
 
     def unique_pole_sitters(self):
@@ -1154,7 +937,7 @@ class AnswerKey():
                 pole_sitters.add(str(driver))
         score = self.btn_subscore_table('Unique Pole Sitters', len(pole_sitters), 
             'btn_unique_pole_sitters_response')
-        return (len(pole_sitters), score)
+        return (score, None)
 
 
     def unique_fastest_lap(self):
@@ -1170,96 +953,26 @@ class AnswerKey():
                 fastest_lap_winners.add(str(driver))
         score = self.btn_subscore_table('Unique Fastest Lap Winners', 
             len(fastest_lap_winners), 'btn_unique_fastest_lap_response')
-        return (len(fastest_lap_winners), score)
-
-
-    def wet_compound_races(self):
-        """
-        Answer the question "In how many races will the wet tire compound be used?"
-
-        Returns:
-        The number of races a wet compound was used
-        """
-        wet_tire_races = self.single_answer_dict['How many races have wet compound used']
-        score = self.btn_subscore_table('Races With Wet Compounds Used', 
-            wet_tire_races, 'btn_wet_compound_races_response')
-        return (wet_tire_races, score)
-
-
-    def in_season_leavings(self):
-        """
-        Answer the qeustion "How many drivers will be confirmed to leave F1 or 
-         change teams DURING the season?"
-
-        Returns:
-        The number of drivers confirmed to change teams or leave F1 during the 
-         season
-        """
-        confirmed_leavers = self.single_answer_dict['How many drivers confirmed to leave']
-        score = self.btn_subscore_table('Drivers Confirmed to Leave During Season', 
-            confirmed_leavers, 'btn_driver_departure_confirmed_response')
-        return (confirmed_leavers, score)
-
-
-    def track_invasions(self):
-        """
-        Answer the question "How many races will have track invasions by 
-         animals?"
-
-        Returns:
-        The number of track invasions and 
-        """
-        track_invasions = self.single_answer_dict['How many races with animal invasions']
-        score = self.btn_subscore_table('Animal Track Invasions', 
-            track_invasions, 'btn_animal_invasions_response')
-        return (track_invasions, score)
-
-
-    def total_drivers(self):
-        """
-        Answer the qustion "How many total drivers this season?" This is the 
-         tie breaker for the "By the Numbers" section
-
-        Returns:
-        Total number of drivers for the season
-        """
-        total_drivers = len(self.drivers.driver_list)
-        score = self.btn_subscore_table('Tie Breaker: Total Drivers', 
-            total_drivers, 'btn_total_drivers_tiebreaker')
-        return (total_drivers, score)
+        return (score, None)
 
     
     def by_the_numbers(self):
         race_winners, rw_table = self.unique_race_winners()
         pole_sitters, ps_table = self.unique_pole_sitters()
         fastest_lappers, fl_table = self.unique_fastest_lap()
-        wet_tires, wt_table = self.wet_compound_races()
-        confirmed_leavers, cl_table = self.in_season_leavings()
-        animal_invasions, ai_table = self.track_invasions()
-        total_drivers, td_table = self.total_drivers()
 
-        correct_sum = race_winners + pole_sitters + fastest_lappers + wet_tires \
-            + confirmed_leavers + animal_invasions
+        correct_sum = race_winners + pole_sitters + fastest_lappers
         
         entry_dict = {}
         for entry in self.entries.list_entries():
             entry_sum = entry.btn_unique_winners_response + \
                 entry.btn_unique_pole_sitters_response + \
-                entry.btn_unique_fastest_lap_response + \
-                entry.btn_wet_compound_races_response + \
-                entry.btn_driver_departure_confirmed_response + \
-                entry.btn_animal_invasions_response
+                entry.btn_unique_fastest_lap_response
             entry_diff = abs(correct_sum - entry_sum)
-            entry_tie_breaker = entry.btn_total_drivers_tiebreaker
-            entry_tb_diff = abs(total_drivers - entry_tie_breaker)
             if entry_diff not in entry_dict:
                 entry_dict[entry_diff] = {}
-            if entry_tb_diff not in entry_dict[entry_diff]:
-                entry_dict[entry_diff][entry_tb_diff] = [entry]
-            else:
-                entry_dict[entry_diff][entry_tb_diff].append(entry)
 
-        score = Table(f"By The Numbers Final Scores: Correct Sum {correct_sum}, Tie Breaker (Total Drivers) {total_drivers}", 
+        score = Table(f"By The Numbers Final Scores: Correct Sum {correct_sum}", 
             'Entry', 'Points', int, show_values=True, value_label="Guess")
         pos = 1
         for entry_score in sorted(entry_dict.keys()):
@@ -1269,14 +982,11 @@ class AnswerKey():
                     entry.add_points(F1_POINTS[pos])
                     entry_sum = entry.btn_unique_winners_response + \
                         entry.btn_unique_pole_sitters_response + \
-                        entry.btn_unique_fastest_lap_response + \
-                        entry.btn_wet_compound_races_response + \
-                        entry.btn_driver_departure_confirmed_response + \
-                        entry.btn_animal_invasions_response
+                        entry.btn_unique_fastest_lap_response
                     entry_row.value = entry_sum
                 pos += len(entry_dict[entry_score][tie_breaker_score])
-        score.add_entries(self.entries, 'entry_name', tie_breaker_var='btn_total_drivers_tiebreaker')
-        return([rw_table, ps_table, fl_table, wt_table, cl_table, ai_table, td_table], score)
+        score.add_entries(self.entries, 'entry_name')
+        return([rw_table, ps_table, fl_table], score)
 
 
     def mini_bingo_sub(self, table_name, correct_answer, entry_var):
@@ -1309,27 +1019,27 @@ class AnswerKey():
         return score
 
 
-    def lando_gets_a_podium(self):
+    def yuki_gets_a_podium(self):
         """
-        Answer the qeustion "Lando Norris gets a podium."
+        Answer the qeustion "Yuki Norris gets a podium."
 
         Returns:
         A TRUE or FALSE (Strings due to string repr from questionaire)
         """
-        lando = self.drivers.get_driver_by_short_name('Norris, Lando')
-        if lando is None:
-            raise Exception('Lando not found')
+        yuki = self.drivers.get_driver_by_short_name('Tsunoda, Yuki')
+        if yuki is None:
+            raise Exception('Yuki not found')
         answer = 'FALSE'
-        if lando.podiums > 0:
+        if yuki.podiums > 0:
             answer = 'TRUE'
-        score = self.mini_bingo_sub('Lando Norris gets a podium.', answer, 
-            'bingo_norris_response')
+        score = self.mini_bingo_sub('Yuki Tsunoda gets a podium.', answer, 
+            'bingo_yuki_response')
         return score
 
 
-    def williams_above_tenth(self):
+    def haas_above_tenth(self):
         """
-        Answer the question "Williams do not finish 10th."
+        Answer the question "Haas do not finish 10th."
 
         Returns:
         A TRUE or FALSE (Strings due to string repr from questionaire)
@@ -1338,23 +1048,10 @@ class AnswerKey():
         tenth = table.get_subjects_by_pos(10)
         answer = 'TRUE'
         for row in tenth:
-            if row.subject.name == 'Williams':
+            if row.subject.name == 'Haas':
                 answer = 'FALSE'
-        score = self.mini_bingo_sub('Williams do not finish 10th.', answer, 
-            'bingo_williams_response')
-        return score
-
-
-    def red_bull_driver_change(self):
-        """
-        Answer the qeustion "Red Bull changes drivers mid-season"
-
-        Returns:
-        A TRUE or FALSE (Strings due to string repr from questionaire)
-        """
-        answer = self.single_answer_dict['Has Red Bull changed drivers']
-        score = self.mini_bingo_sub('Red Bull changes drivers mid-season', answer, 
-            'bingo_red_bull_response')
+        score = self.mini_bingo_sub('Haas do not finish 10th.', answer, 
+            'bingo_haas_response')
         return score
 
 
@@ -1399,33 +1096,32 @@ class AnswerKey():
         return score
 
 
-    def russell_outscores_someone(self):
+    def schumacher_outscores_someone(self):
         """
-        Answer the question "Russell outscores a non-Williams driver."
+        Answer the question "Russell outscores a non-Haas driver."
 
         Returns:
         A TRUE or FALSE (Strings due to string repr from questionaire)
         """
         answer = 'FALSE'
-        russell = self.drivers.get_driver_by_short_name("Russell, George")
+        schumacher = self.drivers.get_driver_by_short_name("Schumacher, Mick")
         for driver in self.drivers.driver_list:
-            if driver.team_name != 'Williams' and russell.points > \
+            if driver.team_name != 'Haas' and schumacher.points > \
                 driver.points:
                 answer = 'TRUE'
-        score = self.mini_bingo_sub('Russell outscores a non-Williams driver.', 
-            answer, 'bingo_russell_response')
+        score = self.mini_bingo_sub('Schumacher outscores a non-Haas driver.', 
+            answer, 'bingo_schumacher_response')
         return score
 
 
     def mini_bingo(self):
         tables = []
         tables.append(self.pourchaire_seat())
-        tables.append(self.lando_gets_a_podium())
-        tables.append(self.williams_above_tenth())
-        tables.append(self.red_bull_driver_change())
+        tables.append(self.yuki_gets_a_podium())
+        tables.append(self.haas_above_tenth())
         tables.append(self.all_20_finished())
         tables.append(self.down_to_the_wire())
-        tables.append(self.russell_outscores_someone())
+        tables.append(self.schumacher_outscores_someone())
         totals = {}
         for table in tables:
             for table_row in table.get_ordered_subjects():

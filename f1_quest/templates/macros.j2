@@ -68,7 +68,7 @@
 {%- endmacro %}
 
 {% macro race_url(base_url, race_string) -%}
-    {{ base_url }}/races/{{ race_string.replace(' @ ', '_').replace(':', '_').replace('/', '_').replace(' ', '_') }}.html
+    {{ base_url }}/races/{{ race_string.replace(' @ ', '_').replace(':', '_').replace('/', '_').replace(' ', '_').replace('__', '_') }}.html
 {%- endmacro %}
 
 {% macro results_plot(race_list, series_list, results_table, min_y, max_y) -%}

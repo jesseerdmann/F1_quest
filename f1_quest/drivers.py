@@ -5,10 +5,10 @@ from f1_quest.tables import Table
 
 
 class DriverRaceResult():
-    def __init__(self, race, points, dis_points, qpos, laps, fastest_lap=False, driver_of_the_day=False):
+    def __init__(self, race, points, classification, qpos, laps, fastest_lap=False, driver_of_the_day=False):
         self.race = race
         self.points = points
-        self.dis_points = dis_points
+        self.classification = classification
         self.qpos = qpos
         self.laps = laps
         self.fastest_lap = fastest_lap
@@ -24,13 +24,13 @@ class Driver:
         self.entry_rep = f"{self.first_name} {self.last_name}, {self.team_name}"
         self.started_season = started_season == 'yes'
         self.points = 0
-        self.dis_points = 0
         self.races = {}
         self.podiums = 0
         self.poles = 0
         self.driver_of_the_day = 0
         self.fastest_laps = 0
         self.wins = 0
+        self.q3s = 0
 
 
     def __str__(self):
@@ -45,22 +45,23 @@ class Driver:
         return self.name == other.name
 
 
-    def add_race(self, race, points, dis_points, qpos, laps, fastest_lap=False,
-        driver_of_the_day=False, half_points=False):
+    def add_race(self, race, points, classification, qpos, laps, 
+        fastest_lap=False, driver_of_the_day=False):
 
         #if type(points) == str or points < 0:
         #    return self
         
         self.races[race] = DriverRaceResult(race=race, points=points, 
-            dis_points=dis_points, qpos=qpos, laps=laps, 
-            fastest_lap=fastest_lap, driver_of_the_day=driver_of_the_day)
+            qpos=qpos, laps=laps, fastest_lap=fastest_lap, 
+            driver_of_the_day=driver_of_the_day, classification=classification)
         self.points += points
-        self.dis_points += dis_points
         if qpos == 1:
             self.poles += 1
-        if points >= 15 or (half_points and points >= 7.5):
+        if qpos <= 10 and qpos > 0:
+            self.q3s += 1
+        if points >= 15:
             self.podiums += 1
-        if points >= 25 or (half_points and points >= 12.5):
+        if points >= 25:
             self.wins += 1
         if driver_of_the_day:
             self.driver_of_the_day += 1
@@ -78,40 +79,6 @@ class Driver:
         if races > 0:
             return total_laps/races
         else: 
-            return 0
-
-
-    def qualy_win_pct(self, others):
-        """
-        Determine the win percentage in qualifying versus a list of drivers
-
-        Keyword arguments:
-        others -- a list of Driver objects
-
-        Returns:
-        The percentage of times the driver out qualified the others
-        """
-        other_best_pos_dict = {}
-        qualy_count = 0
-        for driver in others:
-            for race_result in driver.races.values():
-                if race_result.qpos > 0 and (
-                    race_result.race not in other_best_pos_dict or
-                    race_result.qpos < other_best_pos_dict[race_result.race]):
-                    other_best_pos_dict[race_result.race] = race_result.qpos
-        
-        wins = 0
-        for race_result in self.races.values():
-            if race_result.race in other_best_pos_dict and race_result.qpos > 0 \
-                and race_result.qpos < other_best_pos_dict[race_result.race]:
-                wins += 1
-            if race_result.qpos > 0 and race_result.race in other_best_pos_dict and \
-                other_best_pos_dict[race_result.race] > 0:
-                qualy_count += 1
-
-        if qualy_count > 0 :
-            return wins/qualy_count
-        else:
             return 0
 
 
@@ -238,19 +205,6 @@ class Drivers:
             table.add_subject(driver.points, driver)
         return table
 
-    
-    def get_dis_points_table(self):
-        """
-        Build a table with all of the drivers based on discipline points
-
-        Returns:
-        A populated table object with drivers and discipline points
-        """
-        table = Table('Driver Standings', 'Driver', 'Discipline Points', int)
-        for driver in self.driver_list:
-            table.add_subject(driver.dis_points, driver)
-        return table
-
 
     def get_avg_laps_table(self):
         """
@@ -303,6 +257,19 @@ class Drivers:
         table = Table('Pole Position', 'Driver', 'Starts on Pole', int)
         for driver in self.driver_list:
             table.add_subject(driver.poles, driver)
+        return table
+
+
+    def get_q3s_table(self):
+        """
+        Build a table based on drivers' Q3 appearances
+
+        Returns:
+        A table object with drivers and Q3 appearances
+        """
+        table = Table('Pole Position', 'Driver', 'Q3 Appearances', int)
+        for driver in self.driver_list:
+            table.add_subject(driver.q3s, driver)
         return table
 
 

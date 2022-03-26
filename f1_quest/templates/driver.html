@@ -10,6 +10,7 @@
     <tr class="table-secondary"><td>Wins</td><td>{{ driver.wins }}</td></tr>
     <tr class="table-light"><td>Podiums</td><td>{{ driver.podiums }}</td></tr>
     <tr class="table-secondary"><td>Poles</td><td>{{ driver.poles }}</td></tr>
+    <tr class="table-secondary"><td>Q3 Appearances</td><td>{{ driver.q3s }}</td></tr>
     <tr class="table-light"><td>Fastest Laps</td><td>{{ driver.fastest_laps }}</td></tr>
     <tr class="table-secondary"><td>Driver of the Days</td><td>{{ driver.driver_of_the_day }}</td></tr>
     <tr class="table-light"><td>Points</td><td>{{ driver.points }}</td></tr>
@@ -25,7 +26,6 @@
             <th scope="col">Fastest Lap</th>
             <th scope="col">Driver of the Day</th>
             <th scope="col">Points</th>
-            <th scope="col">License Penalty Points</th>
         </tr>
     </thead>
     <tbody>
@@ -37,7 +37,6 @@
             <td>{{ result.fastest_lap }}</td>
             <td>{{ result.driver_of_the_day }}</td>
             <td>{{ result.points }}</td>
-            <td>{{ result.dis_points }}</td>
         </tr>
         {% endfor %}
     </tbody>

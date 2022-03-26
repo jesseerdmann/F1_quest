@@ -97,7 +97,7 @@ class Table():
             else:
                 row_string = row_format_string.format(row.pos, str(row.subject), row.score)
             if self.show_entries:
-                entries_str = self.entries_string()
+                entries_str = self.entries_string(row)
                 row_string += entries_str
             
             string_list.append(row_string)
@@ -105,7 +105,7 @@ class Table():
         return '\n'.join(string_list)
 
 
-    def entries_string(self):
+    def entries_string(self, row):
         entries_str = ' '
         first_row = True
         for entry in row.matching_entries:

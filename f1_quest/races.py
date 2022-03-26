@@ -6,14 +6,17 @@ from f1_quest.util import get_type_val
 
 
 class Race():
-    def __init__(self, datetime, name, circuit, laps):
+    def __init__(self, datetime, type, name, circuit, laps, fancy_name, map_link):
         self.datetime = datetime
+        self.type = type
         self.name = name
         self.circuit = circuit
         self.retirements = 0
         self.safety_cars = 0
         self.laps = laps
         self.post_race_driver_points = None
+        self.fancy_name = fancy_name
+        self.map_link = map_link
 
 
     def __lt__(self, other):
@@ -25,7 +28,7 @@ class Race():
 
     
     def __str__(self):
-        return f"{self.datetime.strftime('%m/%d/%Y %I:%M %p')}: {self.name} @ {self.circuit}"
+        return f"{self.datetime.strftime('%m/%d/%Y')}: {self.name} @ {self.circuit}"
 
     
     def add_results(self, retirements, safety_cars):
@@ -49,15 +52,16 @@ class Races:
         if not os.path.exists(file_path):
             raise Exception(f"{file_path} not found, exiting.")
         header_row = True
-        with open(file_path, newline='') as file_pointer:
+        with open(file_path, newline='', encoding='utf-8') as file_pointer:
             file_reader = csv.reader(file_pointer, delimiter=',', quotechar='"')
             for row in file_reader:
                 if header_row:
                     header_row = False
                     continue
                 self.race_list.append(Race(datetime=datetime.strptime(
-                    f"{row[0]} {row[1]}", '%B %d, %Y %I:%M %p'), name=row[2], 
-                    circuit=row[3], laps=int(row[5])))
+                    f"{row[0]}", '%B %d, %Y'), type=row[1], name=row[2], 
+                    circuit=row[3], laps=int(row[6]), fancy_name=row[5], 
+                    map_link=row[7]))
 
     
     def list_races(self):
@@ -146,7 +150,7 @@ class Races:
 
     def read_results(self, drivers, teams, 
         data_dir=os.getenv('F1_DATA', 'data'), file_name="race_results.csv",
-        datetime=datetime.now(), half_points=[]):
+        datetime=datetime.now()):
         file_path = os.path.join(data_dir, file_name)
 
         # Ensure teams have the correct list of drivers
@@ -182,17 +186,16 @@ class Races:
                         self.header_row, 'Fastest Lap Winner')
                     points = get_type_val(row, self.header_row, 
                         ' '.join([driver.name, 'Pts']), float)
-                    dis_points = get_type_val(row, self.header_row, 
-                        ' '.join([driver.name, 'Dis Pts']), int)
                     qpos = get_type_val(row, self.header_row, 
                         ' '.join([driver.name, 'QPos']), int)
                     laps = get_type_val(row, self.header_row, 
                         ' '.join([driver.name, 'Laps']), int)
+                    classification = get_type_val(row, self.header_row, 
+                        ' '.join([driver.name, 'Class']), int)
                     driver.add_race(race=row[0], points=points, 
-                        dis_points=dis_points, qpos=qpos, laps=laps, 
+                        classification=classification, qpos=qpos, laps=laps, 
                         driver_of_the_day=driver_of_the_day,
-                        fastest_lap=fastest_lap_winner, 
-                        half_points=(row[0] in half_points))
+                        fastest_lap=fastest_lap_winner)
                 
                 # Get post-race driver points
                 race.post_race_driver_points = drivers.get_points_table()
