@@ -765,8 +765,8 @@ class AnswerKey():
         table = Table(f"{driver_short_name} Points", "Race", "Points", int, 
             show_values=False, sort=None)
         for race in self.races.list_races():
-            if str(race) in race_dict:
-                table.add_subject(race_dict[str(race)], race)
+            if race.name in race_dict:
+                table.add_subject(race_dict[race.name], race)
             else:
                 table.add_subject(0, race)
         table.add_entries(self.entries, entry_var)
@@ -775,13 +775,14 @@ class AnswerKey():
             show_values=False, show_entries=False)
         for entry in self.entries.list_entries():
             entry_score = 0
-            race = str(entry.__dict__[entry_var])
-            if race in race_dict:
-                entry_score = race_dict[race]
+            race_name = str(entry.__dict__[entry_var])
+            race = self.races.get_race_by_str(race_name)
+            if race.name in race_dict:
+                entry_score = race_dict[race.name]
             scores.add_subject(entry_score, entry)
             entry.add_points(entry_score)
         
-        return (table, None)
+        return (table, scores)
 
 
     def fewest_on_lead_lap(self):
@@ -848,7 +849,7 @@ class AnswerKey():
         # Race has not occurred yet
         if race is None or race.post_race_driver_points is None:
             return (None, None)
-        wdc_pos = 19
+        wdc_pos = 16
         
         table = Table("First Retirement in Saudi Arabia", 'Driver', 'Retirement Position', int, 
             show_values=False, show_entries=True, sort="ascending")
@@ -872,7 +873,7 @@ class AnswerKey():
             else:
                  entry_scores[entry_val][tie_breaker_val].append(entry)
         
-        score = Table(f"Final Scores: Correct Answer Mick Schumacher (tiebreaker: {wdc_pos})", 
+        score = Table(f"Final Scores: Correct Answer Nicholas Latifi (tiebreaker: {wdc_pos})", 
             'Entry', 'Points', int, show_values=False, show_entries=False, value_label="Tiebreaker Guess")
         pos = 1
         for entry_score in sorted(entry_scores.keys()):
@@ -921,7 +922,7 @@ class AnswerKey():
                 winners.add(str(driver))
         score = self.btn_subscore_table('Unique Race Winners', len(winners), 
             'btn_unique_winners_response')
-        return (score, None)
+        return (None, score)
 
 
     def unique_pole_sitters(self):
@@ -937,7 +938,7 @@ class AnswerKey():
                 pole_sitters.add(str(driver))
         score = self.btn_subscore_table('Unique Pole Sitters', len(pole_sitters), 
             'btn_unique_pole_sitters_response')
-        return (score, None)
+        return (None, score)
 
 
     def unique_fastest_lap(self):
@@ -953,40 +954,7 @@ class AnswerKey():
                 fastest_lap_winners.add(str(driver))
         score = self.btn_subscore_table('Unique Fastest Lap Winners', 
             len(fastest_lap_winners), 'btn_unique_fastest_lap_response')
-        return (score, None)
-
-    
-    def by_the_numbers(self):
-        race_winners, rw_table = self.unique_race_winners()
-        pole_sitters, ps_table = self.unique_pole_sitters()
-        fastest_lappers, fl_table = self.unique_fastest_lap()
-
-        correct_sum = race_winners + pole_sitters + fastest_lappers
-        
-        entry_dict = {}
-        for entry in self.entries.list_entries():
-            entry_sum = entry.btn_unique_winners_response + \
-                entry.btn_unique_pole_sitters_response + \
-                entry.btn_unique_fastest_lap_response
-            entry_diff = abs(correct_sum - entry_sum)
-            if entry_diff not in entry_dict:
-                entry_dict[entry_diff] = {}
-
-        score = Table(f"By The Numbers Final Scores: Correct Sum {correct_sum}", 
-            'Entry', 'Points', int, show_values=True, value_label="Guess")
-        pos = 1
-        for entry_score in sorted(entry_dict.keys()):
-            for tie_breaker_score in sorted(entry_dict[entry_score].keys()):
-                for entry in entry_dict[entry_score][tie_breaker_score]:
-                    entry_row = score.add_subject(F1_POINTS[pos], entry)
-                    entry.add_points(F1_POINTS[pos])
-                    entry_sum = entry.btn_unique_winners_response + \
-                        entry.btn_unique_pole_sitters_response + \
-                        entry.btn_unique_fastest_lap_response
-                    entry_row.value = entry_sum
-                pos += len(entry_dict[entry_score][tie_breaker_score])
-        score.add_entries(self.entries, 'entry_name')
-        return([rw_table, ps_table, fl_table], score)
+        return (None, score)
 
 
     def mini_bingo_sub(self, table_name, correct_answer, entry_var):

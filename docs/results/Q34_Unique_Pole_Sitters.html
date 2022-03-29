@@ -291,195 +291,6 @@
 
 
 
-    
-        <br/>
-        
-<table class="table">
-    <h5>Unique Pole Sitters (Correct Answer: 1)</h5>
-    <thead>
-        <tr>
-            <th scope="col">Position</th>
-            <th scope="col">Entry</th>
-            <th scope="col">Miss Amount</th>
-            
-            <th scope="col">Score</th>
-            
-            
-        </tr>
-    </thead>
-    <tbody>
-        
-        <tr class="table-light">
-            <th scope="row">
-            
-            1
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Heidi.html">Heidi</a></td>
-            
-            <td>3</td>
-            
-            <td scope="col">25</td>
-            
-            
-        </tr>
-        
-        <tr class="table-secondary">
-            <th scope="row">
-            
-            2
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jon.html">Jon</a></td>
-            
-            <td>5</td>
-            
-            <td scope="col">18</td>
-            
-            
-        </tr>
-        
-        <tr class="table-light">
-            <th scope="row">
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Paul.html">Paul</a></td>
-            
-            <td>5</td>
-            
-            <td scope="col">18</td>
-            
-            
-        </tr>
-        
-        <tr class="table-secondary">
-            <th scope="row">
-            
-            4
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Davin.html">Davin</a></td>
-            
-            <td>6</td>
-            
-            <td scope="col">12</td>
-            
-            
-        </tr>
-        
-        <tr class="table-light">
-            <th scope="row">
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Moksha_Gren.html">Moksha Gren</a></td>
-            
-            <td>6</td>
-            
-            <td scope="col">12</td>
-            
-            
-        </tr>
-        
-        <tr class="table-secondary">
-            <th scope="row">
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Stephen.html">Stephen</a></td>
-            
-            <td>6</td>
-            
-            <td scope="col">12</td>
-            
-            
-        </tr>
-        
-        <tr class="table-light">
-            <th scope="row">
-            
-            7
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/David.html">David</a></td>
-            
-            <td>9</td>
-            
-            <td scope="col">6</td>
-            
-            
-        </tr>
-        
-        <tr class="table-secondary">
-            <th scope="row">
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jesse.html">Jesse</a></td>
-            
-            <td>9</td>
-            
-            <td scope="col">6</td>
-            
-            
-        </tr>
-        
-        <tr class="table-light">
-            <th scope="row">
-            
-            9
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Doug.html">Doug</a></td>
-            
-            <td>10</td>
-            
-            <td scope="col">2</td>
-            
-            
-        </tr>
-        
-        <tr class="table-secondary">
-            <th scope="row">
-            
-            10
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Dean.html">Dean</a></td>
-            
-            <td>11</td>
-            
-            <td scope="col">1</td>
-            
-            
-        </tr>
-        
-        <tr class="table-light">
-            <th scope="row">
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jameson.html">Jameson</a></td>
-            
-            <td>11</td>
-            
-            <td scope="col">1</td>
-            
-            
-        </tr>
-        
-    </tbody>
-</table>
-
-    
-
 
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
@@ -490,9 +301,9 @@
     </div>
     <script>
         var data = {
-            series: [],
-            races: ["Bahrain"],
-            results_table: {}
+            series: [{"name": "Heidi", "values": [{"race": "Bahrain", "points": 3}, {"race": "Saudi Arabia", "points": 2}], "color": "Green"}, {"name": "Jon", "values": [{"race": "Bahrain", "points": 5}, {"race": "Saudi Arabia", "points": 4}], "color": "OliveDrab"}, {"name": "Paul", "values": [{"race": "Bahrain", "points": 5}, {"race": "Saudi Arabia", "points": 4}], "color": "Red"}, {"name": "Davin", "values": [{"race": "Bahrain", "points": 6}, {"race": "Saudi Arabia", "points": 5}], "color": "DarkRed"}, {"name": "Moksha Gren", "values": [{"race": "Bahrain", "points": 6}, {"race": "Saudi Arabia", "points": 5}], "color": "DarkKhaki"}, {"name": "Stephen", "values": [{"race": "Bahrain", "points": 6}, {"race": "Saudi Arabia", "points": 5}], "color": "Orange"}, {"name": "David", "values": [{"race": "Bahrain", "points": 9}, {"race": "Saudi Arabia", "points": 8}], "color": "Blue"}, {"name": "Jesse", "values": [{"race": "Bahrain", "points": 9}, {"race": "Saudi Arabia", "points": 8}], "color": "Black"}, {"name": "Doug", "values": [{"race": "Bahrain", "points": 10}, {"race": "Saudi Arabia", "points": 9}], "color": "Cyan"}, {"name": "Dean", "values": [{"race": "Bahrain", "points": 11}, {"race": "Saudi Arabia", "points": 10}], "color": "YellowGreen"}, {"name": "Jameson", "values": [{"race": "Bahrain", "points": 11}, {"race": "Saudi Arabia", "points": 10}], "color": "BlueViolet"}],
+            races: ["Bahrain", "Saudi Arabia"],
+            results_table: {"Heidi": {"Saudi Arabia": 2, "Bahrain": 3}, "Jon": {"Saudi Arabia": 4, "Bahrain": 5}, "Paul": {"Saudi Arabia": 4, "Bahrain": 5}, "Davin": {"Saudi Arabia": 5, "Bahrain": 6}, "Moksha Gren": {"Saudi Arabia": 5, "Bahrain": 6}, "Stephen": {"Saudi Arabia": 5, "Bahrain": 6}, "David": {"Saudi Arabia": 8, "Bahrain": 9}, "Jesse": {"Saudi Arabia": 8, "Bahrain": 9}, "Doug": {"Saudi Arabia": 9, "Bahrain": 10}, "Dean": {"Saudi Arabia": 10, "Bahrain": 11}, "Jameson": {"Saudi Arabia": 10, "Bahrain": 11}}
         }
 
         var margin = {top: 20, right: 20, bottom: 30, left: 30};
@@ -508,7 +319,7 @@
             .domain(data.races)
             .range([margin.left, width - margin.right]);
         const y = d3.scaleLinear()
-            .domain([1000, 0]).nice()
+            .domain([2, 11]).nice()
             .range([height - margin.bottom, margin.top]);
         svg.append("g")
             .attr("transform", `translate(0, ${height - margin.bottom})`)
@@ -547,6 +358,193 @@
         }
     </script>
 
+
+
+    <br/>
+    
+<table class="table">
+    <h5>Unique Pole Sitters (Correct Answer: 2)</h5>
+    <thead>
+        <tr>
+            <th scope="col">Position</th>
+            <th scope="col">Entry</th>
+            <th scope="col">Miss Amount</th>
+            
+            <th scope="col">Score</th>
+            
+            
+        </tr>
+    </thead>
+    <tbody>
+        
+        <tr class="table-light">
+            <th scope="row">
+            
+            1
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Heidi.html">Heidi</a></td>
+            
+            <td>2</td>
+            
+            <td scope="col">25</td>
+            
+            
+        </tr>
+        
+        <tr class="table-secondary">
+            <th scope="row">
+            
+            2
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jon.html">Jon</a></td>
+            
+            <td>4</td>
+            
+            <td scope="col">18</td>
+            
+            
+        </tr>
+        
+        <tr class="table-light">
+            <th scope="row">
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Paul.html">Paul</a></td>
+            
+            <td>4</td>
+            
+            <td scope="col">18</td>
+            
+            
+        </tr>
+        
+        <tr class="table-secondary">
+            <th scope="row">
+            
+            4
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Davin.html">Davin</a></td>
+            
+            <td>5</td>
+            
+            <td scope="col">12</td>
+            
+            
+        </tr>
+        
+        <tr class="table-light">
+            <th scope="row">
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Moksha_Gren.html">Moksha Gren</a></td>
+            
+            <td>5</td>
+            
+            <td scope="col">12</td>
+            
+            
+        </tr>
+        
+        <tr class="table-secondary">
+            <th scope="row">
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Stephen.html">Stephen</a></td>
+            
+            <td>5</td>
+            
+            <td scope="col">12</td>
+            
+            
+        </tr>
+        
+        <tr class="table-light">
+            <th scope="row">
+            
+            7
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/David.html">David</a></td>
+            
+            <td>8</td>
+            
+            <td scope="col">6</td>
+            
+            
+        </tr>
+        
+        <tr class="table-secondary">
+            <th scope="row">
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jesse.html">Jesse</a></td>
+            
+            <td>8</td>
+            
+            <td scope="col">6</td>
+            
+            
+        </tr>
+        
+        <tr class="table-light">
+            <th scope="row">
+            
+            9
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Doug.html">Doug</a></td>
+            
+            <td>9</td>
+            
+            <td scope="col">2</td>
+            
+            
+        </tr>
+        
+        <tr class="table-secondary">
+            <th scope="row">
+            
+            10
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Dean.html">Dean</a></td>
+            
+            <td>10</td>
+            
+            <td scope="col">1</td>
+            
+            
+        </tr>
+        
+        <tr class="table-light">
+            <th scope="row">
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jameson.html">Jameson</a></td>
+            
+            <td>10</td>
+            
+            <td scope="col">1</td>
+            
+            
+        </tr>
+        
+    </tbody>
+</table>
 
 
 

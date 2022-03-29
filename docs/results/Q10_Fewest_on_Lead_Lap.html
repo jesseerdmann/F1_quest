@@ -314,7 +314,19 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/races/03_20_2022_Bahrain_Bahrain_International_Circuit.html">03/20/2022: Bahrain @ Bahrain International Circuit</a></td>
             
-            <td>17</td>
+            <td>0</td>
+            
+            
+        </tr>
+        
+        <tr class="table-secondary">
+            <th scope="row">
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/races/03_27_2022_Saudi_Arabia_Jeddah_Corniche_Circuit.html">03/27/2022: Saudi Arabia @ Jeddah Corniche Circuit</a></td>
+            
+            <td>0</td>
             
             
         </tr>
@@ -334,9 +346,9 @@
     </div>
     <script>
         var data = {
-            series: [{"name": "David", "values": [{"race": "Bahrain", "points": 0}], "color": "10/23/2022: United States 2 @ Circuit of the Americas"}, {"name": "Stephen", "values": [{"race": "Bahrain", "points": 4}], "color": "10/02/2022: Singapore @ Marina Bay Street Circuit"}, {"name": "Heidi", "values": [{"race": "Bahrain", "points": 4}], "color": "05/08/2022: United States @ Miami International Autodrome"}, {"name": "Dean", "values": [{"race": "Bahrain", "points": 4}], "color": "05/22/2022: Spain @ Circuit de Barcelona-Catalunya"}, {"name": "Moksha Gren", "values": [{"race": "Bahrain", "points": 8}], "color": "09/04/2022: Netherlands @ Circuit Zandvoort"}, {"name": "Jesse", "values": [{"race": "Bahrain", "points": 8}], "color": "10/23/2022: United States 2 @ Circuit of the Americas"}, {"name": "Davin", "values": [{"race": "Bahrain", "points": 10}], "color": "07/31/2022: Hungary @ Hungaroring"}, {"name": "Paul", "values": [{"race": "Bahrain", "points": 12}], "color": "08/28/2022: Belgium @ Circuit de Spa-Francorchamps"}, {"name": "Jon", "values": [{"race": "Bahrain", "points": 15}], "color": "06/19/2022: Canada @ Circuit Gilles-Villeneuve"}, {"name": "Jameson", "values": [{"race": "Bahrain", "points": 25}], "color": "09/11/2022: Italy 2 @ Autodromo Nazionale Monza"}, {"name": "Doug", "values": [{"race": "Bahrain", "points": 25}], "color": "10/23/2022: United States 2 @ Circuit of the Americas"}],
-            races: ["Bahrain"],
-            results_table: {"David": {"Bahrain": 0}, "Stephen": {"Bahrain": 4}, "Heidi": {"Bahrain": 4}, "Dean": {"Bahrain": 4}, "Moksha Gren": {"Bahrain": 8}, "Jesse": {"Bahrain": 8}, "Davin": {"Bahrain": 10}, "Paul": {"Bahrain": 12}, "Jon": {"Bahrain": 15}, "Jameson": {"Bahrain": 25}, "Doug": {"Bahrain": 25}}
+            series: [{"name": "David", "values": [{"race": "Bahrain", "points": 25}, {"race": "Saudi Arabia", "points": 25}], "color": "Blue"}, {"name": "Stephen", "values": [{"race": "Bahrain", "points": 18}, {"race": "Saudi Arabia", "points": 18}], "color": "Orange"}, {"name": "Heidi", "values": [{"race": "Bahrain", "points": 18}, {"race": "Saudi Arabia", "points": 18}], "color": "Green"}, {"name": "Dean", "values": [{"race": "Bahrain", "points": 18}, {"race": "Saudi Arabia", "points": 18}], "color": "YellowGreen"}, {"name": "Moksha Gren", "values": [{"race": "Bahrain", "points": 10}, {"race": "Saudi Arabia", "points": 10}], "color": "DarkKhaki"}, {"name": "Jesse", "values": [{"race": "Bahrain", "points": 10}, {"race": "Saudi Arabia", "points": 10}], "color": "Black"}, {"name": "Davin", "values": [{"race": "Bahrain", "points": 6}, {"race": "Saudi Arabia", "points": 6}], "color": "DarkRed"}, {"name": "Paul", "values": [{"race": "Bahrain", "points": 4}, {"race": "Saudi Arabia", "points": 4}], "color": "Red"}, {"name": "Jon", "values": [{"race": "Bahrain", "points": 2}, {"race": "Saudi Arabia", "points": 2}], "color": "OliveDrab"}, {"name": "Jameson", "values": [{"race": "Bahrain", "points": 1}, {"race": "Saudi Arabia", "points": 1}], "color": "BlueViolet"}, {"name": "Doug", "values": [{"race": "Bahrain", "points": 1}, {"race": "Saudi Arabia", "points": 1}], "color": "Cyan"}],
+            races: ["Bahrain", "Saudi Arabia"],
+            results_table: {"David": {"Bahrain": 25, "Saudi Arabia": 25}, "Stephen": {"Bahrain": 18, "Saudi Arabia": 18}, "Heidi": {"Bahrain": 18, "Saudi Arabia": 18}, "Dean": {"Bahrain": 18, "Saudi Arabia": 18}, "Moksha Gren": {"Bahrain": 10, "Saudi Arabia": 10}, "Jesse": {"Bahrain": 10, "Saudi Arabia": 10}, "Davin": {"Bahrain": 6, "Saudi Arabia": 6}, "Paul": {"Bahrain": 4, "Saudi Arabia": 4}, "Jon": {"Bahrain": 2, "Saudi Arabia": 2}, "Jameson": {"Bahrain": 1, "Saudi Arabia": 1}, "Doug": {"Bahrain": 1, "Saudi Arabia": 1}}
         }
 
         var margin = {top: 20, right: 20, bottom: 30, left: 30};
@@ -352,7 +364,7 @@
             .domain(data.races)
             .range([margin.left, width - margin.right]);
         const y = d3.scaleLinear()
-            .domain([0, 25]).nice()
+            .domain([1, 25]).nice()
             .range([height - margin.bottom, margin.top]);
         svg.append("g")
             .attr("transform", `translate(0, ${height - margin.bottom})`)
@@ -396,7 +408,7 @@
     <br/>
     
 <table class="table">
-    <h5>Final Scores: Correct Answer 17</h5>
+    <h5>Final Scores: Correct Answer 0</h5>
     <thead>
         <tr>
             <th scope="col">Position</th>
@@ -417,11 +429,11 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jameson.html">Jameson</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/David.html">David</a></td>
             
             <td>25</td>
             
-            <td scope="col">17</td>
+            <td scope="col">2</td>
             
             
         </tr>
@@ -429,105 +441,13 @@
         <tr class="table-secondary">
             <th scope="row">
             
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Doug.html">Doug</a></td>
-            
-            <td>25</td>
-            
-            <td scope="col">17</td>
-            
-            
-        </tr>
-        
-        <tr class="table-light">
-            <th scope="row">
-            
-            3
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jon.html">Jon</a></td>
-            
-            <td>15</td>
-            
-            <td scope="col">9</td>
-            
-            
-        </tr>
-        
-        <tr class="table-secondary">
-            <th scope="row">
-            
-            4
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Paul.html">Paul</a></td>
-            
-            <td>12</td>
-            
-            <td scope="col">7</td>
-            
-            
-        </tr>
-        
-        <tr class="table-light">
-            <th scope="row">
-            
-            5
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Davin.html">Davin</a></td>
-            
-            <td>10</td>
-            
-            <td scope="col">6</td>
-            
-            
-        </tr>
-        
-        <tr class="table-secondary">
-            <th scope="row">
-            
-            6
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Moksha_Gren.html">Moksha Gren</a></td>
-            
-            <td>8</td>
-            
-            <td scope="col">5</td>
-            
-            
-        </tr>
-        
-        <tr class="table-light">
-            <th scope="row">
-            
-            </th>
-            
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jesse.html">Jesse</a></td>
-            
-            <td>8</td>
-            
-            <td scope="col">5</td>
-            
-            
-        </tr>
-        
-        <tr class="table-secondary">
-            <th scope="row">
-            
-            8
+            2
             
             </th>
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Stephen.html">Stephen</a></td>
             
-            <td>4</td>
+            <td>18</td>
             
             <td scope="col">4</td>
             
@@ -541,7 +461,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Heidi.html">Heidi</a></td>
             
-            <td>4</td>
+            <td>18</td>
             
             <td scope="col">4</td>
             
@@ -555,7 +475,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Dean.html">Dean</a></td>
             
-            <td>4</td>
+            <td>18</td>
             
             <td scope="col">4</td>
             
@@ -565,15 +485,107 @@
         <tr class="table-light">
             <th scope="row">
             
-            11
+            5
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/David.html">David</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Moksha_Gren.html">Moksha Gren</a></td>
             
-            <td>0</td>
+            <td>10</td>
             
-            <td scope="col">2</td>
+            <td scope="col">5</td>
+            
+            
+        </tr>
+        
+        <tr class="table-secondary">
+            <th scope="row">
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jesse.html">Jesse</a></td>
+            
+            <td>10</td>
+            
+            <td scope="col">5</td>
+            
+            
+        </tr>
+        
+        <tr class="table-light">
+            <th scope="row">
+            
+            7
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Davin.html">Davin</a></td>
+            
+            <td>6</td>
+            
+            <td scope="col">6</td>
+            
+            
+        </tr>
+        
+        <tr class="table-secondary">
+            <th scope="row">
+            
+            8
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Paul.html">Paul</a></td>
+            
+            <td>4</td>
+            
+            <td scope="col">7</td>
+            
+            
+        </tr>
+        
+        <tr class="table-light">
+            <th scope="row">
+            
+            9
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jon.html">Jon</a></td>
+            
+            <td>2</td>
+            
+            <td scope="col">9</td>
+            
+            
+        </tr>
+        
+        <tr class="table-secondary">
+            <th scope="row">
+            
+            10
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jameson.html">Jameson</a></td>
+            
+            <td>1</td>
+            
+            <td scope="col">17</td>
+            
+            
+        </tr>
+        
+        <tr class="table-light">
+            <th scope="row">
+            
+            </th>
+            
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Doug.html">Doug</a></td>
+            
+            <td>1</td>
+            
+            <td scope="col">17</td>
             
             
         </tr>

@@ -294,9 +294,9 @@
     </div>
     <script>
         var data = {
-            series: [{"name": "Stephen", "values": [{"race": "Bahrain", "points": 181}], "color": "10/02/2022: Singapore @ Marina Bay Street Circuit"}, {"name": "Heidi", "values": [{"race": "Bahrain", "points": 177}], "color": "05/08/2022: United States @ Miami International Autodrome"}, {"name": "David", "values": [{"race": "Bahrain", "points": 154}], "color": "10/23/2022: United States 2 @ Circuit of the Americas"}, {"name": "Moksha Gren", "values": [{"race": "Bahrain", "points": 137}], "color": "09/04/2022: Netherlands @ Circuit Zandvoort"}, {"name": "Davin", "values": [{"race": "Bahrain", "points": 138}], "color": "07/31/2022: Hungary @ Hungaroring"}, {"name": "Jesse", "values": [{"race": "Bahrain", "points": 129}], "color": "10/23/2022: United States 2 @ Circuit of the Americas"}, {"name": "Dean", "values": [{"race": "Bahrain", "points": 112}], "color": "05/22/2022: Spain @ Circuit de Barcelona-Catalunya"}, {"name": "Jameson", "values": [{"race": "Bahrain", "points": 116}], "color": "09/11/2022: Italy 2 @ Autodromo Nazionale Monza"}, {"name": "Paul", "values": [{"race": "Bahrain", "points": 93}], "color": "08/28/2022: Belgium @ Circuit de Spa-Francorchamps"}, {"name": "Jon", "values": [{"race": "Bahrain", "points": 103}], "color": "06/19/2022: Canada @ Circuit Gilles-Villeneuve"}, {"name": "Doug", "values": [{"race": "Bahrain", "points": 106}], "color": "10/23/2022: United States 2 @ Circuit of the Americas"}],
-            races: ["Bahrain"],
-            results_table: {"Stephen": {"Bahrain": 181}, "Heidi": {"Bahrain": 177}, "David": {"Bahrain": 154}, "Moksha Gren": {"Bahrain": 137}, "Davin": {"Bahrain": 138}, "Jesse": {"Bahrain": 129}, "Dean": {"Bahrain": 112}, "Jameson": {"Bahrain": 116}, "Paul": {"Bahrain": 93}, "Jon": {"Bahrain": 103}, "Doug": {"Bahrain": 106}}
+            series: [{"name": "Stephen", "values": [{"race": "Bahrain", "points": 195}, {"race": "Saudi Arabia", "points": 183}], "color": "Orange"}, {"name": "Heidi", "values": [{"race": "Bahrain", "points": 191}, {"race": "Saudi Arabia", "points": 235}], "color": "Green"}, {"name": "David", "values": [{"race": "Bahrain", "points": 179}, {"race": "Saudi Arabia", "points": 189}], "color": "Blue"}, {"name": "Moksha Gren", "values": [{"race": "Bahrain", "points": 139}, {"race": "Saudi Arabia", "points": 192}], "color": "DarkKhaki"}, {"name": "Davin", "values": [{"race": "Bahrain", "points": 134}, {"race": "Saudi Arabia", "points": 150}], "color": "DarkRed"}, {"name": "Jesse", "values": [{"race": "Bahrain", "points": 131}, {"race": "Saudi Arabia", "points": 162}], "color": "Black"}, {"name": "Dean", "values": [{"race": "Bahrain", "points": 126}, {"race": "Saudi Arabia", "points": 120}], "color": "YellowGreen"}, {"name": "Jameson", "values": [{"race": "Bahrain", "points": 92}, {"race": "Saudi Arabia", "points": 102}], "color": "BlueViolet"}, {"name": "Paul", "values": [{"race": "Bahrain", "points": 85}, {"race": "Saudi Arabia", "points": 93}], "color": "Red"}, {"name": "Jon", "values": [{"race": "Bahrain", "points": 90}, {"race": "Saudi Arabia", "points": 91}], "color": "OliveDrab"}, {"name": "Doug", "values": [{"race": "Bahrain", "points": 82}, {"race": "Saudi Arabia", "points": 96}], "color": "Cyan"}],
+            races: ["Bahrain", "Saudi Arabia"],
+            results_table: {"Stephen": {"Bahrain": 195, "Saudi Arabia": 183}, "Heidi": {"Bahrain": 191, "Saudi Arabia": 235}, "David": {"Bahrain": 179, "Saudi Arabia": 189}, "Moksha Gren": {"Bahrain": 139, "Saudi Arabia": 192}, "Davin": {"Bahrain": 134, "Saudi Arabia": 150}, "Jesse": {"Bahrain": 131, "Saudi Arabia": 162}, "Dean": {"Bahrain": 126, "Saudi Arabia": 120}, "Jameson": {"Bahrain": 92, "Saudi Arabia": 102}, "Paul": {"Bahrain": 85, "Saudi Arabia": 93}, "Jon": {"Bahrain": 90, "Saudi Arabia": 91}, "Doug": {"Bahrain": 82, "Saudi Arabia": 96}}
         }
 
         var margin = {top: 20, right: 20, bottom: 30, left: 30};
@@ -312,7 +312,7 @@
             .domain(data.races)
             .range([margin.left, width - margin.right]);
         const y = d3.scaleLinear()
-            .domain([93, 181]).nice()
+            .domain([82, 235]).nice()
             .range([height - margin.bottom, margin.top]);
         svg.append("g")
             .attr("transform", `translate(0, ${height - margin.bottom})`)
@@ -373,9 +373,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Stephen.html">Stephen</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Heidi.html">Heidi</a></td>
             
-            <td>181</td>
+            <td>235</td>
             
             
         </tr>
@@ -387,9 +387,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Heidi.html">Heidi</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Moksha_Gren.html">Moksha Gren</a></td>
             
-            <td>177</td>
+            <td>192</td>
             
             
         </tr>
@@ -403,7 +403,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/David.html">David</a></td>
             
-            <td>154</td>
+            <td>189</td>
             
             
         </tr>
@@ -415,9 +415,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Davin.html">Davin</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Stephen.html">Stephen</a></td>
             
-            <td>138</td>
+            <td>183</td>
             
             
         </tr>
@@ -429,9 +429,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Moksha_Gren.html">Moksha Gren</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jesse.html">Jesse</a></td>
             
-            <td>137</td>
+            <td>162</td>
             
             
         </tr>
@@ -443,9 +443,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jesse.html">Jesse</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Davin.html">Davin</a></td>
             
-            <td>129</td>
+            <td>150</td>
             
             
         </tr>
@@ -457,9 +457,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jameson.html">Jameson</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Dean.html">Dean</a></td>
             
-            <td>116</td>
+            <td>120</td>
             
             
         </tr>
@@ -471,9 +471,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Dean.html">Dean</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jameson.html">Jameson</a></td>
             
-            <td>112</td>
+            <td>102</td>
             
             
         </tr>
@@ -487,7 +487,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Doug.html">Doug</a></td>
             
-            <td>106</td>
+            <td>96</td>
             
             
         </tr>
@@ -499,9 +499,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jon.html">Jon</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Paul.html">Paul</a></td>
             
-            <td>103</td>
+            <td>93</td>
             
             
         </tr>
@@ -513,9 +513,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Paul.html">Paul</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jon.html">Jon</a></td>
             
-            <td>93</td>
+            <td>91</td>
             
             
         </tr>

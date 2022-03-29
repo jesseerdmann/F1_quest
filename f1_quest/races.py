@@ -184,15 +184,13 @@ class Races:
                         self.header_row, 'Driver of the Day')
                     fastest_lap_winner = driver.name == get_type_val(row,
                         self.header_row, 'Fastest Lap Winner')
-                    points = get_type_val(row, self.header_row, 
-                        ' '.join([driver.name, 'Pts']), float)
                     qpos = get_type_val(row, self.header_row, 
                         ' '.join([driver.name, 'QPos']), int)
                     laps = get_type_val(row, self.header_row, 
                         ' '.join([driver.name, 'Laps']), int)
                     classification = get_type_val(row, self.header_row, 
                         ' '.join([driver.name, 'Class']), int)
-                    driver.add_race(race=row[0], points=points, 
+                    driver.add_race(race=race, 
                         classification=classification, qpos=qpos, laps=laps, 
                         driver_of_the_day=driver_of_the_day,
                         fastest_lap=fastest_lap_winner)

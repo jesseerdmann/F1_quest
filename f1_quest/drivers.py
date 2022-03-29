@@ -4,6 +4,10 @@ import os
 from f1_quest.tables import Table
 
 
+REGULAR_POINTS = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9:2, 10: 1}
+SPRINT_POINTS = {1: 8, 2: 7, 3: 6, 4: 5, 5: 4, 6: 3, 7: 2, 8: 1}
+
+
 class DriverRaceResult():
     def __init__(self, race, points, classification, qpos, laps, fastest_lap=False, driver_of_the_day=False):
         self.race = race
@@ -45,28 +49,32 @@ class Driver:
         return self.name == other.name
 
 
-    def add_race(self, race, points, classification, qpos, laps, 
+    def add_race(self, race, classification, qpos, laps, 
         fastest_lap=False, driver_of_the_day=False):
 
-        #if type(points) == str or points < 0:
-        #    return self
-        
-        self.races[race] = DriverRaceResult(race=race, points=points, 
-            qpos=qpos, laps=laps, fastest_lap=fastest_lap, 
-            driver_of_the_day=driver_of_the_day, classification=classification)
-        self.points += points
+        race_points = 0
         if qpos == 1:
             self.poles += 1
         if qpos <= 10 and qpos > 0:
             self.q3s += 1
-        if points >= 15:
+        if classification <= 3 and classification > 0:
             self.podiums += 1
-        if points >= 25:
+        if classification == 1:
             self.wins += 1
+        if race.type == 'Regular' and classification in REGULAR_POINTS:
+            race_points = REGULAR_POINTS[classification]
+        if race.type == 'Sprint' and classification in REGULAR_POINTS:
+            race_points = SPRINT_POINTS[classification]
+        self.points += race_points
         if driver_of_the_day:
             self.driver_of_the_day += 1
         if fastest_lap:
             self.fastest_laps += 1
+            self.points += 1
+        
+        self.races[race.name] = DriverRaceResult(race=race.name, points=race_points,
+            qpos=qpos, laps=laps, fastest_lap=fastest_lap, 
+            driver_of_the_day=driver_of_the_day, classification=classification)
 
 
     def get_avg_laps(self):

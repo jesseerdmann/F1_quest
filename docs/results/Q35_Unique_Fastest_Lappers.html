@@ -291,9 +291,77 @@
 
 
 
-    
-        <br/>
+
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <h5>As it happened...</h5>
+    <div class="row" id="chart"></div>
+    <div class="row" id="hover_path" style="margin:auto; height 50px; text-align: center">
+        <h5 style='color:white'>_</h5>
+    </div>
+    <script>
+        var data = {
+            series: [{"name": "David", "values": [{"race": "Bahrain", "points": 4}, {"race": "Saudi Arabia", "points": 4}], "color": "Blue"}, {"name": "Doug", "values": [{"race": "Bahrain", "points": 4}, {"race": "Saudi Arabia", "points": 4}], "color": "Cyan"}, {"name": "Stephen", "values": [{"race": "Bahrain", "points": 4}, {"race": "Saudi Arabia", "points": 4}], "color": "Orange"}, {"name": "Jameson", "values": [{"race": "Bahrain", "points": 5}, {"race": "Saudi Arabia", "points": 5}], "color": "BlueViolet"}, {"name": "Paul", "values": [{"race": "Bahrain", "points": 5}, {"race": "Saudi Arabia", "points": 5}], "color": "Red"}, {"name": "Dean", "values": [{"race": "Bahrain", "points": 6}, {"race": "Saudi Arabia", "points": 6}], "color": "YellowGreen"}, {"name": "Jesse", "values": [{"race": "Bahrain", "points": 6}, {"race": "Saudi Arabia", "points": 6}], "color": "Black"}, {"name": "Jon", "values": [{"race": "Bahrain", "points": 6}, {"race": "Saudi Arabia", "points": 6}], "color": "OliveDrab"}, {"name": "Moksha Gren", "values": [{"race": "Bahrain", "points": 6}, {"race": "Saudi Arabia", "points": 6}], "color": "DarkKhaki"}, {"name": "Davin", "values": [{"race": "Bahrain", "points": 7}, {"race": "Saudi Arabia", "points": 7}], "color": "DarkRed"}, {"name": "Heidi", "values": [{"race": "Bahrain", "points": 8}, {"race": "Saudi Arabia", "points": 8}], "color": "Green"}],
+            races: ["Bahrain", "Saudi Arabia"],
+            results_table: {"David": {"Saudi Arabia": 4, "Bahrain": 4}, "Doug": {"Saudi Arabia": 4, "Bahrain": 4}, "Stephen": {"Saudi Arabia": 4, "Bahrain": 4}, "Jameson": {"Saudi Arabia": 5, "Bahrain": 5}, "Paul": {"Saudi Arabia": 5, "Bahrain": 5}, "Dean": {"Saudi Arabia": 6, "Bahrain": 6}, "Jesse": {"Saudi Arabia": 6, "Bahrain": 6}, "Jon": {"Saudi Arabia": 6, "Bahrain": 6}, "Moksha Gren": {"Saudi Arabia": 6, "Bahrain": 6}, "Davin": {"Saudi Arabia": 7, "Bahrain": 7}, "Heidi": {"Saudi Arabia": 8, "Bahrain": 8}}
+        }
+
+        var margin = {top: 20, right: 20, bottom: 30, left: 30};
+        var width = document.getElementById("chart").offsetWidth - margin.left - margin.right;
+        var height = 250 - margin.top - margin.bottom;
+
+        var svg = d3.select("#chart")
+            .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom);
+            
+        const x = d3.scalePoint()
+            .domain(data.races)
+            .range([margin.left, width - margin.right]);
+        const y = d3.scaleLinear()
+            .domain([4, 8]).nice()
+            .range([height - margin.bottom, margin.top]);
+        svg.append("g")
+            .attr("transform", `translate(0, ${height - margin.bottom})`)
+            .call(d3.axisBottom(x));
+        svg.append("g")
+            .attr("transform", `translate(${margin.left}, 0)`)
+            .call(d3.axisLeft(y))
+            .call(g => g.select(".tick:last-of-type text").clone()
+                .attr("x", 3)
+                .attr("text-anchor", "start")
+                .attr("font-weight", "bold")
+                .text("Points")
+            );
         
+        for (array in data.series) {        
+            const path = svg.append("path")
+                .datum(data.series[array].values)
+                .attr("fill", "none")
+                .attr("stroke", data.series[array].color)
+                .attr("stroke-width", 2)
+                .attr("opacity", 0.3)
+                .attr("id", data.series[array].name)
+                .attr("d", d3.line()
+                    .x(d => x(d.race))
+                    .y(d => y(d.points))
+                )
+                .on("mouseover", function(d) {
+                    d3.select(this).attr("opacity", 1).attr("stroke-width", 4);
+                    var text_div = document.getElementById('hover_path')
+                    text_div.innerHTML = "<h5 style='color:" + d.srcElement.attributes.stroke.value + "'>" + d.srcElement.id + "</h5>";
+                })
+                .on("mouseout", function(d) {
+                    d3.select(this).attr("opacity", 0.3).attr("stroke-width", 2);
+                    //document.getElementById('hover_path').innerHTML = "<h5 style='color:white'>_</h5>";
+                });
+        }
+    </script>
+
+
+
+    <br/>
+    
 <table class="table">
     <h5>Unique Fastest Lap Winners (Correct Answer: 1)</h5>
     <thead>
@@ -475,76 +543,6 @@
         
     </tbody>
 </table>
-
-    
-
-
-
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-    <h5>As it happened...</h5>
-    <div class="row" id="chart"></div>
-    <div class="row" id="hover_path" style="margin:auto; height 50px; text-align: center">
-        <h5 style='color:white'>_</h5>
-    </div>
-    <script>
-        var data = {
-            series: [],
-            races: ["Bahrain"],
-            results_table: {}
-        }
-
-        var margin = {top: 20, right: 20, bottom: 30, left: 30};
-        var width = document.getElementById("chart").offsetWidth - margin.left - margin.right;
-        var height = 250 - margin.top - margin.bottom;
-
-        var svg = d3.select("#chart")
-            .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom);
-            
-        const x = d3.scalePoint()
-            .domain(data.races)
-            .range([margin.left, width - margin.right]);
-        const y = d3.scaleLinear()
-            .domain([1000, 0]).nice()
-            .range([height - margin.bottom, margin.top]);
-        svg.append("g")
-            .attr("transform", `translate(0, ${height - margin.bottom})`)
-            .call(d3.axisBottom(x));
-        svg.append("g")
-            .attr("transform", `translate(${margin.left}, 0)`)
-            .call(d3.axisLeft(y))
-            .call(g => g.select(".tick:last-of-type text").clone()
-                .attr("x", 3)
-                .attr("text-anchor", "start")
-                .attr("font-weight", "bold")
-                .text("Points")
-            );
-        
-        for (array in data.series) {        
-            const path = svg.append("path")
-                .datum(data.series[array].values)
-                .attr("fill", "none")
-                .attr("stroke", data.series[array].color)
-                .attr("stroke-width", 2)
-                .attr("opacity", 0.3)
-                .attr("id", data.series[array].name)
-                .attr("d", d3.line()
-                    .x(d => x(d.race))
-                    .y(d => y(d.points))
-                )
-                .on("mouseover", function(d) {
-                    d3.select(this).attr("opacity", 1).attr("stroke-width", 4);
-                    var text_div = document.getElementById('hover_path')
-                    text_div.innerHTML = "<h5 style='color:" + d.srcElement.attributes.stroke.value + "'>" + d.srcElement.id + "</h5>";
-                })
-                .on("mouseout", function(d) {
-                    d3.select(this).attr("opacity", 0.3).attr("stroke-width", 2);
-                    //document.getElementById('hover_path').innerHTML = "<h5 style='color:white'>_</h5>";
-                });
-        }
-    </script>
-
 
 
 

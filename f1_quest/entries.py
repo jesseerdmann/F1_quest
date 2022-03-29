@@ -7,8 +7,8 @@ class Entry():
         self.score = 0
         self.timestamp = row[0]
         self.entry_name = row[1]
-        self.color = row[50]
-        self.email = row[51]
+        self.color = row[52]
+        self.email = row[53]
         self.team_fifth_response = row[2]
         self.team_fifth_tiebreaker = int(row[3])
         self.team_points_avg_response = row[4]
