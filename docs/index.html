@@ -294,9 +294,9 @@
     </div>
     <script>
         var data = {
-            series: [{"name": "Stephen", "values": [{"race": "Bahrain", "points": 195}, {"race": "Saudi Arabia", "points": 183}], "color": "Orange"}, {"name": "Heidi", "values": [{"race": "Bahrain", "points": 191}, {"race": "Saudi Arabia", "points": 235}], "color": "Green"}, {"name": "David", "values": [{"race": "Bahrain", "points": 179}, {"race": "Saudi Arabia", "points": 189}], "color": "Blue"}, {"name": "Moksha Gren", "values": [{"race": "Bahrain", "points": 139}, {"race": "Saudi Arabia", "points": 192}], "color": "DarkKhaki"}, {"name": "Davin", "values": [{"race": "Bahrain", "points": 134}, {"race": "Saudi Arabia", "points": 150}], "color": "DarkRed"}, {"name": "Jesse", "values": [{"race": "Bahrain", "points": 131}, {"race": "Saudi Arabia", "points": 162}], "color": "Black"}, {"name": "Dean", "values": [{"race": "Bahrain", "points": 126}, {"race": "Saudi Arabia", "points": 120}], "color": "YellowGreen"}, {"name": "Jameson", "values": [{"race": "Bahrain", "points": 92}, {"race": "Saudi Arabia", "points": 102}], "color": "BlueViolet"}, {"name": "Paul", "values": [{"race": "Bahrain", "points": 85}, {"race": "Saudi Arabia", "points": 93}], "color": "Red"}, {"name": "Jon", "values": [{"race": "Bahrain", "points": 90}, {"race": "Saudi Arabia", "points": 91}], "color": "OliveDrab"}, {"name": "Doug", "values": [{"race": "Bahrain", "points": 82}, {"race": "Saudi Arabia", "points": 96}], "color": "Cyan"}],
+            series: [{"name": "Stephen", "values": [{"race": "Bahrain", "points": 181}, {"race": "Saudi Arabia", "points": 169}], "color": "Orange"}, {"name": "Heidi", "values": [{"race": "Bahrain", "points": 177}, {"race": "Saudi Arabia", "points": 221}], "color": "Green"}, {"name": "David", "values": [{"race": "Bahrain", "points": 154}, {"race": "Saudi Arabia", "points": 164}], "color": "Blue"}, {"name": "Moksha Gren", "values": [{"race": "Bahrain", "points": 137}, {"race": "Saudi Arabia", "points": 190}], "color": "DarkKhaki"}, {"name": "Davin", "values": [{"race": "Bahrain", "points": 138}, {"race": "Saudi Arabia", "points": 154}], "color": "DarkRed"}, {"name": "Jesse", "values": [{"race": "Bahrain", "points": 129}, {"race": "Saudi Arabia", "points": 160}], "color": "Black"}, {"name": "Dean", "values": [{"race": "Bahrain", "points": 112}, {"race": "Saudi Arabia", "points": 106}], "color": "YellowGreen"}, {"name": "Jameson", "values": [{"race": "Bahrain", "points": 116}, {"race": "Saudi Arabia", "points": 119}], "color": "BlueViolet"}, {"name": "Paul", "values": [{"race": "Bahrain", "points": 93}, {"race": "Saudi Arabia", "points": 107}], "color": "Red"}, {"name": "Jon", "values": [{"race": "Bahrain", "points": 103}, {"race": "Saudi Arabia", "points": 114}], "color": "OliveDrab"}, {"name": "Doug", "values": [{"race": "Bahrain", "points": 106}, {"race": "Saudi Arabia", "points": 113}], "color": "Cyan"}],
             races: ["Bahrain", "Saudi Arabia"],
-            results_table: {"Stephen": {"Bahrain": 195, "Saudi Arabia": 183}, "Heidi": {"Bahrain": 191, "Saudi Arabia": 235}, "David": {"Bahrain": 179, "Saudi Arabia": 189}, "Moksha Gren": {"Bahrain": 139, "Saudi Arabia": 192}, "Davin": {"Bahrain": 134, "Saudi Arabia": 150}, "Jesse": {"Bahrain": 131, "Saudi Arabia": 162}, "Dean": {"Bahrain": 126, "Saudi Arabia": 120}, "Jameson": {"Bahrain": 92, "Saudi Arabia": 102}, "Paul": {"Bahrain": 85, "Saudi Arabia": 93}, "Jon": {"Bahrain": 90, "Saudi Arabia": 91}, "Doug": {"Bahrain": 82, "Saudi Arabia": 96}}
+            results_table: {"Stephen": {"Bahrain": 181, "Saudi Arabia": 169}, "Heidi": {"Bahrain": 177, "Saudi Arabia": 221}, "David": {"Bahrain": 154, "Saudi Arabia": 164}, "Moksha Gren": {"Bahrain": 137, "Saudi Arabia": 190}, "Davin": {"Bahrain": 138, "Saudi Arabia": 154}, "Jesse": {"Bahrain": 129, "Saudi Arabia": 160}, "Dean": {"Bahrain": 112, "Saudi Arabia": 106}, "Jameson": {"Bahrain": 116, "Saudi Arabia": 119}, "Paul": {"Bahrain": 93, "Saudi Arabia": 107}, "Jon": {"Bahrain": 103, "Saudi Arabia": 114}, "Doug": {"Bahrain": 106, "Saudi Arabia": 113}}
         }
 
         var margin = {top: 20, right: 20, bottom: 30, left: 30};
@@ -312,7 +312,7 @@
             .domain(data.races)
             .range([margin.left, width - margin.right]);
         const y = d3.scaleLinear()
-            .domain([82, 235]).nice()
+            .domain([93, 221]).nice()
             .range([height - margin.bottom, margin.top]);
         svg.append("g")
             .attr("transform", `translate(0, ${height - margin.bottom})`)
@@ -375,7 +375,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Heidi.html">Heidi</a></td>
             
-            <td>235</td>
+            <td>221</td>
             
             
         </tr>
@@ -389,7 +389,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Moksha_Gren.html">Moksha Gren</a></td>
             
-            <td>192</td>
+            <td>190</td>
             
             
         </tr>
@@ -401,9 +401,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/David.html">David</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Stephen.html">Stephen</a></td>
             
-            <td>189</td>
+            <td>169</td>
             
             
         </tr>
@@ -415,9 +415,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Stephen.html">Stephen</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/David.html">David</a></td>
             
-            <td>183</td>
+            <td>164</td>
             
             
         </tr>
@@ -431,7 +431,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jesse.html">Jesse</a></td>
             
-            <td>162</td>
+            <td>160</td>
             
             
         </tr>
@@ -445,7 +445,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Davin.html">Davin</a></td>
             
-            <td>150</td>
+            <td>154</td>
             
             
         </tr>
@@ -457,9 +457,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Dean.html">Dean</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jameson.html">Jameson</a></td>
             
-            <td>120</td>
+            <td>119</td>
             
             
         </tr>
@@ -471,9 +471,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jameson.html">Jameson</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jon.html">Jon</a></td>
             
-            <td>102</td>
+            <td>114</td>
             
             
         </tr>
@@ -487,7 +487,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Doug.html">Doug</a></td>
             
-            <td>96</td>
+            <td>113</td>
             
             
         </tr>
@@ -501,7 +501,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Paul.html">Paul</a></td>
             
-            <td>93</td>
+            <td>107</td>
             
             
         </tr>
@@ -513,9 +513,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jon.html">Jon</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Dean.html">Dean</a></td>
             
-            <td>91</td>
+            <td>106</td>
             
             
         </tr>

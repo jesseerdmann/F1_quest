@@ -800,8 +800,8 @@ class AnswerKey():
         for race in self.races.list_races_before(self.datetime):
             drivers_on_lead_lap = 0
             for driver in self.drivers.driver_list:
-                if str(race) in driver.races:
-                    driver_race_result = driver.races[str(race)]
+                if race.name in driver.races:
+                    driver_race_result = driver.races[race.name]
                     if driver_race_result.laps == race.laps:
                         drivers_on_lead_lap += 1
             table.add_subject(drivers_on_lead_lap, race)
