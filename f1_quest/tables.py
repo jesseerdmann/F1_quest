@@ -1,5 +1,5 @@
 class TableRow():
-    def __init__(self, score, subject, value=0):
+    def __init__(self, score, subject, value=''):
         self.score = score
         self.subject = subject
         self.value = value

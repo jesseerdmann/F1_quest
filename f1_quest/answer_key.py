@@ -93,6 +93,11 @@ class AnswerKey():
                 self.single_answer_dict[row[0]] = row[1]
 
         current_race = self.races.list_races_before(datetime)[-1]
+        next_race = None
+        for race in self.races.list_races_after(datetime):
+            if race.type == 'Regular':
+                next_race = race
+                break
 
         # This needs to happen after the scoring_single_answer because of SPA half points
         self.races.read_results(data_dir=data_dir, drivers=self.drivers, 
@@ -182,6 +187,8 @@ class AnswerKey():
             'Q12: Which driver from the bottom 6 teams last year will have the most appearances in the final round of qualifying (Q3) over the season?',
             answer=answer, score=score, entry_var='driver_q3s'))
         
+        
+        fantasy_scores = {}
         qnum = 13
         for driver in self.drivers.list_all_drivers():
             if driver.started_season:
@@ -190,7 +197,29 @@ class AnswerKey():
                     f"Q{qnum}: Fantasy {driver.last_name}",
                     f"Q{qnum}: Pick a race for {driver.first_name} {driver.last_name} and get the points based on their finishing position",
                     answer=answer, score=score, entry_var=f"fantasy_{driver.last_name}"))
+                for entry in score.subjects:
+                    if entry.subject in fantasy_scores:
+                        fantasy_scores[entry.subject] += entry.score
+                    else:
+                        fantasy_scores[entry.subject] = entry.score
                 qnum = qnum + 1
+        
+        next_race_drivers = {}
+        for entry in self.entries.list_entries():
+            for answer in entry.__dict__:
+                  if answer.startswith('fantasy_') and entry.__dict__[answer] == str(next_race):
+                        driver_name = answer.lstrip('fantasy_')
+                        next_race_drivers[entry] = driver_name
+        fantasy_totals = Table("Final Score", "Entry", "Points", int, value_label="Next Race Driver",
+            show_values=True, show_entries=False)
+        for entry in fantasy_scores:
+            entry_row = fantasy_totals.add_subject(fantasy_scores[entry], entry)
+            if entry in next_race_drivers:
+                entry_row.set_value(next_race_drivers[entry])
+        fantasy_question = QuestionSummary(data_dir, current_race,
+            'Fantasy Driver Totals', 
+            'Totals for every entry across all drivers', score=fantasy_totals)
+        self.questions.insert(12, fantasy_question)
 
         answer, score = self.unique_race_winners()
         self.questions.append(QuestionSummary(data_dir, current_race, 

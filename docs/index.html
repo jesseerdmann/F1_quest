@@ -52,6 +52,8 @@
             
             <li><a class="dropdown-item" href="https://jesseerdmann.github.io/F1_quest/results/Q12_Q3_Appearances.html">Q12: Q3 Appearances</a></li>
             
+            <li><a class="dropdown-item" href="https://jesseerdmann.github.io/F1_quest/results/Fantasy_Driver_Totals.html">Fantasy Driver Totals</a></li>
+            
             <li><a class="dropdown-item" href="https://jesseerdmann.github.io/F1_quest/results/Q13_Fantasy_Albon.html">Q13: Fantasy Albon</a></li>
             
             <li><a class="dropdown-item" href="https://jesseerdmann.github.io/F1_quest/results/Q14_Fantasy_Alonso.html">Q14: Fantasy Alonso</a></li>
@@ -294,9 +296,9 @@
     </div>
     <script>
         var data = {
-            series: [{"name": "Stephen", "values": [{"race": "Bahrain", "points": 181}, {"race": "Saudi Arabia", "points": 169}], "color": "Orange"}, {"name": "Heidi", "values": [{"race": "Bahrain", "points": 177}, {"race": "Saudi Arabia", "points": 221}], "color": "Green"}, {"name": "David", "values": [{"race": "Bahrain", "points": 154}, {"race": "Saudi Arabia", "points": 164}], "color": "Blue"}, {"name": "Moksha Gren", "values": [{"race": "Bahrain", "points": 137}, {"race": "Saudi Arabia", "points": 190}], "color": "DarkKhaki"}, {"name": "Davin", "values": [{"race": "Bahrain", "points": 138}, {"race": "Saudi Arabia", "points": 154}], "color": "DarkRed"}, {"name": "Jesse", "values": [{"race": "Bahrain", "points": 129}, {"race": "Saudi Arabia", "points": 160}], "color": "Black"}, {"name": "Dean", "values": [{"race": "Bahrain", "points": 112}, {"race": "Saudi Arabia", "points": 106}], "color": "YellowGreen"}, {"name": "Jameson", "values": [{"race": "Bahrain", "points": 116}, {"race": "Saudi Arabia", "points": 119}], "color": "BlueViolet"}, {"name": "Paul", "values": [{"race": "Bahrain", "points": 93}, {"race": "Saudi Arabia", "points": 107}], "color": "Red"}, {"name": "Jon", "values": [{"race": "Bahrain", "points": 103}, {"race": "Saudi Arabia", "points": 114}], "color": "OliveDrab"}, {"name": "Doug", "values": [{"race": "Bahrain", "points": 106}, {"race": "Saudi Arabia", "points": 113}], "color": "Cyan"}],
-            races: ["Bahrain", "Saudi Arabia"],
-            results_table: {"Stephen": {"Bahrain": 181, "Saudi Arabia": 169}, "Heidi": {"Bahrain": 177, "Saudi Arabia": 221}, "David": {"Bahrain": 154, "Saudi Arabia": 164}, "Moksha Gren": {"Bahrain": 137, "Saudi Arabia": 190}, "Davin": {"Bahrain": 138, "Saudi Arabia": 154}, "Jesse": {"Bahrain": 129, "Saudi Arabia": 160}, "Dean": {"Bahrain": 112, "Saudi Arabia": 106}, "Jameson": {"Bahrain": 116, "Saudi Arabia": 119}, "Paul": {"Bahrain": 93, "Saudi Arabia": 107}, "Jon": {"Bahrain": 103, "Saudi Arabia": 114}, "Doug": {"Bahrain": 106, "Saudi Arabia": 113}}
+            series: [{"name": "Stephen", "values": [{"race": "Bahrain", "points": 181}, {"race": "Saudi Arabia", "points": 169}, {"race": "Australia", "points": 166}], "color": "Orange"}, {"name": "Heidi", "values": [{"race": "Bahrain", "points": 177}, {"race": "Saudi Arabia", "points": 221}, {"race": "Australia", "points": 250}], "color": "Green"}, {"name": "David", "values": [{"race": "Bahrain", "points": 154}, {"race": "Saudi Arabia", "points": 164}, {"race": "Australia", "points": 178}], "color": "Blue"}, {"name": "Moksha Gren", "values": [{"race": "Bahrain", "points": 137}, {"race": "Saudi Arabia", "points": 190}, {"race": "Australia", "points": 182}], "color": "DarkKhaki"}, {"name": "Davin", "values": [{"race": "Bahrain", "points": 138}, {"race": "Saudi Arabia", "points": 154}, {"race": "Australia", "points": 182}], "color": "DarkRed"}, {"name": "Jesse", "values": [{"race": "Bahrain", "points": 129}, {"race": "Saudi Arabia", "points": 160}, {"race": "Australia", "points": 166}], "color": "Black"}, {"name": "Dean", "values": [{"race": "Bahrain", "points": 112}, {"race": "Saudi Arabia", "points": 106}, {"race": "Australia", "points": 141}], "color": "YellowGreen"}, {"name": "Jameson", "values": [{"race": "Bahrain", "points": 116}, {"race": "Saudi Arabia", "points": 119}, {"race": "Australia", "points": 145}], "color": "BlueViolet"}, {"name": "Paul", "values": [{"race": "Bahrain", "points": 93}, {"race": "Saudi Arabia", "points": 107}, {"race": "Australia", "points": 91}], "color": "Red"}, {"name": "Jon", "values": [{"race": "Bahrain", "points": 103}, {"race": "Saudi Arabia", "points": 114}, {"race": "Australia", "points": 117}], "color": "OliveDrab"}, {"name": "Doug", "values": [{"race": "Bahrain", "points": 106}, {"race": "Saudi Arabia", "points": 113}, {"race": "Australia", "points": 105}], "color": "Cyan"}],
+            races: ["Bahrain", "Saudi Arabia", "Australia"],
+            results_table: {"Stephen": {"Bahrain": 181, "Saudi Arabia": 169, "Australia": 166}, "Heidi": {"Bahrain": 177, "Saudi Arabia": 221, "Australia": 250}, "David": {"Bahrain": 154, "Saudi Arabia": 164, "Australia": 178}, "Moksha Gren": {"Bahrain": 137, "Saudi Arabia": 190, "Australia": 182}, "Davin": {"Bahrain": 138, "Saudi Arabia": 154, "Australia": 182}, "Jesse": {"Bahrain": 129, "Saudi Arabia": 160, "Australia": 166}, "Dean": {"Bahrain": 112, "Saudi Arabia": 106, "Australia": 141}, "Jameson": {"Bahrain": 116, "Saudi Arabia": 119, "Australia": 145}, "Paul": {"Bahrain": 93, "Saudi Arabia": 107, "Australia": 91}, "Jon": {"Bahrain": 103, "Saudi Arabia": 114, "Australia": 117}, "Doug": {"Bahrain": 106, "Saudi Arabia": 113, "Australia": 105}}
         }
 
         var margin = {top: 20, right: 20, bottom: 30, left: 30};
@@ -312,7 +314,7 @@
             .domain(data.races)
             .range([margin.left, width - margin.right]);
         const y = d3.scaleLinear()
-            .domain([93, 221]).nice()
+            .domain([91, 250]).nice()
             .range([height - margin.bottom, margin.top]);
         svg.append("g")
             .attr("transform", `translate(0, ${height - margin.bottom})`)
@@ -375,7 +377,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Heidi.html">Heidi</a></td>
             
-            <td>221</td>
+            <td>250</td>
             
             
         </tr>
@@ -389,7 +391,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Moksha_Gren.html">Moksha Gren</a></td>
             
-            <td>190</td>
+            <td>182</td>
             
             
         </tr>
@@ -397,13 +399,11 @@
         <tr class="table-light">
             <th scope="row">
             
-            3
-            
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Stephen.html">Stephen</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Davin.html">Davin</a></td>
             
-            <td>169</td>
+            <td>182</td>
             
             
         </tr>
@@ -417,7 +417,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/David.html">David</a></td>
             
-            <td>164</td>
+            <td>178</td>
             
             
         </tr>
@@ -429,9 +429,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jesse.html">Jesse</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Stephen.html">Stephen</a></td>
             
-            <td>160</td>
+            <td>166</td>
             
             
         </tr>
@@ -439,13 +439,11 @@
         <tr class="table-secondary">
             <th scope="row">
             
-            6
-            
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Davin.html">Davin</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jesse.html">Jesse</a></td>
             
-            <td>154</td>
+            <td>166</td>
             
             
         </tr>
@@ -459,7 +457,7 @@
             
             <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jameson.html">Jameson</a></td>
             
-            <td>119</td>
+            <td>145</td>
             
             
         </tr>
@@ -471,9 +469,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jon.html">Jon</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Dean.html">Dean</a></td>
             
-            <td>114</td>
+            <td>141</td>
             
             
         </tr>
@@ -485,9 +483,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Doug.html">Doug</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Jon.html">Jon</a></td>
             
-            <td>113</td>
+            <td>117</td>
             
             
         </tr>
@@ -499,9 +497,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Paul.html">Paul</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Doug.html">Doug</a></td>
             
-            <td>107</td>
+            <td>105</td>
             
             
         </tr>
@@ -513,9 +511,9 @@
             
             </th>
             
-            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Dean.html">Dean</a></td>
+            <td><a class="text-danger" href="https://jesseerdmann.github.io/F1_quest/entries/Paul.html">Paul</a></td>
             
-            <td>106</td>
+            <td>91</td>
             
             
         </tr>
