@@ -31,7 +31,7 @@
     <tbody>
         {% for race, result in driver.races.items() %}
         <tr class="{{ loop.cycle('table-light', 'table-secondary') }}">
-            <td><a class="text-danger" href="{{ macros.race_url(base_url, race) }}">{{ race }}</a></td>
+            <td>{{ race }}</td>
             <td>{{ result.qpos }}</td>
             <td>{{ result.laps }}</td>
             <td>{{ result.fastest_lap }}</td>

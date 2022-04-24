@@ -569,8 +569,9 @@ class AnswerKey():
         """
         completed_races = self.races.list_races_before(self.datetime)
         points_table = completed_races[-1].post_race_driver_points
-        if len(completed_races) >= 6:
-            points_table = completed_races[5].post_race_driver_points
+        # TODO: Includes one sprint race, should calculate but later...
+        if len(completed_races) >= 7:
+            points_table = completed_races[6].post_race_driver_points
         points_table.show_values = False
         points_table.show_entries = False
 
@@ -788,8 +789,9 @@ class AnswerKey():
             raise Exception(f"No driver matches found for {driver_short_name}")
 
         for race, result in driver.races.items():
+            race_dict[race] = -25
             if result.classification >= 0:
-                race_dict[race] = score_map[result.classification]
+                race_dict[race] = score_map[result.classification]    
         
         table = Table(f"{driver_short_name} Points", "Race", "Points", int, 
             show_values=False, sort=None)

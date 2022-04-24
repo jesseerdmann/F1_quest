@@ -63,7 +63,7 @@ class Driver:
             self.wins += 1
         if race.type == 'Regular' and classification in REGULAR_POINTS:
             race_points = REGULAR_POINTS[classification]
-        if race.type == 'Sprint' and classification in REGULAR_POINTS:
+        if race.type == 'Sprint' and classification in SPRINT_POINTS:
             race_points = SPRINT_POINTS[classification]
         self.points += race_points
         if driver_of_the_day:
