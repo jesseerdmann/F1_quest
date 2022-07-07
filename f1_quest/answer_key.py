@@ -929,14 +929,14 @@ class AnswerKey():
         from pprint import pprint
 
         score = Table(f"{table_name} (Correct Answer: {correct_score})", 
-            'Entry', 'Miss Amount', int, value_label="Score", sort='ascending',
+            'Entry', "Score", int, value_label='Miss Amount', sort='descending',
             show_entries=False)
         pos = 1
         for entry_diff in sorted(entry_dict.keys()):
             for entry in entry_dict[entry_diff]:
-                entry_row = score.add_subject(entry_diff, entry)
+                entry_row = score.add_subject(F1_POINTS[pos], entry)
                 entry.add_points(F1_POINTS[pos])
-                entry_row.value = F1_POINTS[pos]
+                entry_row.value = entry_diff
             pos += len(entry_dict[entry_diff])
         return score
 
