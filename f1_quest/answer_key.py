@@ -535,7 +535,7 @@ class AnswerKey():
         average_laps_table = self.drivers.get_avg_laps_table()
         score_map = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 
             9: 2, 10: 1, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 
-            18: 0, 19: 0, 20: 0}
+            18: 0, 19: 0, 20: 0, 21:0}
         average_laps_table.add_entries(self.entries, 'drvier_lowest_laps_avg')
         answer_key, tie_breaker = self.map_table_to_score(average_laps_table, 
             score_map, update_entry_score=True)
